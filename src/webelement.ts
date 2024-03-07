@@ -32,7 +32,10 @@ export class WebElement {
      * @sideeffects Modifies the HTML element
      */
     setValue(value: string): void {
-        this.element.setAttribute("value", value);
+        let el= this.element as HTMLInputElement;
+        if (el && el.value) {
+            el.value= value;
+        }
     }
     /**
      * Get the value of the HTML element
@@ -40,7 +43,11 @@ export class WebElement {
      * @sideeffects none
      */
     getValue(): string {
-        return this.element.getAttribute("value") || "";
+        let el= this.element as HTMLInputElement;
+        if (el && el.value) {
+            return el.value;
+        }
+        return "0";
     }
     /**
      * Set the checked attribute of the HTML element
@@ -49,7 +56,11 @@ export class WebElement {
      * @sideeffects Modifies the HTML element
      */
     setChecked(checked: boolean): void {
-        this.element.setAttribute("checked", checked.toString());
+        let el= this.element as HTMLInputElement;
+        if (el && el.checked) {
+            el.checked= checked;
+        }
+
     }
     /**
      * Get the checked attribute of the HTML element
@@ -57,7 +68,33 @@ export class WebElement {
      * @sideeffects none
      */
     getChecked(): boolean {
-        return this.element.getAttribute("checked") === "true";
+        let el= this.element as HTMLInputElement;
+        if (el && el.checked) {
+            return el.checked;
+        }
+        return false;
+    }
+    /**
+     * Get the style of the object
+     * @param none
+     * @returns the style of the object
+     * @sideeffects none
+     */
+    getStyle(style:string):string {
+        return window.getComputedStyle(this.element).getPropertyValue(style);
+    }
+    /**
+     * Set the style of the HTML element
+     * @param style the style to set
+     * @param value the value to set
+     * @returns void
+     * @sideeffects Modifies the HTML element
+     */
+    setStyle(style: string, value: string): void {
+        let el= this.element as HTMLHtmlElement;
+        if (el && el.style) {
+            el.style.setProperty(style, value);
+        }
     }
     /**
      * Set the innerHtml of the HTML element
