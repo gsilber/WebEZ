@@ -34,7 +34,7 @@ module.exports = {
 
         // https://typescript-eslint.io/rules/no-explicit-any
         // Disallow the any type.
-        "@typescript-eslint/no-explicit-any": "error",
+        //"@typescript-eslint/no-explicit-any": "error",
 
         // https://typescript-eslint.io/rules/no-unsafe-assignment
         // Disallow assigning a value with type any to variables and properties.

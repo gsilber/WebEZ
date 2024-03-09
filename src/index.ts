@@ -1,3 +1,2 @@
-export class Bobo {
-    public x: number = 0;
-}
+export * from "./decorators";
+export * from "./EzComponent";
