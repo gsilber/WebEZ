@@ -8,8 +8,11 @@ declare const document: Document;
  * @export
  * @abstract
  * @class EzComponent
- * @example class MyComponent extends EzComponent {<br>constructor() {<br>super("<h1>Hello World</h1>", "h1{color:red;}");<br>}<br>}
- *
+ * @example class MyComponent extends EzComponent {
+ *   constructor() {
+ *     super("<h1>Hello World</h1>", "h1{color:red;}");
+ *   }
+ * }
  */
 export abstract class EzComponent {
     private htmlElement: HTMLElement;
@@ -49,7 +52,9 @@ export abstract class EzComponent {
      * @returns void
      * @memberof EzComponent
      * @protected
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");<br>component.addComponent(component);<br>component.addComponent(component, "myDiv");
+     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
+     *   component.addComponent(component);
+     *   component.addComponent(component, "myDiv");
      */
     protected addComponent(component: EzComponent, id: string = "root") {
         if (id === "root") {
@@ -68,7 +73,9 @@ export abstract class EzComponent {
      * @returns EzComponent
      * @memberof EzComponent
      * @protected
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");<br>component.addComponent(component);<br>component.removeComponent(component);
+     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
+     *   component.addComponent(component);
+     *   component.removeComponent(component);
      */
     protected removeComponent(component: EzComponent): EzComponent {
         component.htmlElement.remove();
@@ -80,7 +87,8 @@ export abstract class EzComponent {
      * @returns void
      * @memberof EzComponent
      * @public
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");<br>component.appendToDomElement(document.getElementById("myDiv"));
+     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
+     *   component.appendToDomElement(document.getElementById("myDiv"));
      */
     public appendToDomElement(domElement: HTMLElement) {
         domElement.appendChild(this.htmlElement);

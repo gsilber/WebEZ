@@ -1,5 +1,10 @@
 import "reflect-metadata";
 
+/**
+ * @description A metadata description of a decorators intent
+ * @interface BindDescriptor
+ * @export
+ */
 export interface BindDescriptor {
     type: string;
     key: string;
@@ -8,12 +13,17 @@ export interface BindDescriptor {
     eventName?: string;
 }
 
-type DecoratorCallback = (target: any, propertyKey: string) => void;
+/**
+ * @description A decorator callback
+ * @type DecoratorCallback
+ */
+export type DecoratorCallback = (target: any, propertyKey: string) => void;
 
 /**
  * @description Decorator to bind a property to an element
  * @param bidirectional if true, the element will be updated when the property changes and the property will be updated when the element changes
  * @returns DecoratorCallback
+ * @export
  */
 export function Bind(bidirectional: boolean = false): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
@@ -32,6 +42,7 @@ export function Bind(bidirectional: boolean = false): DecoratorCallback {
  * @description Decorator to bind a click event to an element
  * @param selector the element to bind the event to
  * @returns DecoratorCallback
+ * @export
  */
 export function Click(selector: string): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
@@ -57,6 +68,7 @@ export function Click(selector: string): DecoratorCallback {
  * @description Decorator to bind a blur event to an element
  * @param selector the element to bind the event to
  * @returns DecoratorCallback
+ * @export
  */
 export function Blur(selector: string): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
@@ -82,6 +94,7 @@ export function Blur(selector: string): DecoratorCallback {
  * @description Decorator to bind a change event to an element
  * @param selector the element to bind the event to
  * @returns DecoratorCallback
+ * @export
  */
 export function Change(selector: string): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
@@ -108,6 +121,7 @@ export function Change(selector: string): DecoratorCallback {
  * @param selector the element to bind the event to
  * @param event the event to bind
  * @returns DecoratorCallback
+ * @export
  */
 export function GenericEvent(
     selector: string,
