@@ -60,13 +60,35 @@ export abstract class EzComponent {
      *   component.addComponent(component);
      *   component.addComponent(component, "myDiv");
      */
-    protected addComponent(component: EzComponent, id: string = "root") {
-        if (id === "root") {
-            this.shadow.appendChild(component.htmlElement);
+    protected addComponent(
+        component: EzComponent,
+        id: string = "root",
+        front: boolean = false,
+    ) {
+        if (front) {
+            if (id === "root") {
+                if (this.shadow.firstChild)
+                    this.shadow.insertBefore(
+                        component.htmlElement,
+                        this.shadow.firstChild,
+                    );
+                else this.shadow.appendChild(component.htmlElement);
+            } else {
+                let el: HTMLElement | null = this.shadow.getElementById(id);
+                if (el) {
+                    if (el.firstChild)
+                        el.insertBefore(component.htmlElement, el.firstChild);
+                    else el.appendChild(component.htmlElement);
+                }
+            }
         } else {
-            let el: HTMLElement | null = this.shadow.getElementById(id);
-            if (el) {
-                el.appendChild(component.htmlElement);
+            if (id === "root") {
+                this.shadow.appendChild(component.htmlElement);
+            } else {
+                let el: HTMLElement | null = this.shadow.getElementById(id);
+                if (el) {
+                    el.appendChild(component.htmlElement);
+                }
             }
         }
     }
