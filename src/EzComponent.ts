@@ -38,6 +38,10 @@ export abstract class EzComponent {
         this.shadow = this.htmlElement.attachShadow({ mode: "open" });
         this.template = document.createElement("template");
         this.template.innerHTML = this.html;
+        for (let style of document.styleSheets) {
+            if (style.ownerNode)
+                this.shadow.appendChild(style.ownerNode.cloneNode(true));
+        }
         this.styles = document.createElement("style");
         this.styles.innerHTML = this.css;
         this.shadow.appendChild(this.styles);

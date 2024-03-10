@@ -1,2 +1,1 @@
-Apply global styles to the shadow dom
 Implement style changes from code
