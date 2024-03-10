@@ -118,6 +118,32 @@ export function Change(selector: string): DecoratorCallback {
 }
 
 /**
+ * @description Decorator to bind an input event to an element
+ * @param selector the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Input(selector: string): DecoratorCallback {
+    return function (target: any, propertyKey: string): void {
+        //only on method
+        if (typeof target[propertyKey] !== "function") {
+            console.error("Click decorator must be used on a method");
+            return;
+        }
+        Reflect.defineMetadata(
+            "chan:" + propertyKey,
+            {
+                type: "event",
+                key: selector,
+                bidirectional: false,
+                eventName: "input",
+            },
+            target,
+        );
+    };
+}
+
+/**
  * @description Decorator to bind a generic event to an element
  * @param selector the element to bind the event to
  * @param event the event to bind
