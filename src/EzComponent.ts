@@ -113,14 +113,51 @@ export abstract class EzComponent {
                         evt: Event,
                     ) => void,
                 );
+            } else if (bindDescriptor.type === "cssc") {
+                this.attachClassHook(bindDescriptor);
             }
         });
+    }
+    private attachClassHook(descriptor: BindDescriptor): void {
+        const name: string = descriptor.valueKey || "";
+        let key = ("__" + name) as keyof this;
+        let pkey = name as keyof this;
+        Object.defineProperty(this, "__" + name, {
+            value: this[pkey],
+            writable: true,
+            enumerable: false,
+            configurable: true,
+        });
+
+        let element: any = this.shadow.getElementById(descriptor.key);
+        if (element) {
+            Object.defineProperty(this, "__old_" + name, {
+                value: this[pkey],
+                writable: true,
+                enumerable: false,
+                configurable: true,
+            });
+            let old = ("__old_" + name) as keyof this;
+            const t = this[old];
+            this[old] = element.className as typeof t;
+            element.className += " " + this[key];
+            Object.defineProperty(this, name, {
+                set: (value) => {
+                    element.className = this[old];
+                    const t = this[key];
+                    this[key] = value as typeof t;
+                    element.className += (" " + value) as typeof t;
+                },
+                get: () => {
+                    return this[key];
+                },
+            });
+        }
     }
     private attachEventHook(
         descriptor: BindDescriptor,
         callback: (evt: Event) => void,
     ): void {
-        console.log(descriptor);
         let element: HTMLElement | null = this.shadow.getElementById(
             descriptor.key,
         );

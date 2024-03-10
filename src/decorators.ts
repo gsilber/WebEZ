@@ -10,6 +10,7 @@ export interface BindDescriptor {
     key: string;
     bidirectional: boolean;
     targetName: string;
+    valueKey?: string;
     eventName?: string;
 }
 
@@ -141,6 +142,32 @@ export function GenericEvent(
                 bidirectional: false,
                 eventName: event,
             },
+            target,
+        );
+    };
+}
+
+/**
+ * @description Decorator to bind an objects class to an element
+ * @param selector the element to bind the event to
+ * @param className the class to bind
+ * @param remove if true, the class will be removed from the element
+ * @returns DecoratorCallback
+ * @export
+ */
+export function CSSClass(selector: string): DecoratorCallback {
+    return function (target: any, propertyKey: string): void {
+        if (!propertyKey) {
+            console.error("CSSClass decorator must be used on a property");
+            return;
+        }
+        Reflect.defineMetadata(
+            "cssc:" + propertyKey,
+            {
+                type: "cssc",
+                key: selector,
+                valueKey: propertyKey,
+            } as BindDescriptor,
             target,
         );
     };
