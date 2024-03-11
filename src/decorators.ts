@@ -39,109 +39,6 @@ export function Bind(bidirectional: boolean = false): DecoratorCallback {
         );
     };
 }
-/**
- * @description Decorator to bind a click event to an element
- * @param selector the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Click(selector: string): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        //only on method
-        if (typeof target[propertyKey] !== "function") {
-            console.error("Click decorator must be used on a method");
-            return;
-        }
-        Reflect.defineMetadata(
-            "clic:" + propertyKey,
-            {
-                type: "event",
-                key: selector,
-                bidirectional: false,
-                eventName: "click",
-            },
-            target,
-        );
-    };
-}
-
-/**
- * @description Decorator to bind a blur event to an element
- * @param selector the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Blur(selector: string): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        //only on method
-        if (typeof target[propertyKey] !== "function") {
-            console.error("Click decorator must be used on a method");
-            return;
-        }
-        Reflect.defineMetadata(
-            "blur:" + propertyKey,
-            {
-                type: "event",
-                key: selector,
-                bidirectional: false,
-                eventName: "blur",
-            },
-            target,
-        );
-    };
-}
-
-/**
- * @description Decorator to bind a change event to an element
- * @param selector the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Change(selector: string): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        //only on method
-        if (typeof target[propertyKey] !== "function") {
-            console.error("Click decorator must be used on a method");
-            return;
-        }
-        Reflect.defineMetadata(
-            "chan:" + propertyKey,
-            {
-                type: "event",
-                key: selector,
-                bidirectional: false,
-                eventName: "change",
-            },
-            target,
-        );
-    };
-}
-
-/**
- * @description Decorator to bind an input event to an element
- * @param selector the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Input(selector: string): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        //only on method
-        if (typeof target[propertyKey] !== "function") {
-            console.error("Click decorator must be used on a method");
-            return;
-        }
-        Reflect.defineMetadata(
-            "chan:" + propertyKey,
-            {
-                type: "event",
-                key: selector,
-                bidirectional: false,
-                eventName: "input",
-            },
-            target,
-        );
-    };
-}
 
 /**
  * @description Decorator to bind a generic event to an element
@@ -171,6 +68,46 @@ export function GenericEvent(
             target,
         );
     };
+}
+
+/**
+ * @description Decorator to bind a click event to an element
+ * @param selector the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Click(selector: string): DecoratorCallback {
+    return GenericEvent(selector, "click");
+}
+
+/**
+ * @description Decorator to bind a blur event to an element
+ * @param selector the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Blur(selector: string): DecoratorCallback {
+    return GenericEvent(selector, "blur");
+}
+
+/**
+ * @description Decorator to bind a change event to an element
+ * @param selector the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Change(selector: string): DecoratorCallback {
+    return GenericEvent(selector, "change");
+}
+
+/**
+ * @description Decorator to bind an input event to an element
+ * @param selector the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Input(selector: string): DecoratorCallback {
+    return GenericEvent(selector, "input");
 }
 
 /**
