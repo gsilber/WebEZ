@@ -1,6 +1,6 @@
 {
     "name": "@gsilber/webez",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
@@ -44,8 +44,5 @@
         "ts-jest": "^29.1.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
-    },
-    "dependencies": {
-        "chrome": "^0.1.0"
     }
 }
