@@ -22,19 +22,23 @@ export type DecoratorCallback = (target: any, propertyKey: string) => void;
 
 /**
  * @description Decorator to bind a property to an element
+ * @param elementID the element to bind the property to
  * @param bidirectional if true, the element will be updated when the property changes and the property will be updated when the element changes
  * @returns DecoratorCallback
  * @export
  */
-export function Bind(bidirectional: boolean = false): DecoratorCallback {
+export function Bind(
+    elementID: string,
+    bidirectional: boolean = false,
+): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
         if (!propertyKey) {
             console.error("Bind decorator must be used on a property");
             return;
         }
         Reflect.defineMetadata(
-            "bind:" + propertyKey,
-            { type: "bind", key: propertyKey, bidirectional: bidirectional },
+            "bind:" + elementID,
+            { type: "bind", key: elementID, bidirectional: bidirectional },
             target,
         );
     };
@@ -42,13 +46,13 @@ export function Bind(bidirectional: boolean = false): DecoratorCallback {
 
 /**
  * @description Decorator to bind a generic event to an element
- * @param selector the element to bind the event to
+ * @param elementID the element to bind the event to
  * @param event the event to bind
  * @returns DecoratorCallback
  * @export
  */
 export function GenericEvent(
-    selector: string,
+    elementID: string,
     event: string,
 ): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
@@ -61,7 +65,7 @@ export function GenericEvent(
             "gene:" + propertyKey,
             {
                 type: "event",
-                key: selector,
+                key: elementID,
                 bidirectional: false,
                 eventName: event,
             },
@@ -72,53 +76,53 @@ export function GenericEvent(
 
 /**
  * @description Decorator to bind a click event to an element
- * @param selector the element to bind the event to
+ * @param elementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
  */
-export function Click(selector: string): DecoratorCallback {
-    return GenericEvent(selector, "click");
+export function Click(elementID: string): DecoratorCallback {
+    return GenericEvent(elementID, "click");
 }
 
 /**
  * @description Decorator to bind a blur event to an element
- * @param selector the element to bind the event to
+ * @param elementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
  */
-export function Blur(selector: string): DecoratorCallback {
-    return GenericEvent(selector, "blur");
+export function Blur(elementID: string): DecoratorCallback {
+    return GenericEvent(elementID, "blur");
 }
 
 /**
  * @description Decorator to bind a change event to an element
- * @param selector the element to bind the event to
+ * @param elementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
  */
-export function Change(selector: string): DecoratorCallback {
-    return GenericEvent(selector, "change");
+export function Change(elementID: string): DecoratorCallback {
+    return GenericEvent(elementID, "change");
 }
 
 /**
  * @description Decorator to bind an input event to an element
- * @param selector the element to bind the event to
+ * @param elementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
  */
-export function Input(selector: string): DecoratorCallback {
-    return GenericEvent(selector, "input");
+export function Input(elementID: string): DecoratorCallback {
+    return GenericEvent(elementID, "input");
 }
 
 /**
  * @description Decorator to bind an objects class to an element
- * @param selector the element to bind the event to
+ * @param elementID the element to bind the event to
  * @param className the class to bind
  * @param remove if true, the class will be removed from the element
  * @returns DecoratorCallback
  * @export
  */
-export function CSSClass(selector: string): DecoratorCallback {
+export function CSSClass(elementID: string): DecoratorCallback {
     return function (target: any, propertyKey: string): void {
         if (!propertyKey) {
             console.error("CSSClass decorator must be used on a property");
@@ -128,7 +132,7 @@ export function CSSClass(selector: string): DecoratorCallback {
             "cssc:" + propertyKey,
             {
                 type: "cssc",
-                key: selector,
+                key: elementID,
                 valueKey: propertyKey,
             } as BindDescriptor,
             target,
