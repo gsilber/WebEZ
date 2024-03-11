@@ -12,6 +12,7 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
+        "cli": "tsc && mv ./dist/webez.js ./dist/webez && chmod +x ./dist/webez",
         "publish": "npm publish --access public"
     },
     "jest": {
