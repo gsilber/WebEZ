@@ -38,7 +38,12 @@ export function Bind(
         }
         Reflect.defineMetadata(
             "bind:" + elementID,
-            { type: "bind", key: elementID, bidirectional: bidirectional },
+            {
+                type: "bind",
+                targetName: elementID,
+                key: propertyKey,
+                bidirectional: bidirectional,
+            } as BindDescriptor,
             target,
         );
     };

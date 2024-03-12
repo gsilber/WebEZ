@@ -200,7 +200,7 @@ export abstract class EzComponent {
             enumerable: false,
             configurable: true,
         });
-        let element: any = this.shadow.getElementById(name);
+        let element: any = this.shadow.getElementById(descriptor.targetName);
         if (element) {
             element.innerHTML = this[key];
             if (!descriptor.bidirectional) {

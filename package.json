@@ -1,6 +1,6 @@
 {
     "name": "@gsilber/webez",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
@@ -10,6 +10,7 @@
         "coverage": "jest --coverage --watchAll=false",
         "test:json": "jest --json --watchAll=false --outputFile jest-output.json --coverage",
         "lint": "eslint . --ext .ts",
+        "doc": "typedoc --entryPoints src",
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
         "publish": "npm publish --access public"
