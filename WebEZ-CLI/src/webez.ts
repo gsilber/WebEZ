@@ -1,16 +1,28 @@
 #!/usr/bin/env node
+const version: string = "0.0.10";
 
 import fs from "fs";
 import path from "path";
 
 function usage() {
     console.error("Usage: webez <command> <name>");
-    console.error("\tWhere name is one of (new, component)");
+    console.error("\tWhere command is one of [new, component]");
     console.error("\tand name is the name of the app or component to create");
     console.error("\tExample: webez new myapp");
     console.error("\tExample: webez component mycomponent");
 }
 
+function findWebezConfigFile(directoryPath: string): boolean {
+    let currentPath = directoryPath;
+    while (currentPath !== "/") {
+        const configFile = path.join(currentPath, ".webez.json");
+        if (fs.existsSync(configFile)) {
+            return true;
+        }
+        currentPath = path.dirname(currentPath);
+    }
+    return false;
+}
 function copyDirectory(src: string, dest: string, appName: string) {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest);
@@ -53,7 +65,7 @@ function newApp(appName: string) {
     console.log("Dependencies installed");
     console.log("Done");
 }
-function createComponentScaffold(componentName: string) {
+function createComponent(componentName: string) {
     console.log("Creating a new component: " + componentName);
     if (fs.existsSync(componentName))
         throw new Error("Directory already exists: " + componentName);
@@ -72,8 +84,7 @@ function createComponentScaffold(componentName: string) {
         );
         const stats = fs.statSync(srcPath);
         if (stats.isDirectory()) {
-            // If it's a directory, recursively copy the directory
-            copyDirectory(srcPath, destPath, componentName);
+            // If it's a directory, do nothing
         } else {
             // If it's a file, read the file content
             let fileContent = fs.readFileSync(srcPath, "utf-8");
@@ -102,39 +113,39 @@ function toCamelCase(name: string) {
     return camelCaseName;
 }
 
-if (process.argv[2].startsWith("n")) {
-    newApp(process.argv[3]);
-} else {
-    createComponentScaffold(process.argv[3]);
-}
-function newComponent(componentName: string) {
-    console.log("Creating a new component: " + componentName);
-}
-// Provide a title to the process in `ps`.
-// Due to an obscure Mac bug, do not start this title with any symbol.
-try {
-    process.title = "webez " + Array.from(process.argv).slice(2).join(" ");
-} catch (_) {
-    // If an error happened above, use the most basic title.
-    process.title = "webez";
-}
-
-if (
-    process.argv.length !== 4 ||
-    !(process.argv[2].startsWith("n") || process.argv[2].startsWith("c"))
-) {
-    usage();
-    process.exit(1);
-}
-
-try {
-    if (process.argv[2].startsWith("n")) {
-        newApp(process.argv[3]);
-    } else {
-        newComponent(process.argv[3]);
+function runProgram() {
+    // Provide a title to the process in `ps`.
+    // Due to an obscure Mac bug, do not start this title with any symbol.
+    try {
+        process.title = "webez " + Array.from(process.argv).slice(2).join(" ");
+    } catch (_) {
+        // If an error happened above, use the most basic title.
+        process.title = "webez";
     }
-    console.log("Finished");
-} catch (e: any) {
-    console.log("Error: " + e.message);
-    console.log(e);
+
+    if (
+        process.argv.length !== 4 ||
+        !(process.argv[2].startsWith("n") || process.argv[2].startsWith("c"))
+    ) {
+        usage();
+        process.exit(1);
+    }
+
+    try {
+        if (process.argv[2].startsWith("n")) {
+            newApp(process.argv[3]);
+        } else {
+            if (findWebezConfigFile(path.dirname(process.cwd())))
+                createComponent(process.argv[3]);
+            else
+                console.error(
+                    "This command is only valid within a webez application created with webez new <appname>"
+                );
+        }
+    } catch (e: any) {
+        console.log("Error: " + e.message);
+    }
 }
+console.log(`webez v.${version} is starting...`);
+runProgram();
+console.log("Finished");

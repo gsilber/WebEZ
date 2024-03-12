@@ -1,12 +1,16 @@
 {
-    "name": "webez-cli",
-    "version": "1.0.0",
+    "name": "@gsilber/webez-cli",
+    "version": "0.0.10",
     "description": "",
     "main": "index.js",
     "scripts": {
+        "publish": "npm publish --access public",
         "build": "tsc && chmod +x ./dist/webez.js && rm -rf ./dist/scaffold && cp -r ./scaffold ./dist && rm -rf ./dist/component-scaffold && mkdir ./dist/component-scaffold && cp -r ./component-scaffold ./dist"
     },
     "author": "",
+    "bin": {
+        "webez": "./dist/webez.js"
+    },
     "license": "ISC",
     "devDependencies": {
         "@types/node": "^20.11.26",
