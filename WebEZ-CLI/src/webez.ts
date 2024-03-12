@@ -53,6 +53,60 @@ function newApp(appName: string) {
     console.log("Dependencies installed");
     console.log("Done");
 }
+function createComponentScaffold(componentName: string) {
+    console.log("Creating a new component: " + componentName);
+    if (fs.existsSync(componentName))
+        throw new Error("Directory already exists: " + componentName);
+    // Create the component directory
+    fs.mkdirSync(componentName);
+    // Read the scaffold directory
+    console.log("Copying scaffold files");
+    const scaffoldDir = path.join(__dirname, "component-scaffold");
+    const files = fs.readdirSync(scaffoldDir);
+    // Iterate through each file in the scaffold directory
+    files.forEach((file) => {
+        const srcPath = path.join(scaffoldDir, file);
+        const destPath = path.join(
+            componentName,
+            file.replace(/template/, componentName)
+        );
+        const stats = fs.statSync(srcPath);
+        if (stats.isDirectory()) {
+            // If it's a directory, recursively copy the directory
+            copyDirectory(srcPath, destPath, componentName);
+        } else {
+            // If it's a file, read the file content
+            let fileContent = fs.readFileSync(srcPath, "utf-8");
+            // Replace ######## with the component name
+            fileContent = fileContent.replace(/########/g, componentName);
+            // Replace $$$$$$$$ with the camel case of the component name
+            const camelCaseName = toCamelCase(componentName);
+            fileContent = fileContent.replace(
+                /\$\$\$\$\$\$\$\$/g,
+                camelCaseName
+            );
+            // Write the modified file content to the destination path
+            fs.writeFileSync(destPath, fileContent, "utf-8");
+        }
+    });
+    console.log("Component scaffold created");
+}
+
+function toCamelCase(name: string) {
+    // Convert the name to camel case
+    // Implementation of converting name to camel case
+    const camelCaseName = name
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join("");
+    return camelCaseName;
+}
+
+if (process.argv[2].startsWith("n")) {
+    newApp(process.argv[3]);
+} else {
+    createComponentScaffold(process.argv[3]);
+}
 function newComponent(componentName: string) {
     console.log("Creating a new component: " + componentName);
 }
