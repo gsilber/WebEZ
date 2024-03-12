@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc && chmod +x ./dist/webez.js"
+        "build": "tsc && chmod +x ./dist/webez.js && rm -rf ./dist/scaffold && cp -r ./scaffold ./dist"
     },
     "author": "",
     "license": "ISC",

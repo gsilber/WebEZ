@@ -11,20 +11,47 @@ function usage() {
     console.error("\tExample: webez component mycomponent");
 }
 
+function copyDirectory(src: string, dest: string, appName: string) {
+    if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest);
+    }
+
+    const files = fs.readdirSync(src);
+
+    files.forEach((file) => {
+        const srcPath = path.join(src, file);
+        const destPath = path.join(dest, file);
+
+        const stats = fs.statSync(srcPath);
+
+        if (stats.isDirectory()) {
+            copyDirectory(srcPath, destPath, appName);
+        } else {
+            let fileContent = fs.readFileSync(srcPath, "utf-8");
+            fileContent = fileContent.replace(/########/g, appName);
+            fs.writeFileSync(destPath, fileContent, "utf-8");
+        }
+    });
+}
+
 function newApp(appName: string) {
     console.log("Creating a new app: " + appName);
     if (fs.existsSync(appName))
         throw new Error("Directory already exists: " + appName);
-    fs.mkdirSync(appName);
-    fs.mkdirSync(path.join(appName, "src"));
-    fs.mkdirSync(path.join(appName, "src", "app"));
-    fs.mkdirSync(path.join(appName, "wbcore"));
-    fs.mkdirSync(path.join(appName, ".vscode"));
-    if (!fs.existsSync(appName))
-        throw new Error("Error creating directory: " + appName);
     //scaffold the directory
+    //copy the scaffold files
+    console.log("Copying scaffold files");
+    const scaffoldDir = path.join(__dirname, "scaffold");
+    copyDirectory(scaffoldDir, appName, appName);
+    console.log("Scaffold files copied");
     //cd into directory
+    process.chdir(appName);
     //call npm i
+    console.log("Installing dependencies");
+    const childProcess = require("child_process");
+    childProcess.execSync("npm i");
+    console.log("Dependencies installed");
+    console.log("Done");
 }
 function newComponent(componentName: string) {
     console.log("Creating a new component: " + componentName);
@@ -55,4 +82,5 @@ try {
     console.log("Finished");
 } catch (e: any) {
     console.log("Error: " + e.message);
+    console.log(e);
 }
