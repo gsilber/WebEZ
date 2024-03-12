@@ -1,7 +1,7 @@
 import { BindDescriptor } from "./decorators";
 import "reflect-metadata";
 
-declare const document: Document;
+declare const window: Window;
 
 /**
  * @description A base class for creating web components
@@ -33,16 +33,16 @@ export abstract class EzComponent {
         private html: string = "",
         private css: string = "",
     ) {
-        this.htmlElement = document.createElement("div");
+        this.htmlElement = window.document.createElement("div");
 
         this.shadow = this.htmlElement.attachShadow({ mode: "open" });
-        this.template = document.createElement("template");
+        this.template = window.document.createElement("template");
         this.template.innerHTML = this.html;
-        for (let style of document.styleSheets) {
+        for (let style of window.document.styleSheets) {
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
         }
-        this.styles = document.createElement("style");
+        this.styles = window.document.createElement("style");
         this.styles.innerHTML = this.css;
         this.shadow.appendChild(this.styles);
         this.shadow.appendChild(this.template.content.cloneNode(true));
