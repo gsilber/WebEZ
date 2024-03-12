@@ -1,0 +1,8 @@
+button:disabled,
+button[disabled] {
+    border: 1px solid #999999;
+    background-color: darkgrey !important;
+    color: #fff;
+    padding: 10px;
+    cursor: not-allowed;
+}
