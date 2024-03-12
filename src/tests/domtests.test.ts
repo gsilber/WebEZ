@@ -1,5 +1,6 @@
-import { TestModuleRoot } from "../src/testing_compnents/testModuleRoot";
-import { TestStart } from "../src/testing_compnents/teststart";
+import { TestModuleRoot } from "./testing_compnents/testModuleRoot";
+import { TestStart } from "./testing_compnents/teststart";
+import { describe, test, expect } from "@jest/globals";
 
 declare const window: Window;
 

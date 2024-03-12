@@ -4,7 +4,7 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "rm -rf ./dist && tsc && rm -rf ./dist/tests",
         "test": "jest",
         "watch": "jest --watchAll=true",
         "coverage": "jest --coverage --watchAll=false",
@@ -15,27 +15,11 @@
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
         "publish": "npm publish --access public"
     },
-    "jest": {
-        "preset": "ts-jest",
-        "testEnvironment": "jsdom",
-        "resetMocks": true,
-        "collectCoverageFrom": [
-            "src/**/*.{js,jsx,ts,tsx}",
-            "!<rootDir>/node_modules/",
-            "!src/serviceWorker.js",
-            "!src/setupTests.js",
-            "!src/components/Auth/*",
-            "!src/index.js"
-        ],
-        "coverageReporters": [
-            "text",
-            "lcov"
-        ]
-    },
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/jest": "^29.5.11",
+        "@jest/globals": "^29.7.0",
+        "@types/jest": "^29.5.12",
         "@typescript-eslint/eslint-plugin": "^6.2.0",
         "@typescript-eslint/parser": "^6.2.0",
         "eslint": "^8.46.0",
@@ -43,7 +27,7 @@
         "jest-environment-jsdom": "^29.7.0",
         "prettier": "^3.2.4",
         "reflect-metadata": "^0.2.1",
-        "ts-jest": "^29.1.1",
+        "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
     }

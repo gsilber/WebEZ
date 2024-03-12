@@ -1,4 +1,4 @@
-import { EzComponent } from "../EzComponent";
+import { EzComponent } from "../../EzComponent";
 
 export class TestModuleRoot extends EzComponent {
     p_html: string;
