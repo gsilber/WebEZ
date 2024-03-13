@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = "0.0.12";
+const version: string = "0.0.15";
 
 import fs from "fs";
 import path from "path";
@@ -66,6 +66,12 @@ function newApp(appName: string) {
     console.log("Done");
 }
 function createComponent(componentName: string) {
+    if (
+        componentName.endsWith("Component") ||
+        componentName.endsWith("component")
+    ) {
+        componentName = componentName.substring(0, componentName.length - 9);
+    }
     console.log("Creating a new component: " + componentName);
     if (fs.existsSync(componentName))
         throw new Error("Directory already exists: " + componentName);
