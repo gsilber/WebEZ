@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { $$$$$$$$Component } from "./########.component";
-import { bootstrap } from "webez";
+import { bootstrap } from "@gsilber/webez";
 
 describe("$$$$$$$$Component", () => {
     beforeAll(() => {
