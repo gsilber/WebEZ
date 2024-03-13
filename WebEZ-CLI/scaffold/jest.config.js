@@ -4,6 +4,9 @@ module.exports = {
     preset: "ts-jest",
     testEnvironment: "jsdom",
     resetMocks: true,
+        transform: {
+        "\\.(html|css)$": "<rootDir>/jest/raw-loader.js"
+    },
     collectCoverageFrom: [
         "src/**/*.{js,jsx,ts,tsx}",
         "!<rootDir>/node_modules/",
