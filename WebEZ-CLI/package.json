@@ -1,11 +1,12 @@
 {
     "name": "@gsilber/webez-cli",
-    "version": "0.0.19",
+    "version": "0.0.21",
     "description": "",
     "main": "index.js",
     "scripts": {
-        "publish": "npm publish --access public",
-        "build": "tsc && chmod +x ./dist/webez.js && rm -rf ./dist/scaffold && cp -r ./scaffold ./dist && rm -rf ./dist/component-scaffold && mkdir ./dist/component-scaffold && cp -r ./component-scaffold ./dist"
+        "test-pub": "cp ./package.json ./dist && cd ./dist && npm publish --dry-run",
+        "pub": "cp ./package.json ./dist && cd ./dist && npm publish --access public",
+        "build": "tsc && chmod +x ./dist/webez.js && rm -rf ./dist/scaffold && cp -r ./scaffold ./dist && rm -rf ./dist/component-scaffold && mkdir ./dist/component-scaffold && cp -r ./component-scaffold ./dist && cp ./package.json ./dist"
     },
     "author": "",
     "bin": {

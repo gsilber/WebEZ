@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = "0.0.19";
+const version: string = "0.0.21";
 
 import fs from "fs";
 import path from "path";
@@ -71,6 +71,9 @@ function createComponent(componentName: string) {
         componentName.endsWith("component")
     ) {
         componentName = componentName.substring(0, componentName.length - 9);
+    }
+    if (componentName.endsWith("-")) {
+        componentName = componentName.substring(0, componentName.length - 1);
     }
     console.log("Creating a new component: " + componentName);
     if (fs.existsSync(componentName))
