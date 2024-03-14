@@ -10,8 +10,9 @@ export class TestComponent extends EzComponent {
     child2b: TestChild2Component = new TestChild2Component();
     constructor() {
         super(html, css);
-        //child1 in child1 and 2 child 2's connected directly to outer.
+        //child1 in child1 and 2 and outer child 2's connected directly to outer.
         this.addComponent(this.child1, "child1");
+        this.addComponent(this.child1);
         this.addComponent(this.child2, "child2");
         this.addComponent(this.child2);
     }
