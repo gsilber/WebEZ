@@ -1,15 +1,16 @@
-import { describe, expect, test,beforeAll } from '@jest/globals';
-import { MainComponent } from './main.component';
-import {bootstrap} from '@gsilber/webez';
+import { describe, expect, test, beforeAll } from "@jest/globals";
+import { MainComponent } from "./main.component";
+import { bootstrap } from "@gsilber/webez";
 
-describe('MainComponent', () => {
+describe("MainComponent", () => {
+    let component: any = undefined;
     beforeAll(() => {
-        bootstrap<MainComponent>(MainComponent, true);
-    });    
-    describe('Constructor', () => {
-        test('Create Instance', () => {
-            const component=new MainComponent();
+        component = bootstrap<MainComponent>(MainComponent, true);
+    });
+    describe("Constructor", () => {
+        test("Create Instance", () => {
             expect(component).toBeInstanceOf(MainComponent);
         });
     });
 });
+

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = "0.0.23";
+const version: string = '0.0.29';
 
 import fs from "fs";
 import path from "path";
@@ -62,6 +62,7 @@ function newApp(appName: string) {
     console.log("Installing dependencies");
     const childProcess = require("child_process");
     childProcess.execSync("npm i");
+    childProcess.execSync("mv gitignore .gitignore");
     console.log("Dependencies installed");
     console.log("Done");
 }
