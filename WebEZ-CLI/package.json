@@ -1,6 +1,6 @@
 {
     "name": "@gsilber/webez-cli",
-    "version": "0.0.21",
+    "version": "0.0.23",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -10,7 +10,7 @@
     },
     "author": "",
     "bin": {
-        "webez": "./dist/webez.js"
+        "webez": "webez.js"
     },
     "license": "ISC",
     "devDependencies": {
