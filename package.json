@@ -1,10 +1,10 @@
 {
     "name": "@gsilber/webez",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rm -rf ./dist && tsc && rm -rf ./dist/tests",
+        "build": "rm -rf ./dist && tsc && rm -rf ./dist/tests && cp ./package.json dist",
         "test": "jest",
         "watch": "jest --watchAll=true",
         "coverage": "jest --coverage --watchAll=false",
@@ -13,7 +13,7 @@
         "doc": "typedoc --entryPoints src",
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
-        "publish": "npm publish --access public"
+        "pub": "cp ./package.json dist && cd ./dist && npm publish --access public"
     },
     "author": "",
     "license": "ISC",
