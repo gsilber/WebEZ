@@ -3,6 +3,15 @@ import { EzComponent } from "./EzComponent";
 declare type SetterFunction = (this: EzComponent, value: string) => void;
 declare type GetterFunction = (this: EzComponent) => string;
 
+/**
+ * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
+ * @param target the class to replace the setter in
+ * @param element the element to bind the property to
+ * @param privateKey the private property to store the value in
+ * @param publicKey the public property to replace the setter for
+ * @param value the initial value of the property
+ * @param setter the new setter function.  Can call the original setter
+ */
 function hookProperty<This extends EzComponent>(
     target: This,
     element: HTMLElement,
@@ -27,6 +36,14 @@ function hookProperty<This extends EzComponent>(
     });
 }
 
+/**
+ * @description Replace setter and getter with the ones provided.  These may call the original setter and getter.
+ * @param target the class to replace the setter and getter in
+ * @param element the element to bind the property to
+ * @param publicKey the property to replace the setter and getter for
+ * @param getter the new getter function.  Can call the original getter
+ * @param setter the new setter function.  Can call the original setter
+ */
 function hookPropertySetter<This extends EzComponent>(
     target: This,
     element: HTMLElement,
@@ -42,6 +59,12 @@ function hookPropertySetter<This extends EzComponent>(
     });
 }
 
+/**
+ * @description Returns a property descriptor for a property in this class
+ * @param target the class to get the property descriptor from
+ * @param key the property to get the descriptor for
+ * @returns PropertyDescriptor
+ */
 function getPropertyDescriptor<This extends EzComponent>(
     target: This,
     key: keyof This,
@@ -52,6 +75,13 @@ function getPropertyDescriptor<This extends EzComponent>(
     }
     return origDescriptor;
 }
+
+/**
+ * @description Decorator to bind the className property to an element.
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ */
 
 export function BindCSSClass(id: string) {
     return function <This extends EzComponent, Value extends string>(
@@ -96,6 +126,13 @@ export function BindCSSClass(id: string) {
     };
 }
 
+/**
+ * @description Decorator to bind the innerHtml property to an element.
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ */
+
 export function BindInnerHTML(id: string) {
     return function <This extends EzComponent, Value extends string>(
         target: undefined,
@@ -138,6 +175,14 @@ export function BindInnerHTML(id: string) {
         });
     };
 }
+
+/**
+ * @description Decorator to bind the Value property to an element.  Should be input elements
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @note This decorator should be last in the list of decorators for a property and can only appear once.
+ * @export
+ */
 export function BindValue(id: string) {
     return function <This extends EzComponent, Value extends string>(
         target: undefined,
@@ -184,7 +229,15 @@ export function BindValue(id: string) {
         });
     };
 }
-export function GenEvent<K extends keyof HTMLElementEventMap>(
+
+/**
+ * @description Decorator to bind a generic event to an element
+ * @param htmlElementID the element to bind the event to
+ * @param type the event to bind
+ * @returns DecoratorCallback
+ * @export
+ */
+export function GenericEvent<K extends keyof HTMLElementEventMap>(
     htmlElementID: string,
     type: K,
 ) {
@@ -207,6 +260,42 @@ export function GenEvent<K extends keyof HTMLElementEventMap>(
     };
 }
 
+/**
+ * @description Decorator to bind a click event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
 export function Click(htmlElementID: string) {
-    return GenEvent(htmlElementID, "click");
+    return GenericEvent(htmlElementID, "click");
+}
+
+/**
+ * @description Decorator to bind a blur event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Blur(htmlElementID: string) {
+    return GenericEvent(htmlElementID, "blur");
+}
+
+/**
+ * @description Decorator to bind a change event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Change(htmlElementID: string) {
+    return GenericEvent(htmlElementID, "change");
+}
+
+/**
+ * @description Decorator to bind an input event to an element
+ * @param elementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Input(htmlElementID: string) {
+    return GenericEvent(htmlElementID, "input");
 }
