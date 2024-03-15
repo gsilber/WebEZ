@@ -1,146 +1,212 @@
-import "reflect-metadata";
+import { EzComponent } from "./EzComponent";
 
-/**
- * @description A metadata description of a decorators intent
- * @interface BindDescriptor
- * @export
- */
-export interface BindDescriptor {
-    type: string;
-    key: string;
-    bidirectional: boolean;
-    targetName: string;
-    valueKey?: string;
-    eventName?: string;
+declare type SetterFunction = (this: EzComponent, value: string) => void;
+declare type GetterFunction = (this: EzComponent) => string;
+
+function hookProperty<This extends EzComponent>(
+    target: This,
+    element: HTMLElement,
+    privateKey: keyof This,
+    publicKey: keyof This,
+    value: string,
+    setter: SetterFunction,
+) {
+    Object.defineProperty(target, privateKey, {
+        value,
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
+    Object.defineProperty(target, publicKey, {
+        get(): string {
+            return this[privateKey] as string;
+        },
+        set: setter,
+        enumerable: true,
+        configurable: true,
+    });
 }
 
-/**
- * @description A decorator callback
- * @type DecoratorCallback
- */
-export type DecoratorCallback = (target: any, propertyKey: string) => void;
+function hookPropertySetter<This extends EzComponent>(
+    target: This,
+    element: HTMLElement,
+    publicKey: keyof This,
+    getter: GetterFunction,
+    setter: SetterFunction,
+) {
+    Object.defineProperty(target, publicKey, {
+        get: getter, // Leave the get accessor as it was
+        set: setter,
+        enumerable: true,
+        configurable: true,
+    });
+}
 
-/**
- * @description Decorator to bind a property to an element
- * @param elementID the element to bind the property to
- * @param bidirectional if true, the element will be updated when the property changes and the property will be updated when the element changes
- * @returns DecoratorCallback
- * @export
- */
-export function Bind(
-    elementID: string,
-    bidirectional: boolean = false,
-): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        if (!propertyKey) {
-            console.error("Bind decorator must be used on a property");
-            return;
-        }
-        Reflect.defineMetadata(
-            "bind:" + elementID,
-            {
-                type: "bind",
-                targetName: elementID,
-                key: propertyKey,
-                bidirectional: bidirectional,
-            } as BindDescriptor,
-            target,
-        );
+function getPropertyDescriptor<This extends EzComponent>(
+    target: This,
+    key: keyof This,
+): PropertyDescriptor {
+    let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
+    if (!origDescriptor) {
+        throw new Error(`can not find setter with name: ${key as string}`);
+    }
+    return origDescriptor;
+}
+
+export function BindCSSClass(id: string) {
+    return function <This extends EzComponent, Value extends string>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this.shadow.getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = String(context.name) as keyof This;
+            const privateKey = `__${String(context.name)}` as keyof This;
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.className = value;
+            if (origDescriptor.set) {
+                hookPropertySetter(
+                    this,
+                    element,
+                    publicKey,
+                    origDescriptor.get as GetterFunction,
+                    (value: string) => {
+                        origDescriptor.set?.call(target, value); // Call the original set accessor with the provided value
+                        element.className = value;
+                    },
+                );
+            } else {
+                hookProperty(
+                    this,
+                    element,
+                    privateKey,
+                    publicKey,
+                    value,
+                    (value: string) => {
+                        element.className = value;
+                        (this as any)[privateKey] = value;
+                    },
+                );
+            }
+        });
     };
 }
 
-/**
- * @description Decorator to bind a generic event to an element
- * @param elementID the element to bind the event to
- * @param event the event to bind
- * @returns DecoratorCallback
- * @export
- */
-export function GenericEvent(
-    elementID: string,
-    event: string,
-): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        //only on method
-        if (typeof target[propertyKey] !== "function") {
-            console.error("Click decorator must be used on a method");
-            return;
-        }
-        Reflect.defineMetadata(
-            "gene:" + propertyKey,
-            {
-                type: "event",
-                key: elementID,
-                bidirectional: false,
-                eventName: event,
-            },
-            target,
-        );
+export function BindInnerHTML(id: string) {
+    return function <This extends EzComponent, Value extends string>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this.shadow.getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = String(context.name) as keyof This;
+            const privateKey = `__${String(context.name)}` as keyof This;
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.innerHTML = value;
+            if (origDescriptor.set) {
+                hookPropertySetter(
+                    this,
+                    element,
+                    publicKey,
+                    origDescriptor.get as GetterFunction,
+                    (value: string) => {
+                        origDescriptor.set?.call(target, value); // Call the original set accessor with the provided value
+                        element.innerHTML = value;
+                    },
+                );
+            } else {
+                hookProperty(
+                    this,
+                    element,
+                    privateKey,
+                    publicKey,
+                    value,
+                    () => {
+                        element.innerHTML = value;
+                        (this as any)[privateKey] = value;
+                    },
+                );
+            }
+        });
+    };
+}
+export function BindValue(id: string) {
+    return function <This extends EzComponent, Value extends string>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this.shadow.getElementById(id) as
+                | HTMLInputElement
+                | undefined;
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = String(context.name) as keyof This;
+            const privateKey = `__${String(context.name)}` as keyof This;
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.value = value;
+            //hook both getter and setter to value
+            if (origDescriptor.set) {
+                throw new Error(
+                    "Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.",
+                );
+            } else {
+                hookProperty(
+                    this,
+                    element,
+                    privateKey,
+                    publicKey,
+                    value,
+                    (value: string) => {
+                        if (!(element as any).value)
+                            throw new Error(
+                                `Decorator is invalid for this type of html element.  Element does not have a property named: value}`,
+                            );
+                        (element as any).value = value;
+                        (this as any)[privateKey] = value;
+                    },
+                );
+                element.addEventListener("input", () => {
+                    const elementType = this[privateKey];
+                    this[publicKey] = element.value as typeof elementType;
+                });
+            }
+        });
+    };
+}
+export function GenEvent<K extends keyof HTMLElementEventMap>(
+    htmlElementID: string,
+    type: K,
+) {
+    return function <This extends EzComponent>(
+        target: (this: This, event: HTMLElementEventMap[K]) => void,
+        context: ClassMethodDecoratorContext<
+            This,
+            (this: This, event: HTMLElementEventMap[K]) => void
+        >,
+    ): void {
+        context.addInitializer(function (this: This) {
+            const element: HTMLElement | null =
+                this.shadow.getElementById(htmlElementID);
+            if (element) {
+                element.addEventListener(type, (e: HTMLElementEventMap[K]) => {
+                    target.call(this, e);
+                });
+            }
+        });
     };
 }
 
-/**
- * @description Decorator to bind a click event to an element
- * @param elementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Click(elementID: string): DecoratorCallback {
-    return GenericEvent(elementID, "click");
-}
-
-/**
- * @description Decorator to bind a blur event to an element
- * @param elementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Blur(elementID: string): DecoratorCallback {
-    return GenericEvent(elementID, "blur");
-}
-
-/**
- * @description Decorator to bind a change event to an element
- * @param elementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Change(elementID: string): DecoratorCallback {
-    return GenericEvent(elementID, "change");
-}
-
-/**
- * @description Decorator to bind an input event to an element
- * @param elementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Input(elementID: string): DecoratorCallback {
-    return GenericEvent(elementID, "input");
-}
-
-/**
- * @description Decorator to bind an objects class to an element
- * @param elementID the element to bind the event to
- * @param className the class to bind
- * @param remove if true, the class will be removed from the element
- * @returns DecoratorCallback
- * @export
- */
-export function CSSClass(elementID: string): DecoratorCallback {
-    return function (target: any, propertyKey: string): void {
-        if (!propertyKey) {
-            console.error("CSSClass decorator must be used on a property");
-            return;
-        }
-        Reflect.defineMetadata(
-            "cssc:" + propertyKey,
-            {
-                type: "cssc",
-                key: elementID,
-                valueKey: propertyKey,
-            } as BindDescriptor,
-            target,
-        );
-    };
+export function Click(htmlElementID: string) {
+    return GenEvent(htmlElementID, "click");
 }
