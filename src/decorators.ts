@@ -1,8 +1,5 @@
 import { EzComponent } from "./EzComponent";
 
-declare type SetterFunction = (this: EzComponent, value: string) => void;
-declare type GetterFunction = (this: EzComponent) => string;
-
 /**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
  * @param target the class to replace the setter in
@@ -10,7 +7,7 @@ declare type GetterFunction = (this: EzComponent) => string;
  * @param privateKey the private property to store the value in
  * @param publicKey the public property to replace the setter for
  * @param value the initial value of the property
- * @param setter the new setter function.  Can call the original setter
+ * @param propertyName the name of the property to bind to
  */
 function hookProperty<This extends EzComponent>(
     target: This,
@@ -18,7 +15,7 @@ function hookProperty<This extends EzComponent>(
     privateKey: keyof This,
     publicKey: keyof This,
     value: string,
-    setter: SetterFunction,
+    propertyName: string,
 ) {
     Object.defineProperty(target, privateKey, {
         value,
@@ -30,7 +27,10 @@ function hookProperty<This extends EzComponent>(
         get(): string {
             return this[privateKey] as string;
         },
-        set: setter,
+        set(value: string): void {
+            (element as any)[propertyName] = value;
+            this[privateKey] = value;
+        },
         enumerable: true,
         configurable: true,
     });
@@ -41,24 +41,26 @@ function hookProperty<This extends EzComponent>(
  * @param target the class to replace the setter and getter in
  * @param element the element to bind the property to
  * @param publicKey the property to replace the setter and getter for
- * @param getter the new getter function.  Can call the original getter
- * @param setter the new setter function.  Can call the original setter
+ * @param origDescriptor the original property descriptor
+ * @param propertyName the name of the property to bind to
  */
 function hookPropertySetter<This extends EzComponent>(
     target: This,
     element: HTMLElement,
     publicKey: keyof This,
-    getter: GetterFunction,
-    setter: SetterFunction,
+    origDescriptor: PropertyDescriptor,
+    propertyName: string,
 ) {
     Object.defineProperty(target, publicKey, {
-        get: getter, // Leave the get accessor as it was
-        set: setter,
-        enumerable: true,
-        configurable: true,
+        get: origDescriptor.get, // Leave the get accessor as it was
+        set(value: string): void {
+            origDescriptor.set?.call(target, value); // Call the original set accessor with the provided value
+            (element as any)[propertyName] = value;
+        },
+        enumerable: origDescriptor.enumerable,
+        configurable: origDescriptor.configurable,
     });
 }
-
 /**
  * @description Returns a property descriptor for a property in this class
  * @param target the class to get the property descriptor from
@@ -82,7 +84,6 @@ function getPropertyDescriptor<This extends EzComponent>(
  * @returns DecoratorCallback
  * @export
  */
-
 export function BindCSSClass(id: string) {
     return function <This extends EzComponent, Value extends string>(
         target: undefined,
@@ -103,11 +104,8 @@ export function BindCSSClass(id: string) {
                     this,
                     element,
                     publicKey,
-                    origDescriptor.get as GetterFunction,
-                    (value: string) => {
-                        origDescriptor.set?.call(target, value); // Call the original set accessor with the provided value
-                        element.className = value;
-                    },
+                    origDescriptor,
+                    "className",
                 );
             } else {
                 hookProperty(
@@ -116,10 +114,7 @@ export function BindCSSClass(id: string) {
                     privateKey,
                     publicKey,
                     value,
-                    (value: string) => {
-                        element.className = value;
-                        (this as any)[privateKey] = value;
-                    },
+                    "className",
                 );
             }
         });
@@ -132,7 +127,6 @@ export function BindCSSClass(id: string) {
  * @returns DecoratorCallback
  * @export
  */
-
 export function BindInnerHTML(id: string) {
     return function <This extends EzComponent, Value extends string>(
         target: undefined,
@@ -153,11 +147,8 @@ export function BindInnerHTML(id: string) {
                     this,
                     element,
                     publicKey,
-                    origDescriptor.get as GetterFunction,
-                    (value: string) => {
-                        origDescriptor.set?.call(target, value); // Call the original set accessor with the provided value
-                        element.innerHTML = value;
-                    },
+                    origDescriptor,
+                    "innerHTML",
                 );
             } else {
                 hookProperty(
@@ -166,10 +157,7 @@ export function BindInnerHTML(id: string) {
                     privateKey,
                     publicKey,
                     value,
-                    () => {
-                        element.innerHTML = value;
-                        (this as any)[privateKey] = value;
-                    },
+                    "innerHTML",
                 );
             }
         });
@@ -212,14 +200,7 @@ export function BindValue(id: string) {
                     privateKey,
                     publicKey,
                     value,
-                    (value: string) => {
-                        if (!(element as any).value)
-                            throw new Error(
-                                `Decorator is invalid for this type of html element.  Element does not have a property named: value}`,
-                            );
-                        (element as any).value = value;
-                        (this as any)[privateKey] = value;
-                    },
+                    "value",
                 );
                 element.addEventListener("input", () => {
                     const elementType = this[privateKey];
