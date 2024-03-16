@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { bootstrap } from "../../bootstrap";
-import { TestComponent } from "../testing_compnents/test.component";
+import { TestComponent } from "../testing_components/test.component";
 
 declare const window: Window;
 describe("WebEZ-Bind", () => {

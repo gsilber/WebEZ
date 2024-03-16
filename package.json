@@ -5,15 +5,17 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "rm -rf ./dist && tsc && rm -rf ./dist/tests && cp ./package.json dist",
-        "test": "jest",
-        "watch": "jest --watchAll=true",
-        "coverage": "jest --coverage --watchAll=false",
-        "test:json": "jest --json --watchAll=false --outputFile jest-output.json --coverage",
+        "test": "npm run clean && jest",
+        "watch": "npm run clean && jest --watchAll=true",
+        "coverage": "npm run clean && jest --coverage --watchAll=false",
+        "test:json": "npm run clean && jest --json --watchAll=false --outputFile jest-output.json --coverage",
         "lint": "eslint . --ext .ts",
         "doc": "typedoc --entryPoints src",
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
-        "pub": "cp ./package.json dist && cd ./dist && npm publish --access public"
+        "pub": "cp ./package.json dist && cd ./dist && npm publish --access public",
+        "clean": "rm -rf ./dist",
+        "realclean": "rm -rf ./dist && rm -rf ./node_modules && rm -rf ./docs"
     },
     "author": "",
     "license": "ISC",
