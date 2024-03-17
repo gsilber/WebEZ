@@ -58,7 +58,6 @@ export abstract class EzComponent {
      * @param id The id of the element to append the component to (optional)
      * @returns void
      * @memberof EzComponent
-     * @public
      * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
      *   component.addComponent(component);
      *   component.addComponent(component, "myDiv");
