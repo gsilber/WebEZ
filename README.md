@@ -159,7 +159,7 @@ export class MainComponent extends EzComponent {
 ```
 ## Working example program
 A fully working example can be found here: 
-[https://gsilber.github.io/WebEZ/example](https://gsilber.github.io/WebEZ/example)
+[https://gsilber.github.io/WebEZ/example](https://gsilber.github.io/WebEZ/example){:target="_blank"}
 
 ## Full Technical Documenation
 
