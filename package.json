@@ -7,7 +7,7 @@
         "build": "rm -rf ./dist && tsc && rm -rf ./dist/tests && cp ./package.json dist",
         "test": "npm run clean && jest",
         "watch": "npm run clean && jest --watchAll=true",
-        "coverage": "npm run clean && jest --coverage --watchAll=false",
+        "coverage": "npm run clean && jest --coverage --watchAll=false --coverageDirectory='./coverage'",
         "test:json": "npm run clean && jest --json --watchAll=false --outputFile jest-output.json --coverage",
         "lint": "eslint . --ext .ts",
         "doc": "typedoc --entryPoints src",
@@ -32,5 +32,8 @@
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "@types/jsdom": "^21.1.6"
     }
 }

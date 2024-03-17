@@ -13,7 +13,13 @@ export class TestChild1Component extends EzComponent {
 
     constructor() {
         super(html, css);
-        this.addComponent(this.baby1, "baby1");
-        this.addComponent(this.baby2, "baby2");
+        this.addComponent(new TestGrandchildComponent(), "root", true);
+        this.addComponent(this.baby1, "baby1", true);
+        this.addComponent(this.baby2, "baby2", true);
+        this.addComponent(new TestGrandchildComponent(), "baby2", true);
+        this.addComponent(new TestGrandchildComponent(), "root", true);
+        let gonner = new TestGrandchildComponent();
+        this.addComponent(gonner, "root");
+        this.removeComponent(gonner);
     }
 }

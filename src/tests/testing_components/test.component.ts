@@ -1,9 +1,13 @@
 import { EzComponent } from "../../EzComponent";
 import {
+    BindCSSClass,
     BindInnerHTML,
     BindValue,
+    Blur,
+    Change,
     Click,
     GenericEvent,
+    Input,
 } from "../../decorators";
 import { TestChild1Component } from "./test-child1.component";
 import { TestChild2Component } from "./test-child2.component";
@@ -24,6 +28,9 @@ const html = `<div id="child1"></div>
 <div id="bindDiv3"></div>
 <div id="bindDiv4"></div>
 <div id="bindDiv5"></div>
+<div id="bindDiv6"></div>
+<div id="bindDiv7"></div>
+<div id="bindDiv8"></div>
 `;
 const css = "";
 
@@ -53,12 +60,18 @@ export class TestComponent extends EzComponent {
     @BindValue("bindInput2")
     testbind4: string = "hello";
 
+    @BindCSSClass("bindDiv6")
+    testbind5: string = "hello";
+    @BindCSSClass("bindDiv7")
+    @BindCSSClass("bindDiv8")
+    testbind6: string = "hello";
+
     constructor() {
         super(html, css);
         this.addComponent(this.child1, "child1");
         this.addComponent(this.child2, "child2");
         this.addComponent(this.child3, "child3");
-        this.addComponent(this.child4, "child4");
+        this.addComponent(this.child4, "child4", true);
     }
 
     @Click("evtButton2")
@@ -75,6 +88,9 @@ export class TestComponent extends EzComponent {
         this.testVal = !this.testVal;
     }
     @GenericEvent("evtInput1", "change")
+    @Blur("evtInput1")
+    @Change("evtInput1")
+    @Input("evtInput1")
     evtInput1Change(event: Event) {
         this.testVal4 = (event.target as HTMLInputElement).value;
     }

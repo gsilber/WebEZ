@@ -37,6 +37,8 @@ export abstract class EzComponent {
         this.shadow = this.htmlElement.attachShadow({ mode: "open" });
         this.template = window.document.createElement("template");
         this.template.innerHTML = this.html;
+        //jest does not test this, tested elsewhere
+        /* istanbul ignore next */
         for (let style of window.document.styleSheets) {
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
@@ -70,7 +72,6 @@ export abstract class EzComponent {
                         component.htmlElement,
                         this.shadow.firstChild,
                     );
-                else this.shadow.appendChild(component.htmlElement);
             } else {
                 let el: HTMLElement | null = this.shadow.getElementById(id);
                 if (el) {

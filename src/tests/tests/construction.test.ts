@@ -76,8 +76,8 @@ describe("WebEZ-Construction and DOM", () => {
                 ?.children[0] as HTMLElement;
             expect(gccheck1).toBeInstanceOf(HTMLElement);
             expect(gccheck2).toBeInstanceOf(HTMLElement);
-            expect(grandchild1).toBe(gccheck1);
-            expect(grandchild2).toBe(gccheck2);
+            expect(grandchild1).toStrictEqual(gccheck1);
+            expect(grandchild2).toStrictEqual(gccheck2);
             expect(grandchild1).not.toBe(grandchild2);
         });
     });

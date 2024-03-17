@@ -32,12 +32,19 @@ describe("WebEZ-Event", () => {
             expect(toplevel.testVal3).toBe(2);
         });
         test("Test other events", () => {
+            const el = toplevel["shadow"].getElementById(
+                "evtInput1",
+            ) as HTMLInputElement;
             toplevel.testVal4 = "";
-            toplevel["shadow"].getElementById("evtInput1").value = "test";
-            toplevel["shadow"]
-                .getElementById("evtInput1")
-                .dispatchEvent(new Event("change"));
+            el.value = "test";
+            el.dispatchEvent(new Event("change"));
             expect(toplevel.testVal4).toBe("test");
+            el.value = "test2";
+            el.dispatchEvent(new Event("input"));
+            expect(toplevel.testVal4).toBe("test2");
+            el.value = "test3";
+            el.dispatchEvent(new Event("change"));
+            expect(toplevel.testVal4).toBe("test3");
         });
     });
     describe("Events:Grandchild", () => {
