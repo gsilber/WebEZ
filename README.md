@@ -157,7 +157,8 @@ export class MainComponent extends EzComponent {
     }
 }
 ```
-
+## Working example program
+A fully working example can be found here: [https://gsilber.github.io/WebEZ/example/](https://gsilber.github.io/WebEZ/example/)
 ## Full Technical Documenation
 
 Full technical documentation is available [https://gsilber.github.io/WebEZ/](https://gsilber.github.io/WebEZ/)
