@@ -289,7 +289,7 @@ export function Change(htmlElementID: string) {
 
 /**
  * @description Decorator to bind an input event to an element
- * @param elementID the element to bind the event to
+ * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
  */
