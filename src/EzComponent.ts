@@ -55,7 +55,6 @@ export abstract class EzComponent {
      * @param id The id of the element to append the component to (optional)
      * @returns void
      * @memberof EzComponent
-     * @protected
      * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
      *   component.addComponent(component);
      *   component.addComponent(component, "myDiv");
@@ -97,7 +96,6 @@ export abstract class EzComponent {
      * @param component
      * @returns EzComponent
      * @memberof EzComponent
-     * @protected
      * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
      *   component.addComponent(component);
      *   component.removeComponent(component);
@@ -111,7 +109,6 @@ export abstract class EzComponent {
      * @param domElement
      * @returns void
      * @memberof EzComponent
-     * @public
      * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
      *   component.appendToDomElement(document.getElementById("myDiv"));
      */
