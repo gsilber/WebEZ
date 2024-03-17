@@ -114,11 +114,11 @@ export class MainComponent extends EzComponent {
 }
 ```
 
--   Decorate the properties with one of @BindInnerHtml, @BindValue, or @BindCSSClass specifying the id of the element you want to bind. Note BindInnerHtml is one way, it will keep the elements value equivalent to the property. BindValue is bi-directional and will keep the property and element in sync. This is suitable for inputs. BindCSSClass will bind the elmements `class` attribute to the property. Changing the property value changes the css class of the element for dynamic styling. Note BindInnerHtml and BindCSSClass can be stacked. BindValue can appear only once and must be the last decorator for a given element.
+-   Decorate the properties with one of BindInnerHtml, BindValue, or BindCSSClass specifying the id of the element you want to bind. Note BindInnerHtml is one way, it will keep the elements value equivalent to the property. BindValue is bi-directional and will keep the property and element in sync. This is suitable for inputs. BindCSSClass will bind the elmements `class` attribute to the property. Changing the property value changes the css class of the element for dynamic styling. Note BindInnerHtml and BindCSSClass can be stacked. BindValue can appear only once and must be the last decorator for a given element.
 
 ```
 export class MainComponent extends EzComponent {
-	@BindValue("user-name")
+	@indValue("user-name")
     userName: string = "";
 
 	@BindInnerHtml("user-count")
@@ -136,7 +136,7 @@ export class MainComponent extends EzComponent {
 }
 ```
 
--   Decorate methods with various event handlers. These include @Click, @Blur, @Change, @Input. There is also a generic event handler decorator @GenericEvent which takes the id of the element and the name of the event you want in order to allow all html events to be captured.
+-   Decorate methods with various event handlers. These include Click, Blur, Change, Input. There is also a generic event handler decorator GenericEvent which takes the id of the element and the name of the event you want in order to allow all html events to be captured.
 
 ```
 export class MainComponent extends EzComponent {
