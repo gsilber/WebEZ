@@ -15,6 +15,9 @@ declare const window: Window;
  */
 export abstract class EzComponent {
     private htmlElement: HTMLElement;
+    /**
+     * @hidden
+     */
     public shadow: ShadowRoot;
     private template: HTMLTemplateElement;
     private styles: HTMLStyleElement;
