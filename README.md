@@ -157,7 +157,6 @@ export class MainComponent extends EzComponent {
     }
 }
 ```
-## Example program
 
 ## Full Technical Documenation
 

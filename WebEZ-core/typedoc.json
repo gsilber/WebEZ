@@ -1,6 +1,5 @@
 {
     "$schema": "https://typedoc.org/schema.json",
-    "out": "doc",
     "visibilityFilters": {
         "protected": true,
         "private": false,
