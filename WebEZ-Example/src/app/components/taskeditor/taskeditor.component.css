@@ -1,0 +1,19 @@
+.editor-line {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    position: relative;
+}
+
+.editor-input {
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    flex: 1;
+    display: inline-block;
+    padding-right: 20px;
+}
+.editor-input input {
+    width: 100%;
+    text-align: left;
+}

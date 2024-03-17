@@ -1,0 +1,43 @@
+.main-window {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    border-radius: 20px;
+    box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    position: relative;
+    background-color: lightgray;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+}
+
+.title,
+.control {
+    display: inline-flex;
+}
+.title {
+    flex: 1;
+    font-size: 25px;
+    font-weight: bold;
+}
+.list-body {
+    margin: 10px;
+    border: solid 1px silver;
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+}
+.control button {
+    margin-left: 5px;
+}

@@ -1,0 +1,19 @@
+.view-line {
+    display: flex;
+    flex-direction: row;
+}
+
+.task-view {
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    flex: 1;
+    display: inline-block;
+}
+
+.task-line {
+    width: 100%;
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: solid 1px black;
+}
