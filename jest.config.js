@@ -11,6 +11,7 @@ module.exports = {
         "!src/setupTests.js",
         "!src/components/Auth/*",
         "!src/index.js",
+        "!<rootDir>/src/index.ts",
     ],
     coverageReporters: ["text", "lcov"],
 };

@@ -1,3 +1,13 @@
+import { EzComponent } from "../../EzComponent";
+import {
+    BindInnerHTML,
+    BindValue,
+    Click,
+    GenericEvent,
+} from "../../decorators";
+import { TestChild1Component } from "./test-child1.component";
+import { TestChild2Component } from "./test-child2.component";
+
 const html = `<div id="child1"></div>
 <div id="child2"></div>
 <div id="child3"></div>
@@ -7,12 +17,15 @@ const html = `<div id="child1"></div>
 <div id="evtDiv1"></div>
 <div id="evtDiv2"></div>
 <input type="text" id="evtInput1" />
+<input type="text" id="bindInput1" />
+<input type="text" id="bindInput2" />
+<div id="bindDiv1"></div>
+<div id="bindDiv2"></div>
+<div id="bindDiv3"></div>
+<div id="bindDiv4"></div>
+<div id="bindDiv5"></div>
 `;
 const css = "";
-import { EzComponent } from "../../EzComponent";
-import { Click, GenericEvent } from "../../decorators";
-import { TestChild1Component } from "./test-child1.component";
-import { TestChild2Component } from "./test-child2.component";
 
 export class TestComponent extends EzComponent {
     child1: TestChild1Component = new TestChild1Component();
@@ -25,6 +38,21 @@ export class TestComponent extends EzComponent {
     testVal3: number = 0;
     testVal4: string = "";
 
+    @BindInnerHTML("bindDiv1")
+    testbind1: string = "hello";
+
+    @BindValue("bindInput1")
+    testbind2: string = "hello";
+
+    @BindInnerHTML("bindDiv2")
+    @BindInnerHTML("bindDiv3")
+    testbind3: string = "hello";
+
+    @BindInnerHTML("bindDiv4")
+    @BindInnerHTML("bindDiv5")
+    @BindValue("bindInput2")
+    testbind4: string = "hello";
+
     constructor() {
         super(html, css);
         this.addComponent(this.child1, "child1");
@@ -32,6 +60,7 @@ export class TestComponent extends EzComponent {
         this.addComponent(this.child3, "child3");
         this.addComponent(this.child4, "child4");
     }
+
     @Click("evtButton2")
     @Click("evtDiv2")
     evtDiv2Click() {
