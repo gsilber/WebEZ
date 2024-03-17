@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = '0.1.4';
+const version: string = '0.1.5';
 
 import fs from "fs";
 import path from "path";
@@ -100,6 +100,11 @@ function createComponent(componentName: string) {
             let fileContent = fs.readFileSync(srcPath, "utf-8");
             // Replace ######## with the component name
             fileContent = fileContent.replace(/########/g, componentName);
+            // Replace %%%%%%%% with the name in lowercase
+            fileContent = fileContent.replace(
+                /%%%%%%%%/g,
+                componentName.toLowerCase()
+            );
             // Replace $$$$$$$$ with the camel case of the component name
             const camelCaseName = toCamelCase(componentName);
             fileContent = fileContent.replace(
