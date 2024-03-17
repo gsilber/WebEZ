@@ -10,7 +10,7 @@
         "coverage": "npm run clean && jest --coverage --watchAll=false --coverageDirectory='./coverage'",
         "test:json": "npm run clean && jest --json --watchAll=false --outputFile jest-output.json --coverage",
         "lint": "eslint . --ext .ts",
-        "doc": "typedoc --entryPoints src --cleanOutputDir --githubPages true --readme ./README.md",
+        "doc": "typedoc --entryPoints src --githubPages true --readme ./README.md",
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
         "pub": "cp ./package.json dist && cd ./dist && npm publish --access public",
