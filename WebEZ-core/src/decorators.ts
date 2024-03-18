@@ -1,4 +1,5 @@
 /** TODO
+ * 2. Test in example project
  * 3. Modify css decorator to retain classes from html file.
  * 4. Update tests for the css decorator
  * 5. Update documentation for the css decorator and style decorator
