@@ -114,16 +114,19 @@ export class MainComponent extends EzComponent {
 }
 ```
 
--   Decorate the properties with one of BindInnerHtml, BindValue, or BindCSSClass specifying the id of the element you want to bind. Note BindInnerHtml is one way, it will keep the elements value equivalent to the property. BindValue is bi-directional and will keep the property and element in sync. This is suitable for inputs. BindCSSClass will bind the elmements `class` attribute to the property. Changing the property value changes the css class of the element for dynamic styling. Note BindInnerHtml and BindCSSClass can be stacked. BindValue can appear only once and must be the last decorator for a given element.
+-   Decorate the properties with one of BindInnerHtml, BindValue, BindStyle or BindCSSClass specifying the id of the element you want to bind. Note BindInnerHtml is one way, it will keep the elements value equivalent to the property. BindValue is bi-directional and will keep the property and element in sync. This is suitable for inputs. BindCSSClass will bind the elmements `class` attribute to the property. Changing the property value changes the css class of the element for dynamic styling. BindStyle will bind the specified element and specific style setting to the variable.  Note BindInnerHtml, BindStyle, and BindCSSClass can be stacked. BindValue can appear only once and must be the last decorator for a given element.
 
 ```
 export class MainComponent extends EzComponent {
-	@indValue("user-name")
+	@BindValue("user-name")
     userName: string = "";
 
 	@BindInnerHtml("user-count")
     userCount: string = "0";
 
+    @BindStyle("user-count","color")
+    userCountColor:string=red;
+    
     constructor() {
         super(html, css);
     }
