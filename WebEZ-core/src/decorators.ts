@@ -1,3 +1,10 @@
+/** TODO
+ * 1. Complete the style decorator
+ * 2. Add tests for the style decorator
+ * 3. Modify css decorator to retain classes from html file.
+ * 4. Update tests for the css decorator
+ * 5. Update documentation for the css decorator and style decorator
+ */
 import { EzComponent } from "./EzComponent";
 
 /**
@@ -84,6 +91,37 @@ function getPropertyDescriptor<This extends EzComponent>(
         throw new Error(`can not find setter with name: ${key as string}`);
     }
     return origDescriptor;
+}
+
+/**
+ * @description Decorator to bind a specific style to an element
+ * @param id the element to bind the property to
+ * @param style the style to bind (i.e. background-color, left, top, etc.)
+ * @returns DecoratorCallback
+ * @export
+ */
+export function BindStyle(id: string, style: string) {
+    return function <This extends EzComponent, Value extends string>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this.shadow.getElementById(id);
+            //no easy way to test in Jest
+            /* istanbul ignore next */
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = String(context.name) as keyof This;
+            const privateKey = `__${String(context.name)}` as keyof This;
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            const camelCaseStyle = style.replace(
+                /-([a-z])/g,
+                (match, letter) => letter.toUpperCase() as string,
+            ) as keyof CSSStyleDeclaration;
+        });
+    };
 }
 
 /**
