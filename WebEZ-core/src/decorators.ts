@@ -1,6 +1,4 @@
 /** TODO
- * 1. Complete the style decorator
- * 2. Add tests for the style decorator
  * 3. Modify css decorator to retain classes from html file.
  * 4. Update tests for the css decorator
  * 5. Update documentation for the css decorator and style decorator
@@ -100,7 +98,10 @@ function getPropertyDescriptor<This extends EzComponent>(
  * @returns DecoratorCallback
  * @export
  */
-export function BindStyle(id: string, style: string) {
+export function BindStyle<K extends keyof CSSStyleDeclaration>(
+    id: string,
+    style: K,
+) {
     return function <This extends EzComponent, Value extends string>(
         target: undefined,
         context: ClassFieldDecoratorContext<This, Value>,
@@ -116,10 +117,44 @@ export function BindStyle(id: string, style: string) {
             const privateKey = `__${String(context.name)}` as keyof This;
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            const camelCaseStyle = style.replace(
-                /-([a-z])/g,
-                (match, letter) => letter.toUpperCase() as string,
-            ) as keyof CSSStyleDeclaration;
+            //replace the style tag with the new value
+            (element.style[style] as any) = value;
+            if (origDescriptor.set) {
+                Object.defineProperty(this, publicKey, {
+                    get: origDescriptor.get, // Leave the get accessor as it was
+                    set(value: string): void {
+                        // This should not happen normally, only hear in case.
+                        /* istanbul ignore next */
+                        if (!origDescriptor.set) {
+                            throw new Error(
+                                `can not find setter with name: ${publicKey as string}`,
+                            );
+                        }
+                        origDescriptor.set.call(this, value); // Call the original set accessor with the provided value
+                        (element.style[style] as any) = value;
+                    },
+                    enumerable: origDescriptor.enumerable,
+                    configurable: origDescriptor.configurable,
+                });
+            } else {
+                Object.defineProperty(this, privateKey, {
+                    value,
+                    writable: true,
+                    enumerable: false,
+                    configurable: true,
+                });
+                Object.defineProperty(this, publicKey, {
+                    get(): string {
+                        return this[privateKey] as string;
+                    },
+                    set(value: string): void {
+                        (element.style[style] as any) = value;
+                        this[privateKey] = value;
+                    },
+                    enumerable: true,
+                    configurable: true,
+                });
+            }
         });
     };
 }

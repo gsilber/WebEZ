@@ -78,6 +78,31 @@ describe("WebEZ-Bind", () => {
             expect(el2.innerHTML).toBe("not testing");
             expect(el3.value).toBe("not testing");
         });
+        test("Single Binders with BindStyle", () => {
+            let el = toplevel["shadow"].getElementById(
+                "styleDiv1",
+            ) as HTMLElement;
+            expect(toplevel.testStyle1).toBe("red");
+            expect(el.style.color).toBe("red");
+            toplevel.testStyle1 = "blue";
+            expect(toplevel.testStyle1).toBe("blue");
+            expect(el.style.color).toBe("blue");
+        });
+        test("Stacked Binders with BindStyle", () => {
+            let el1 = toplevel["shadow"].getElementById(
+                "styleDiv2",
+            ) as HTMLElement;
+            let el2 = toplevel["shadow"].getElementById(
+                "styleDiv3",
+            ) as HTMLElement;
+            expect(toplevel.testStyle2).toBe("blue");
+            expect(el1.style.color).toBe("blue");
+            expect(el2.style.color).toBe("blue");
+            toplevel.testStyle2 = "red";
+            expect(toplevel.testStyle2).toBe("red");
+            expect(el1.style.color).toBe("red");
+            expect(el2.style.color).toBe("red");
+        });
     });
 
     describe("Bind:Grandhild", () => {

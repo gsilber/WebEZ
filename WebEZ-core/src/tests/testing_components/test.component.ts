@@ -2,6 +2,7 @@ import { EzComponent } from "../../EzComponent";
 import {
     BindCSSClass,
     BindInnerHTML,
+    BindStyle,
     BindValue,
     Blur,
     Change,
@@ -31,6 +32,9 @@ const html = `<div id="child1"></div>
 <div id="bindDiv6"></div>
 <div id="bindDiv7"></div>
 <div id="bindDiv8"></div>
+<div id="styleDiv1"></div>
+<div id="styleDiv2"></div>
+<div id="styleDiv3"></div>
 `;
 const css = "";
 
@@ -44,6 +48,13 @@ export class TestComponent extends EzComponent {
     testVal2: boolean = false;
     testVal3: number = 0;
     testVal4: string = "";
+
+    @BindStyle("styleDiv1", "color")
+    testStyle1: string = "red";
+
+    @BindStyle("styleDiv2", "color")
+    @BindStyle("styleDiv3", "color")
+    testStyle2: string = "blue";
 
     @BindInnerHTML("bindDiv1")
     testbind1: string = "hello";
