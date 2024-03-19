@@ -160,8 +160,131 @@ export class MainComponent extends EzComponent {
     }
 }
 ```
+## Decorators
+### @BindValue(id)
+Connects the value property of an html element with id bidirectionally with a member variable of the class.
+```
+HTML FILE:
+<input type='text' id='inp1'/>
+```
+
+```
+TS File:
+@BindValue("inp1") inputValue:string="";
+```
+### @BindInnerHTML(id)
+Connects the innerHTML propoerty of an html element with id with a member variable of the class.  Updating the variable will update the html element, but not the other way around
+```
+HTML FILE:
+<div id="div1"></div>
+```
+```TS File:
+@BindInnerHTML("div1") divString:string='Hello world!!!';
+```
+### @BindCSSClass(id)
+Connects the css class of an html element with id with a member variable of the class.  This does not effect css classes defined in the html.
+```
+HTML File:
+<div id="div2"></div>
+```
+```
+TS File:
+@BindCSSClass("div2") div2Style:string="btn btn-primary"
+```
+### @BindStyle(id,style)
+Connects a specific style of an html element with id with a member variable of the class.  If the style you want has a -, the decorator expects in in camel case (i.e. background-color would be backgroundColor)
+```
+HTML File:
+<div id="div3"></div>
+```
+```
+TS File:
+@BindStyle('div3','backgroundColor') div3BgColor:string="red";
+```
+### @GenericEvent(id,event)
+This will connect any html event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+```
+HTML File:
+<button id="btn1"></button>
+```
+```
+TS FIle:
+@GenericEvent(btn1,"click")
+onBtn1Click(evt:Event){
+    console.log(evt);
+}
+```
+### @Click(id)
+This will connect the html click event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+```
+HTML File:
+<button id="btn1"></button>
+```
+```
+TS FIle:
+@Click("btn1")
+onBtn1Click(evt:Event){
+    console.log(evt);
+}
+```
+### @Blur(id)
+This will connect the html blur event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+```
+HTML File:
+<input type="text" id="inp2"/>
+```
+```
+TS FIle:
+@Blur("inp2")
+onInputBlur(evt:Event){
+    console.log(evt);
+}
+```
+### @Change(id)
+This will connect the html change event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+```
+HTML File:
+<input type="text" id="inp2"/>
+```
+```
+TS FIle:
+@Change("inp2")
+onInputChange(evt:Event){
+    console.log(evt);
+}
+```
+
+### @Input(id)
+This will connect the html input event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+```
+HTML File:
+<input type="text" id="inp2"/>
+```
+```
+TS FIle:
+@Blur("inp2")
+onInput(evt:Event){
+    console.log(evt);
+}
+```
+## Stacking Methods
+With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list
+```
+@BindInnerHTML("div1"}
+@BindInnerHTML("div2")
+@BindValue("input1")
+inputValue:string='';
+
+@Change("inp1")
+@Change("inp2")
+@Input("inp3")
+onValuesChanged(evt:Event){
+    console.log(evt);
+}
+```
 
 ## Utility Methods
+### @Timer(milliseconds)
 There is a special decorator ```@Timer(milliseconds)``` which will call the decorated method every interval until the supplied cancel function is called.
 ```
 @Timer(1000)
@@ -172,6 +295,23 @@ onTimer(cancel: CancelFunction){
 }
 ```
 This example will be called once per second.  It will print a counter from 0 to 15, and will stop the timer permenantly after 15 is printed.
+### ajax\<T>(url,method,headers,data):EventSubject\<T>
+This allows you to make an asyncronous call and will return an EventSubject<T> for you to subscribe.  The eventsource will fire the subscription when the request is complete.
+```
+this.ajax<UserRecord>("https://www.udel.edu",HttpMethod.GET)
+    .subscribe((result:UserRecord)=>{
+        console.log(result);
+    });
+const request=this.ajax<boolean>("http://api.test.com",HttpMethod.POST,[],userRecord);
+    request.subscribe((result:boolean)=>{
+        console.log(result)
+    });
+    request.error((err:Error)=>{
+        console.error(err);
+    });
+```
+
+
 ## Working example program
 A fully working example can be found here: 
 [https://gsilber.github.io/WebEZ/example](https://gsilber.github.io/WebEZ/example)

@@ -1,6 +1,11 @@
 import "reflect-metadata";
+import { EventSubject } from "./eventsubject";
 
 declare const window: Window;
+export enum HttpMethod {
+    GET = "GET",
+    POST = "POST",
+}
 
 /**
  * @description A base class for creating web components
@@ -117,5 +122,43 @@ export abstract class EzComponent {
      */
     public appendToDomElement(domElement: HTMLElement) {
         domElement.appendChild(this.htmlElement);
+    }
+
+    /**
+     * @description Makes an AJAX call
+     * @param {string} url The URL to make the AJAX call to
+     * @param {HttpMethod} method The HTTP method to use (GET or POST)
+     * @param {Headers} headers The headers to send with the request (optional)
+     * @param {T} data The data to send in the request body (optional)
+     * @returns {Promise<T>} A promise that resolves with the response data
+     * @memberof EzComponent
+     */
+    protected ajax<T>(
+        url: string,
+        method: HttpMethod,
+        headers?: any,
+        data?: any,
+    ): EventSubject<T> {
+        const evt: EventSubject<T> = new EventSubject<T>();
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        for (let header of headers) {
+            Object.keys(header).forEach((key) => {
+                if (header[key]) xhr.setRequestHeader(key, header[key]);
+            });
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                evt.next(JSON.parse(xhr.responseText));
+            } else {
+                evt.error(new Error(xhr.statusText));
+            }
+        };
+        xhr.onerror = () => {
+            evt.error(new Error("Network error"));
+        };
+        xhr.send(JSON.stringify(data));
+        return evt;
     }
 }

@@ -8,5 +8,6 @@
         "external": false,
         "@alpha": false,
         "@beta": false
-    }
+    },
+    "excludeTags": ["@BindValue"]
 }
