@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
-import { $$$$$$$$Component } from "./########.dialog";
+import { $$$$$$$$Dialog } from "./########.dialog";
 import { bootstrap } from "@gsilber/webez";
 
 describe("$$$$$$$$Dialog", () => {

@@ -1,15 +1,16 @@
 #!/usr/bin/env node
-const version: string = '0.2.0';
+const version: string = '0.2.3';
 
 import fs from "fs";
 import path from "path";
 
 function usage() {
     console.error("Usage: webez <command> <name>");
-    console.error("\tWhere command is one of [new, component]");
+    console.error("\tWhere command is one of [new, component, dialog]");
     console.error("\tand name is the name of the app or component to create");
     console.error("\tExample: webez new myapp");
     console.error("\tExample: webez component mycomponent");
+    console.error("\tExample: webez dialog mydialog");
 }
 
 function findWebezConfigFile(directoryPath: string): boolean {
