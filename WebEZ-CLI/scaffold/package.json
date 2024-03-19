@@ -21,11 +21,12 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@gsilber/webez": "^0.1.16",
+        "@gsilber/webez": "^0.1.18",
         "@types/node": "^20.11.25",
         "clean-webpack-plugin": "^4.0.0",
         "css-loader": "^6.10.0",
         "html-webpack-plugin": "^5.6.0",
+        "html-loader": "^5.0.0",
         "raw-loader": "^4.0.2",
         "reflect-metadata": "^0.2.1",
         "style-loader": "^3.3.4",

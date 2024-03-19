@@ -19,7 +19,7 @@ module.exports = {
             {
                 test: /\.html$/i,
                 use:[{
-                    loader: 'raw-loader',
+                    loader: 'html-loader',
                     options: {
                         esModule: false,
                     }
