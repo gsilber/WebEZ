@@ -160,6 +160,18 @@ export class MainComponent extends EzComponent {
     }
 }
 ```
+
+## Utility Methods
+There is a special decorator ```@Timer(milliseconds)``` which will call the decorated method every interval until the supplied cancel function is called.
+```
+@Timer(1000)
+onTimer(cancel:()=>void){
+    this.count++;
+    console.log(this.count);
+    if (this.count>=15) cancel();
+}
+```
+This example will be called once per second.  It will print a counter from 0 to 15, and will stop the timer permenantly after 15 is printed.
 ## Working example program
 A fully working example can be found here: 
 [https://gsilber.github.io/WebEZ/example](https://gsilber.github.io/WebEZ/example)
