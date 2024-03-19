@@ -1,4 +1,10 @@
-import { BindCSSClass, Click, EventSubject, EzComponent } from "@gsilber/webez";
+import {
+    BindCSSClass,
+    Click,
+    EventSubject,
+    EzComponent,
+    Timer,
+} from "@gsilber/webez";
 import html from "./tasks.component.html";
 import css from "./tasks.component.css";
 import { TasklineComponent } from "../taskline/taskline.component";
@@ -14,11 +20,11 @@ import guid from "guid";
  * @memberof TasksComponent
  */
 export class TasksComponent extends EzComponent {
-    @BindCSSClass("add-task") addDisabled: string = "btn btn-primary";
+    @BindCSSClass("add-task") addDisabled: string = "";
 
     private taskLines: TasklineComponent[] = [];
     private alert: AlertComponent = new AlertComponent();
-
+    private counter: number = 0;
     saveData: EventSubject<TaskData[]> = new EventSubject<TaskData[]>();
 
     private get taskData(): TaskData[] {
@@ -40,7 +46,7 @@ export class TasksComponent extends EzComponent {
         this.taskLines.forEach((task) => {
             task.disableViewButtons(false);
         });
-        this.addDisabled = "btn btn-primary";
+        this.addDisabled = "";
     }
     constructor(data: TaskData[] = []) {
         super(html, css);
@@ -79,7 +85,7 @@ export class TasksComponent extends EzComponent {
     private wireUpTaskLine(line: TasklineComponent) {
         //if we start editing, then we want to disable the add button and all child edit/cancel buttons
         line.lineEdit.subscribe(() => {
-            this.addDisabled = "disabled btn btn-primary";
+            this.addDisabled = "disabled";
             this.taskLines.forEach((task) => {
                 task.disableViewButtons();
             });
@@ -94,7 +100,7 @@ export class TasksComponent extends EzComponent {
 
         //if we are closing editor, then we want to enable the add button and all child edit/cancel buttons
         line.lineEditClose.subscribe((save) => {
-            this.addDisabled = "btn btn-primary";
+            this.addDisabled = "";
             this.taskLines.forEach((task) => {
                 task.disableViewButtons(false);
             });
@@ -109,5 +115,13 @@ export class TasksComponent extends EzComponent {
                 this.taskLines.splice(this.taskLines.indexOf(line), 1);
             }
         });
+    }
+    @Timer(1000)
+    private counterfn(cancel: () => void) {
+        this.counter++;
+        console.log(this.counter);
+        if (this.counter >= 15) {
+            cancel();
+        }
     }
 }

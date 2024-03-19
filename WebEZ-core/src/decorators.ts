@@ -1,8 +1,4 @@
 /** TODO
- * 2. Test in example project
- * 3. Modify css decorator to retain classes from html file.
- * 4. Update tests for the css decorator
- * 5. Update documentation for the css decorator and style decorator
  * 6. Timer decorator and docs
  */
 import { EzComponent } from "./EzComponent";
@@ -14,7 +10,7 @@ import { EzComponent } from "./EzComponent";
  * @param privateKey the private property to store the value in
  * @param publicKey the public property to replace the setter for
  * @param value the initial value of the property
- * @param propertyName the name of the property to bind to
+ * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
  */
 function hookProperty<This extends EzComponent>(
     target: This,
@@ -22,7 +18,7 @@ function hookProperty<This extends EzComponent>(
     privateKey: keyof This,
     publicKey: keyof This,
     value: string,
-    propertyName: string,
+    setter: (value: string) => void,
 ) {
     Object.defineProperty(target, privateKey, {
         value,
@@ -34,9 +30,9 @@ function hookProperty<This extends EzComponent>(
         get(): string {
             return this[privateKey] as string;
         },
-        set(value: string): void {
-            (element as any)[propertyName] = value;
+        set(value: string) {
             this[privateKey] = value;
+            setter(value);
         },
         enumerable: true,
         configurable: true,
@@ -49,14 +45,14 @@ function hookProperty<This extends EzComponent>(
  * @param element the element to bind the property to
  * @param publicKey the property to replace the setter and getter for
  * @param origDescriptor the original property descriptor
- * @param propertyName the name of the property to bind to
+ * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
  */
 function hookPropertySetter<This extends EzComponent>(
     target: This,
     element: HTMLElement,
     publicKey: keyof This,
     origDescriptor: PropertyDescriptor,
-    propertyName: string,
+    setter: (value: string) => void,
 ) {
     Object.defineProperty(target, publicKey, {
         get: origDescriptor.get, // Leave the get accessor as it was
@@ -69,7 +65,7 @@ function hookPropertySetter<This extends EzComponent>(
                 );
             }
             origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
-            (element as any)[propertyName] = value;
+            setter(value);
         },
         enumerable: origDescriptor.enumerable,
         configurable: origDescriptor.configurable,
@@ -122,40 +118,26 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
             //replace the style tag with the new value
             (element.style[style] as any) = value;
             if (origDescriptor.set) {
-                Object.defineProperty(this, publicKey, {
-                    get: origDescriptor.get, // Leave the get accessor as it was
-                    set(value: string): void {
-                        // This should not happen normally, only hear in case.
-                        /* istanbul ignore next */
-                        if (!origDescriptor.set) {
-                            throw new Error(
-                                `can not find setter with name: ${publicKey as string}`,
-                            );
-                        }
-                        origDescriptor.set.call(this, value); // Call the original set accessor with the provided value
+                hookPropertySetter(
+                    this,
+                    element,
+                    publicKey,
+                    origDescriptor,
+                    (value: string): void => {
                         (element.style[style] as any) = value;
                     },
-                    enumerable: origDescriptor.enumerable,
-                    configurable: origDescriptor.configurable,
-                });
+                );
             } else {
-                Object.defineProperty(this, privateKey, {
+                hookProperty(
+                    this,
+                    element,
+                    privateKey,
+                    publicKey,
                     value,
-                    writable: true,
-                    enumerable: false,
-                    configurable: true,
-                });
-                Object.defineProperty(this, publicKey, {
-                    get(): string {
-                        return this[privateKey] as string;
-                    },
-                    set(value: string): void {
+                    (value: string): void => {
                         (element.style[style] as any) = value;
-                        this[privateKey] = value;
                     },
-                    enumerable: true,
-                    configurable: true,
-                });
+                );
             }
         });
     };
@@ -182,15 +164,20 @@ export function BindCSSClass(id: string) {
             const publicKey = String(context.name) as keyof This;
             const privateKey = `__${String(context.name)}` as keyof This;
             const origDescriptor = getPropertyDescriptor(this, publicKey);
+
+            const origValue = element.className;
             const value = context.access.get(this);
-            element.className = value;
+
+            element.className = origValue + " " + value;
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     element,
                     publicKey,
                     origDescriptor,
-                    "className",
+                    (value: string): void => {
+                        (element as any)["className"] = origValue + " " + value;
+                    },
                 );
             } else {
                 hookProperty(
@@ -199,7 +186,9 @@ export function BindCSSClass(id: string) {
                     privateKey,
                     publicKey,
                     value,
-                    "className",
+                    (value: string): void => {
+                        (element as any)["className"] = origValue + " " + value;
+                    },
                 );
             }
         });
@@ -235,7 +224,9 @@ export function BindInnerHTML(id: string) {
                     element,
                     publicKey,
                     origDescriptor,
-                    "innerHTML",
+                    (value: string): void => {
+                        (element as any)["innerHTML"] = value;
+                    },
                 );
             } else {
                 hookProperty(
@@ -244,7 +235,9 @@ export function BindInnerHTML(id: string) {
                     privateKey,
                     publicKey,
                     value,
-                    "innerHTML",
+                    (value: string): void => {
+                        (element as any)["innerHTML"] = value;
+                    },
                 );
             }
         });
@@ -291,13 +284,40 @@ export function BindValue(id: string) {
                     privateKey,
                     publicKey,
                     value,
-                    "value",
+                    (value: string): void => {
+                        (element as any)["value"] = value;
+                    },
                 );
                 element.addEventListener("input", () => {
                     const elementType = this[privateKey];
                     this[publicKey] = element.value as typeof elementType;
                 });
             }
+        });
+    };
+}
+
+/**
+ * @description Decorator to call a method periodically with a timer
+ * @param intervalMS the interval in milliseconds to call the method
+ * @returns DecoratorCallback
+ * @note This executes repeatedly.  The decorated function is passed a cancel function that can be called to stop the timer.
+ * @export
+ */
+export function Timer(intervalMS: number) {
+    return function <This extends EzComponent, Value extends () => void>(
+        target: (this: This, cancelFn: () => void) => void,
+        context: ClassMethodDecoratorContext<
+            This,
+            (this: This, cancel: Value) => void
+        >,
+    ): void {
+        context.addInitializer(function (this: This) {
+            const intervalID = setInterval(() => {
+                target.call(this, () => {
+                    clearInterval(intervalID);
+                });
+            }, intervalMS);
         });
     };
 }

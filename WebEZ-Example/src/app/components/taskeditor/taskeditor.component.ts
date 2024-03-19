@@ -29,14 +29,10 @@ export interface TaskData {
  */
 export class TaskeditorComponent extends EzComponent {
     @BindValue("tasktext") private tasktext: string = "";
-    @BindCSSClass("save") private saveDisabled: string =
-        "disabled btn btn-primary";
+    @BindCSSClass("save") private saveDisabled: string = "disabled";
     @Input("tasktext") private onTaskTextChange(event: Event) {
         console.info(event);
-        this.saveDisabled =
-            this.tasktext === "" ?
-                "disabled btn btn-primary"
-            :   "btn btn-primary";
+        this.saveDisabled = this.tasktext === "" ? "disabled" : "";
     }
 
     editClose: EventSubject<boolean> = new EventSubject<boolean>();

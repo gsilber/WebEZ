@@ -8,6 +8,7 @@ import {
 import html from "./taskviewer.component.html";
 import css from "./taskviewer.component.css";
 import { TaskData } from "../taskeditor/taskeditor.component";
+import { AlertComponent } from "../alert/alert.component";
 
 /**
  * @description Component for viewing a task.
@@ -26,8 +27,8 @@ export class TaskviewerComponent extends EzComponent {
     deleting: EventSubject<void> = new EventSubject<void>();
 
     @BindInnerHTML("taskview") private taskview: string = "";
-    @BindCSSClass("edit") private editDisabled: string = "btn btn-primary";
-    @BindCSSClass("delete") private deleteDisabled: string = "btn btn-primary";
+    @BindCSSClass("edit") private editDisabled: string = "";
+    @BindCSSClass("delete") private deleteDisabled: string = "";
 
     /**
      * @description Creates an instance of TaskViewerComponent.
@@ -52,7 +53,16 @@ export class TaskviewerComponent extends EzComponent {
      * @memberof TaskViewerComponent
      */
     @Click("delete") private onDelete() {
-        this.deleting.next();
+        const alert: AlertComponent = new AlertComponent();
+        this.addComponent(alert);
+        alert
+            .confirmMessage(
+                "Are you sure you want to delete this task?",
+                "Confirm Delete",
+            )
+            .then((result) => {
+                if (result) this.deleting.next();
+            });
     }
 
     /**
@@ -71,9 +81,7 @@ export class TaskviewerComponent extends EzComponent {
      * @memberof TaskViewerComponent
      */
     disableButtons(disable: boolean = true) {
-        this.editDisabled =
-            disable ? "disabled btn btn-primary" : "btn btn-primary";
-        this.deleteDisabled =
-            disable ? "disabled btn btn-primary" : "btn btn-primary";
+        this.editDisabled = disable ? "disabled" : "";
+        this.deleteDisabled = disable ? "disabled" : "";
     }
 }
