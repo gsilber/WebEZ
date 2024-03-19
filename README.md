@@ -328,7 +328,43 @@ const request=this.ajax<boolean>("http://api.test.com",HttpMethod.POST,[],userRe
         console.error(err);
     });
 ```
-
+## Other types of components
+### EzDialog
+This EzComponent derived class allows you to create popup dialogs just like other components.  Your component just shows up in the middle of the dialog.  You can hide or show your dialog with ```this.show(true|false)```.  There is also a utility static method ```popup``` that you can use for a quick alert or confirm message.  It returns an EventSubject whose subscription is called when the dialog closes with the value of the button pressed (i.e. the text on the button).
+```
+webez dialog editor
+```
+will create an editor (works similar to component) dialog.  This can be modified and used:
+```
+const dlg:EditorDialog=new EditorDialog();
+this.addComponent(dlg);
+dlg.show();
+```
+an alert box can be shown simply by using:
+```
+    EzDialog.popup(this, "Message to display").subscribe(
+    (value: string) => {
+        console.log(value); //will be Ok
+    },
+);
+```
+A confirmation box can be shown by using:
+```
+        EzDialog.popup(this, "Message to display", "Window title", [
+            "Yes",
+            "No",
+            "Cancel","btn btn-primary"
+        ]).subscribe((value: string) => {
+            if (value === "Yes") {
+                console.log("Yes");
+            } else if (value === "No") {
+                console.log("No");
+            } else {
+                console.log("Cancel");
+            }
+        });
+```
+We are specifying the title, the buttons to display, and a class for the buttons to style them.  It will return a subscription that will evaluate to the button name passed into the method.
 
 ## Working example program
 A fully working example can be found here: 
