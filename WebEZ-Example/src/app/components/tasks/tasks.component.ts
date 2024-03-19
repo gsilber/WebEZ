@@ -1,5 +1,6 @@
 import {
     BindCSSClass,
+    CancelFunction,
     Click,
     EventSubject,
     EzComponent,
@@ -117,7 +118,7 @@ export class TasksComponent extends EzComponent {
         });
     }
     @Timer(1000)
-    private counterfn(cancel: () => void) {
+    private counterfn(cancel: CancelFunction) {
         this.counter++;
         console.log(this.counter);
         if (this.counter >= 15) {

@@ -165,7 +165,7 @@ export class MainComponent extends EzComponent {
 There is a special decorator ```@Timer(milliseconds)``` which will call the decorated method every interval until the supplied cancel function is called.
 ```
 @Timer(1000)
-onTimer(cancel:()=>void){
+onTimer(cancel: CancelFunction){
     this.count++;
     console.log(this.count);
     if (this.count>=15) cancel();

@@ -4,6 +4,11 @@
 import { EzComponent } from "./EzComponent";
 
 /**
+ * @description Cancel function that the timer decorator can add to the method it decorates.
+ * @export
+ */
+export declare type CancelFunction = () => void;
+/**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
  * @param target the class to replace the setter in
  * @param element the element to bind the property to
