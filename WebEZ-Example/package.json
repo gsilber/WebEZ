@@ -22,7 +22,6 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@gsilber/webez": "^0.1.19",
         "@jest/globals": "^29.7.0",
         "@types/guid": "^1.0.3",
         "@types/jest": "^29.5.12",

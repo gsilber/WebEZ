@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = '0.1.19';
+const version: string = '0.2.0';
 
 import fs from "fs";
 import path from "path";
@@ -70,24 +70,35 @@ function newApp(appName: string) {
     console.log("Dependencies installed");
     console.log("Done");
 }
-function createComponent(componentName: string) {
+
+function createComponent(componentName: string, dialog: boolean) {
     if (
-        componentName.endsWith("Component") ||
-        componentName.endsWith("component")
+        (!dialog && componentName.endsWith("Component")) ||
+        (!dialog && componentName.endsWith("component")) ||
+        (dialog && componentName.endsWith("Dialog")) ||
+        (dialog && componentName.endsWith("dialog"))
     ) {
-        componentName = componentName.substring(0, componentName.length - 9);
+        componentName = componentName.substring(
+            0,
+            componentName.length - (dialog ? 6 : 9)
+        );
     }
     if (componentName.endsWith("-")) {
         componentName = componentName.substring(0, componentName.length - 1);
     }
-    console.log("Creating a new component: " + componentName);
+    console.log(
+        `Creating a new ${dialog ? "dialog" : "component"}: ${componentName}`
+    );
     if (fs.existsSync(componentName))
         throw new Error("Directory already exists: " + componentName);
     // Create the component directory
     fs.mkdirSync(componentName);
     // Read the scaffold directory
     console.log("Copying scaffold files");
-    const scaffoldDir = path.join(__dirname, "component-scaffold");
+    const scaffoldDir = path.join(
+        __dirname,
+        dialog ? "dialog-scaffold" : "component-scaffold"
+    );
     const files = fs.readdirSync(scaffoldDir);
     // Iterate through each file in the scaffold directory
     files.forEach((file) => {
@@ -139,7 +150,11 @@ function runProgram() {
 
     if (
         process.argv.length !== 4 ||
-        !(process.argv[2].startsWith("n") || process.argv[2].startsWith("c"))
+        !(
+            process.argv[2].startsWith("n") ||
+            process.argv[2].startsWith("c") ||
+            process.argv[2].startsWith("d")
+        )
     ) {
         usage();
         process.exit(1);
@@ -150,7 +165,9 @@ function runProgram() {
             newApp(process.argv[3]);
         } else {
             if (findWebezConfigFile(path.dirname(process.cwd())))
-                createComponent(process.argv[3]);
+                if (process.argv[2].startsWith("c"))
+                    createComponent(process.argv[3], false);
+                else createComponent(process.argv[3], true);
             else
                 console.error(
                     "This command is only valid within a webez application created with webez new <appname>"

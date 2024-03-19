@@ -58,6 +58,11 @@ export abstract class EzComponent {
         this.styles = window.document.createElement("style");
         this.styles.innerHTML = this.css;
         this.shadow.appendChild(this.styles);
+        const innerDiv = window.document.createElement("div");
+        innerDiv.id = "rootTemplate";
+        innerDiv.appendChild(this.template.content);
+        this.template.content.appendChild(innerDiv);
+        this.shadow.appendChild(innerDiv);
         this.shadow.appendChild(this.template.content.cloneNode(true));
     }
 
@@ -71,7 +76,7 @@ export abstract class EzComponent {
      *   component.addComponent(component);
      *   component.addComponent(component, "myDiv");
      */
-    protected addComponent(
+    public addComponent(
         component: EzComponent,
         id: string = "root",
         front: boolean = false,

@@ -28,10 +28,6 @@ export class TaskviewerComponent extends EzComponent {
     editing: EventSubject<void> = new EventSubject<void>();
     deleting: EventSubject<void> = new EventSubject<void>();
 
-    @Pipe((numStr: string) => numStr + "px")
-    @BindStyle("mover", "top")
-    private mover: string = "0";
-
     @BindInnerHTML("taskview")
     private taskview: string = "";
     @BindCSSClass("edit") private editDisabled: string = "";
