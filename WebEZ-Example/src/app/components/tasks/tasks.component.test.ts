@@ -5,7 +5,8 @@ import { bootstrap } from "@gsilber/webez";
 describe("TasksComponent", () => {
     let component: any = undefined;
     beforeAll(() => {
-        component = bootstrap<TasksComponent>(TasksComponent, true);
+        const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+        component = bootstrap<TasksComponent>(TasksComponent, html);
     });
     describe("Constructor", () => {
         test("Create Instance", () => {

@@ -5,7 +5,8 @@ import { bootstrap } from "@gsilber/webez";
 describe("TaskeditorComponent", () => {
     let component: any = undefined;
     beforeAll(() => {
-        component = bootstrap<TaskeditorComponent>(TaskeditorComponent, true);
+        const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+        component = bootstrap<TaskeditorComponent>(TaskeditorComponent, html);
     });
     describe("Constructor", () => {
         test("Create Instance", () => {

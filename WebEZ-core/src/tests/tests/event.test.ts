@@ -5,7 +5,8 @@ import { TestComponent } from "../testing_components/test.component";
 describe("WebEZ-Event", () => {
     let toplevel: any = undefined;
     beforeAll(() => {
-        toplevel = bootstrap<TestComponent>(TestComponent, true);
+        const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+        toplevel = bootstrap<TestComponent>(TestComponent, html);
     });
     describe("Constructor", () => {
         test("Create Instance", () => {

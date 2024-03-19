@@ -3,14 +3,13 @@ import { EzComponent } from "./EzComponent";
 declare const window: Window;
 
 type Constructor<T> = { new (): T };
-const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
 
 export function bootstrap<T extends EzComponent>(
     target: Constructor<T>,
-    testMode: boolean = false,
+    testModeHTML: string = "",
 ): T {
-    if (testMode) {
-        window.document.body.innerHTML = html;
+    if (testModeHTML.length > 0) {
+        window.document.body.innerHTML = testModeHTML;
     }
     let obj: T = Object.assign(new target()) as T;
     const element = window.document.getElementById("main-target");

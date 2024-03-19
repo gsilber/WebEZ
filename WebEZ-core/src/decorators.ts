@@ -3,6 +3,7 @@
  * 3. Modify css decorator to retain classes from html file.
  * 4. Update tests for the css decorator
  * 5. Update documentation for the css decorator and style decorator
+ * 6. Timer decorator and docs
  */
 import { EzComponent } from "./EzComponent";
 
