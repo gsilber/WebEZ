@@ -284,7 +284,12 @@ TS File:
     }
 
 ```
-
+### @AppendPipe(string)
+You can append the text to a field before it is displayed.
+### @PrependPipe(string)
+You can prepend the text to a field before it is displayed.
+### @ReplacePipe(search:string,replaceWith:string)
+YOu can replace the search text with the repaceWith text before it is displayed.
 ## Stacking Methods
 With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list
 ```

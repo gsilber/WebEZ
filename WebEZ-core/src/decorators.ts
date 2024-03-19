@@ -439,3 +439,34 @@ export function Change(htmlElementID: string) {
 export function Input(htmlElementID: string) {
     return GenericEvent(htmlElementID, "input");
 }
+
+/**
+ * @description Decorator to append to the value of a property before it is set on the html element.
+ * @param val string to append
+ * @returns DecoratorCallback
+ * @export
+ */
+export function AppendPipe(val: string) {
+    return Pipe((v: string) => v + val);
+}
+/**
+ * @description Decorator to prepend the value of a property before it is set on the html element.
+ * @param val The string to prepend
+ * @returns DecoratorCallback
+ * @export
+ */
+
+export function PrependPipe(val: string) {
+    return Pipe((v: string) => val + v);
+}
+/**
+ * @description Decorator to replace the value of a property before it is set on the html element.
+ * @param search The string to replace
+ * @param replaceWith The string to replace in the current string
+ * @returns DecoratorCallback
+ * @export
+ */
+
+export function ReplacePipe(search: string | RegExp, replaceWith: string) {
+    return Pipe((v: string) => v.replace(search, replaceWith));
+}
