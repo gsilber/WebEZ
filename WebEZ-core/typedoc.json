@@ -9,5 +9,4 @@
         "@alpha": false,
         "@beta": false
     },
-    "excludeTags": ["@BindValue"]
 }

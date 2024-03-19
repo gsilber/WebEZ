@@ -267,6 +267,24 @@ onInput(evt:Event){
     console.log(evt);
 }
 ```
+### @Pipe(pipeFunction)
+You can transform the text in a field before it is displayed using the ```@Pipe``` decorator.  These can be stacked and will be applied in the order they appear.  They can and should be stacked with any other ```@Bind``` decorator and will transform the text displayed.
+```
+HTML File:
+<div id="mover" class="small-square-box"></div>
+```
+```
+TS File:
+    @Pipe((numStr: string) => numStr + "px")
+    @BindStyle("mover", "top")
+    private mover: string = "0";
+    . . .
+    @Click("btn"){
+        this.mover=(+this.mover+10).toString();
+    }
+
+```
+
 ## Stacking Methods
 With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list
 ```

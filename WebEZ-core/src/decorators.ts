@@ -9,6 +9,11 @@ import { EzComponent } from "./EzComponent";
  */
 export declare type CancelFunction = () => void;
 /**
+ * @description Pipe function to be passed tot he type decorator
+ * @export
+ */
+export declare type PipeFunction = (value: string) => string;
+/**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
  * @param target the class to replace the setter in
  * @param element the element to bind the property to
@@ -25,6 +30,7 @@ function hookProperty<This extends EzComponent>(
     value: string,
     setter: (value: string) => void,
 ) {
+    const pipeKey = `__${String(publicKey)}_pipe` as keyof This;
     Object.defineProperty(target, privateKey, {
         value,
         writable: true,
@@ -36,8 +42,13 @@ function hookProperty<This extends EzComponent>(
             return this[privateKey] as string;
         },
         set(value: string) {
-            this[privateKey] = value;
-            setter(value);
+            let newValue = value;
+            if (this[pipeKey]) {
+                newValue = this[pipeKey](value) as string;
+            }
+            this[privateKey] = newValue;
+
+            setter(newValue);
         },
         enumerable: true,
         configurable: true,
@@ -297,6 +308,38 @@ export function BindValue(id: string) {
                     const elementType = this[privateKey];
                     this[publicKey] = element.value as typeof elementType;
                 });
+            }
+        });
+    };
+}
+
+/**
+ * @description Decorator to transform the value of a property before it is set on the html element.
+ * @param fn {PipeFunction} the function to transform the value
+ * @returns DecoratorCallback
+ * @export
+ */
+export function Pipe(fn: PipeFunction) {
+    return function <This extends EzComponent, Value extends string>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const privateKey = `__${String(context.name)}_pipe` as keyof This;
+            //get method descriptor for publicKey in This
+            if (this[privateKey]) {
+                console.log("defined");
+                //overwrite it and call the original first
+                const origMethod: PipeFunction = this[
+                    privateKey
+                ] as PipeFunction;
+                (this[privateKey] as any) = (value: string) => {
+                    return fn(origMethod(value));
+                };
+            } else {
+                console.log("not defined");
+                //add pipe method to class under __publicKey__pipe
+                (this[privateKey] as any) = fn;
             }
         });
     };

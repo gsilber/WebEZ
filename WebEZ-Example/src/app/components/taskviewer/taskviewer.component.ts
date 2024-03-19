@@ -1,9 +1,11 @@
 import {
     BindCSSClass,
     BindInnerHTML,
+    BindStyle,
     Click,
     EventSubject,
     EzComponent,
+    Pipe,
 } from "@gsilber/webez";
 import html from "./taskviewer.component.html";
 import css from "./taskviewer.component.css";
@@ -26,7 +28,12 @@ export class TaskviewerComponent extends EzComponent {
     editing: EventSubject<void> = new EventSubject<void>();
     deleting: EventSubject<void> = new EventSubject<void>();
 
-    @BindInnerHTML("taskview") private taskview: string = "";
+    @Pipe((numStr: string) => numStr + "px")
+    @BindStyle("mover", "top")
+    private mover: string = "0";
+
+    @BindInnerHTML("taskview")
+    private taskview: string = "";
     @BindCSSClass("edit") private editDisabled: string = "";
     @BindCSSClass("delete") private deleteDisabled: string = "";
 

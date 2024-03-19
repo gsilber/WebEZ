@@ -1,6 +1,6 @@
 {
     "name": "@gsilber/webez",
-    "version": "0.1.18",
+    "version": "0.1.19",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
@@ -15,7 +15,8 @@
         "format": "prettier \"(src|test)/**/*\" --ignore-unknown",
         "pub": "cp ./package.json dist && cd ./dist && npm publish --access public",
         "clean": "rm -rf ./dist",
-        "realclean": "rm -rf ./dist && rm -rf ./node_modules && rm -rf ./docs"
+        "realclean": "rm -rf ./dist && rm -rf ./node_modules && rm -rf ./docs",
+        "link": "npm run build && cd dist && npm link"
     },
     "author": "",
     "license": "ISC",
