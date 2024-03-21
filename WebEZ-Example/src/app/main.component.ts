@@ -1,9 +1,8 @@
 import html from "./main.component.html";
 import css from "./main.component.css";
-import { EzComponent, EzDialog } from "@gsilber/webez";
+import { EzComponent } from "@gsilber/webez";
 import { TasksComponent } from "./components/tasks/tasks.component";
 import { TaskData } from "./components/taskeditor/taskeditor.component";
-import { DialogComponent } from "./components/dialog/dialog.component";
 
 declare const window: Window;
 /**
@@ -14,7 +13,6 @@ declare const window: Window;
  */
 export class MainComponent extends EzComponent {
     private taskComponent: TasksComponent;
-    private dialog: DialogComponent = new DialogComponent();
 
     /**
      * @description Creates an instance of MainComponent.
@@ -31,8 +29,6 @@ export class MainComponent extends EzComponent {
             this.taskComponent = new TasksComponent();
         }
         this.addComponent(this.taskComponent, "task-target");
-        this.addComponent(this.dialog);
-        this.dialog.show();
 
         this.taskComponent.saveData.subscribe((data) => {
             window.localStorage.setItem("taskData", JSON.stringify(data));

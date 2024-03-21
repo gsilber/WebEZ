@@ -4,12 +4,12 @@ import {
     Click,
     EventSubject,
     EzComponent,
+    EzDialog,
     Timer,
 } from "@gsilber/webez";
 import html from "./tasks.component.html";
 import css from "./tasks.component.css";
 import { TasklineComponent } from "../taskline/taskline.component";
-import { AlertComponent } from "../alert/alert.component";
 import { TaskData } from "../taskeditor/taskeditor.component";
 import guid from "guid";
 
@@ -24,7 +24,6 @@ export class TasksComponent extends EzComponent {
     @BindCSSClass("add-task") addDisabled: string = "";
 
     private taskLines: TasklineComponent[] = [];
-    private alert: AlertComponent = new AlertComponent();
     private counter: number = 0;
     saveData: EventSubject<TaskData[]> = new EventSubject<TaskData[]>();
 
@@ -51,7 +50,6 @@ export class TasksComponent extends EzComponent {
     }
     constructor(data: TaskData[] = []) {
         super(html, css);
-        this.addComponent(this.alert, "alert-target");
         this.taskData = data;
     }
 
@@ -64,22 +62,29 @@ export class TasksComponent extends EzComponent {
     }
     @Click("clear-tasks") private onClearTasks() {
         if (this.taskLines.length === 0) {
-            this.alert.alertMessage("There are no tasks to clear.", "Notice");
+            EzDialog.popup(
+                this,
+                "There are no tasks to clear.",
+                "Notice",
+                ["Ok"],
+                "btn btn-primary",
+            );
         } else {
-            this.alert
-                .confirmMessage(
-                    "Are you sure you want to clear all tasks?",
-                    "Warning",
-                )
-                .then((result) => {
-                    if (result) {
-                        this.taskLines.forEach((task) => {
-                            this.removeComponent(task);
-                        });
-                        this.taskLines = [];
-                        this.saveData.next(this.taskData);
-                    }
-                });
+            EzDialog.popup(
+                this,
+                "Are you sure you want to clear all tasks?",
+                "Warning",
+                ["Yes", "No", "Cancel"],
+                "btn btn-primary",
+            ).subscribe((result) => {
+                if (result === "Yes") {
+                    this.taskLines.forEach((task) => {
+                        this.removeComponent(task);
+                    });
+                    this.taskLines = [];
+                    this.saveData.next(this.taskData);
+                }
+            });
         }
     }
 

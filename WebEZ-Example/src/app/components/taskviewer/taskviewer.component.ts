@@ -1,16 +1,14 @@
 import {
     BindCSSClass,
     BindInnerHTML,
-    BindStyle,
     Click,
     EventSubject,
     EzComponent,
-    Pipe,
+    EzDialog,
 } from "@gsilber/webez";
 import html from "./taskviewer.component.html";
 import css from "./taskviewer.component.css";
 import { TaskData } from "../taskeditor/taskeditor.component";
-import { AlertComponent } from "../alert/alert.component";
 
 /**
  * @description Component for viewing a task.
@@ -56,16 +54,15 @@ export class TaskviewerComponent extends EzComponent {
      * @memberof TaskViewerComponent
      */
     @Click("delete") private onDelete() {
-        const alert: AlertComponent = new AlertComponent();
-        this.addComponent(alert);
-        alert
-            .confirmMessage(
-                "Are you sure you want to delete this task?",
-                "Confirm Delete",
-            )
-            .then((result) => {
-                if (result) this.deleting.next();
-            });
+        EzDialog.popup(
+            this,
+            "Are you sure you want to delete this task?",
+            "Confirm Delete",
+            ["Yes", "No", "Cancel"],
+            "btn btn-primary",
+        ).subscribe((result) => {
+            if (result === "Ok") this.deleting.next();
+        });
     }
 
     /**
