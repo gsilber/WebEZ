@@ -1,17 +1,26 @@
+interface CallbackDescription {
+    id: number;
+    fn: (value: any) => void;
+}
 export class EventSubject<T = void> {
-    private callback: (value: T) => void = () => {};
-    private errorFn: (value: Error) => void = () => {};
+    refCount: number = 0;
+    private callbacks: CallbackDescription[] = [];
+    private errorFns: CallbackDescription[] = [];
     constructor() {}
 
     subscribe(callback: (value: T) => void, error?: (value: Error) => void) {
-        this.callback = callback;
-        if (error) this.errorFn = error;
+        this.callbacks.push({ id: this.refCount, fn: callback });
+        if (error) this.errorFns.push({ id: this.refCount, fn: error });
+        return this.refCount++;
     }
-
+    unsubscribe(id: number) {
+        this.callbacks = this.callbacks.filter((cb) => cb.id !== id);
+        this.errorFns = this.errorFns.filter((cb) => cb.id !== id);
+    }
     next(value: T) {
-        this.callback(value);
+        for (const callback of this.callbacks) callback.fn(value);
     }
     error(value: Error) {
-        this.errorFn(value);
+        for (const errorFn of this.errorFns) errorFn.fn(value);
     }
 }

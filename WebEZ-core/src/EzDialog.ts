@@ -41,6 +41,7 @@ const backgroundTemplate = `
 .dialog-background {
     display: none;
     position: fixed;
+    text-align:center;
     z-index: 1050;
     top: 0;
     right: 0;
@@ -56,10 +57,11 @@ const popupTemplate = `
     position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-125%, -50%);
     background-color: white;
     border-radius: 10px;
     padding: 10px;
+    margin:auto;
     box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);
 	display:inline-block;
 	overflow:hidden;
@@ -140,7 +142,9 @@ export class EzDialog extends EzComponent {
 
         attachTo.addComponent(dialog);
         dialog.show();
-        attachTo["removeComponent"](dialog);
+        dialog.closeEvent.subscribe(() => {
+            attachTo["removeComponent"](dialog);
+        });
         return dialog.closeEvent;
     }
 }
