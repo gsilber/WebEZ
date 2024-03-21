@@ -34,7 +34,16 @@ describe("Ajax Testing", () => {
         toplevel["ajax"]("http://badhost.com", HttpMethod.GET, [
             { "content-type": "application/json" },
         ]).subscribe(
-            (data: any) => {},
+            () => {},
+            (e: Error) => {
+                expect(e).toBeInstanceOf(Error);
+            },
+        );
+    });
+    describe("Test bad target no headers", () => {
+        let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
+        toplevel["ajax"]("http://badhost.com", HttpMethod.GET).subscribe(
+            () => {},
             (e: Error) => {
                 expect(e).toBeInstanceOf(Error);
             },

@@ -11,8 +11,10 @@ module.exports = {
         "!src/serviceWorker.js",
         "!src/setupTests.js",
         "!src/components/Auth/*",
+        "!src/tests/**/*",
         "!src/index.js",
         "!<rootDir>/src/index.ts",
     ],
+
     coverageReporters: ["text", "lcov"],
 };

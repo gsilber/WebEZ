@@ -1,6 +1,8 @@
 import { EzComponent } from "./EzComponent";
 import { EventSubject } from "./eventsubject";
 declare const window: Window;
+export let popupDialog: EzDialog | undefined = undefined;
+
 const alertDialogTempalte = `
 <div style="width: 600px; margin: -10px">
     <div
@@ -87,6 +89,8 @@ export class EzDialog extends EzComponent {
         //now add 2 more divs
         this.background = window.document.createElement("div");
         this.background.className = "dialog-background";
+        this.background.id = "background-root";
+        this.background.style.display = "none";
         this.popup = window.document.createElement("div");
         this.popup.className = "dialog-popup";
         this.background.appendChild(this.popup);
@@ -94,7 +98,6 @@ export class EzDialog extends EzComponent {
 
         const outside = this.shadow.getElementById("rootTemplate");
         if (outside) this.popup.appendChild(outside);
-        else throw new Error("Could not find rootTemplate");
     }
     show(show: boolean = true) {
         if (show) {
@@ -107,21 +110,16 @@ export class EzDialog extends EzComponent {
         attachTo: EzComponent,
         message: string,
         title: string = "Alert",
-        buttons: string[] = ["OK"],
+        buttons: string[] = ["Ok"],
         btnClass: string = "",
     ): EventSubject<string> {
         const dialog = new EzDialog(alertDialogTempalte);
+        popupDialog = dialog;
+
         let titleEl = dialog.shadow.getElementById("title");
         if (titleEl) titleEl.innerHTML = title;
         let contentEl = dialog.shadow.getElementById("content");
         if (contentEl) contentEl.innerHTML = message;
-        let okBtn = dialog.shadow.getElementById("okBtn");
-        if (okBtn)
-            okBtn.addEventListener("click", () => {
-                dialog.show(false);
-                dialog.closeEvent.next((okBtn as HTMLButtonElement).value);
-            });
-
         //add buttons
         const buttonDiv = dialog.shadow.getElementById("buttonDiv");
         if (buttonDiv) {
@@ -129,6 +127,7 @@ export class EzDialog extends EzComponent {
                 let button = window.document.createElement("button");
                 button.innerHTML = btn;
                 button.value = btn;
+                button.id = "btn_" + btn;
                 button.className = btnClass;
                 button.style.marginLeft = "10px";
 
