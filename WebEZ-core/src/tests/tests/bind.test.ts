@@ -1,6 +1,14 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
+import {
+    BadCssComponent,
+    BadInnerHTMLComponent,
+    BadStyleComponent,
+    BadValueComponent,
+    BadValueComponentOrder,
+    BadValueComponentStack,
+} from "../testing_components/exceptions/bad.components";
 
 describe("WebEZ-Bind", () => {
     let toplevel: any = undefined;
@@ -79,6 +87,33 @@ describe("WebEZ-Bind", () => {
             expect(el2.innerHTML).toBe("not testing");
             expect(el3.value).toBe("not testing");
         });
+        test("Single Binders with CSSClass", () => {
+            let el = toplevel["shadow"].getElementById(
+                "bindDiv13",
+            ) as HTMLElement;
+            expect(toplevel.testcss2).toContain("btn");
+            expect(el.className).toContain("btn");
+            expect(el.className).not.toContain("btn2");
+            toplevel.testcss2 = "btn2";
+            expect(toplevel.testcss2).toContain("btn2");
+            expect(el.className).toContain("btn2");
+        });
+        test("Stacked Binders with CSSClass", () => {
+            let el1 = toplevel["shadow"].getElementById(
+                "bindDiv11",
+            ) as HTMLElement;
+            let el2 = toplevel["shadow"].getElementById(
+                "bindDiv12",
+            ) as HTMLElement;
+            expect(toplevel.testcss1).toContain("btn");
+            expect(el1.className).toContain("btn");
+            expect(el2.className).toContain("btn");
+            expect(el2.className).not.toContain("btn2");
+            toplevel.testcss1 = " btn2";
+            expect(toplevel.testcss1).toContain("btn2");
+            expect(el1.className).toContain("btn2");
+            expect(el2.className).toContain("btn2");
+        });
         test("Single Binders with BindStyle", () => {
             let el = toplevel["shadow"].getElementById(
                 "styleDiv1",
@@ -109,6 +144,89 @@ describe("WebEZ-Bind", () => {
     describe("Bind:Grandhild", () => {
         test("Bind to child", () => {
             expect(true).toBe(true);
+        });
+    });
+    describe("Pipes", () => {
+        test("All pipes at once", () => {
+            let el1 = toplevel["shadow"].getElementById(
+                "bindDiv9",
+            ) as HTMLElement;
+            let el2 = toplevel["shadow"].getElementById(
+                "bindDiv10",
+            ) as HTMLElement;
+            expect(toplevel.testbind7).toBe("hello");
+            expect(el1.innerHTML).toEqual("$$$hello World!!!");
+            expect(el2.innerHTML).toEqual("$$$hello World!!!");
+            toplevel.testbind7 = "testing";
+            expect(toplevel.testbind7).toBe("testing");
+            expect(el1.innerHTML).toEqual("$$$testing World!!!");
+            expect(el2.innerHTML).toEqual("$$$testing World!!!");
+        });
+    });
+});
+describe("Exceptions", () => {
+    describe("Target Exceptions", () => {
+        const id = "doesNotExist";
+        const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+        test("invalid element in style decorator", () => {
+            const setupFn = () => {
+                bootstrap<BadStyleComponent>(BadStyleComponent, html);
+            };
+            expect(setupFn).toThrowError(Error);
+            expect(setupFn).toThrowError(
+                `can not find HTML element with id: ${id}`,
+            );
+        });
+        test("invalid element in cssclass decorator", () => {
+            const setupFn = () => {
+                bootstrap<BadCssComponent>(BadCssComponent, html);
+            };
+            expect(setupFn).toThrowError(Error);
+            expect(setupFn).toThrowError(
+                `can not find HTML element with id: ${id}`,
+            );
+        });
+        test("invalid element in innerHtml decorator", () => {
+            const setupFn = () => {
+                bootstrap<BadInnerHTMLComponent>(BadInnerHTMLComponent, html);
+            };
+            expect(setupFn).toThrowError(Error);
+            expect(setupFn).toThrowError(
+                `can not find HTML element with id: ${id}`,
+            );
+        });
+        test("invalid element in value decorator", () => {
+            const setupFn = () => {
+                bootstrap<BadValueComponent>(BadValueComponent, html);
+            };
+            expect(setupFn).toThrowError(Error);
+            expect(setupFn).toThrowError(
+                `can not find HTML element with id: ${id}`,
+            );
+        });
+        test("invalid stacked value decorator", () => {
+            const setupFn = () => {
+                bootstrap<BadValueComponentStack>(
+                    BadValueComponentStack,
+                    "<div>Testing Environment</div><div id='main-target'></div>",
+                );
+            };
+            expect(setupFn).toThrowError(Error);
+            expect(setupFn).toThrowError(
+                `Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.`,
+            );
+        });
+        test("invalid value decorator order", () => {
+            const setupFn = () => {
+                bootstrap<BadValueComponentOrder>(
+                    BadValueComponentOrder,
+                    "<div>Testing Environment</div><div id='main-target'></div>",
+                );
+            };
+            expect(setupFn).toThrowError(Error);
+            expect(setupFn).toThrowError(
+                `Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.`,
+            );
         });
     });
 });

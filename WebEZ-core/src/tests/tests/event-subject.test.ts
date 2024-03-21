@@ -8,14 +8,23 @@ describe("WebEZ-EventSubject", () => {
             expect(true).toBeTruthy();
             let evt: EventSubject<boolean> = new EventSubject<boolean>();
             expect(evt).toBeInstanceOf(EventSubject);
-            evt.subscribe((data: boolean) => {
-                expect(data).toBeTruthy();
-            });
+            let id = evt.subscribe(
+                (data: boolean) => {
+                    expect(data).toBeTruthy();
+                },
+                (e: Error) => {
+                    expect(e).toBeInstanceOf(Error);
+                    expect(e.message).toBe("test");
+                },
+            );
             evt.next(true);
-            evt.subscribe((data: boolean) => {
+            evt.error(new Error("test"));
+            evt.unsubscribe(id);
+            id = evt.subscribe((data: boolean) => {
                 expect(data).not.toBeTruthy();
             });
             evt.next(false);
+            evt.unsubscribe(id);
         });
     });
 });

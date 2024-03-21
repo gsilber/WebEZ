@@ -39,17 +39,17 @@ export abstract class EzComponent {
      * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
      */
     constructor(
-        private html: string = "",
-        private css: string = "",
+        private html: string,
+        private css: string,
     ) {
         this.htmlElement = window.document.createElement("div");
 
         this.shadow = this.htmlElement.attachShadow({ mode: "open" });
         this.template = window.document.createElement("template");
         this.template.innerHTML = this.html;
-        //jest does not test this, tested elsewhere
-        /* istanbul ignore next */
         for (let style of window.document.styleSheets) {
+            /* No way to test this with jsdom that I can find */
+            /* istanbul ignore next */
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
         }
@@ -143,7 +143,7 @@ export abstract class EzComponent {
     protected ajax<T = any>(
         url: string,
         method: HttpMethod,
-        headers?: any,
+        headers: any[] = [],
         data?: any,
     ): EventSubject<T> {
         const evt: EventSubject<T> = new EventSubject<T>();

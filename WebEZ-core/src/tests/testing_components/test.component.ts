@@ -1,9 +1,13 @@
 import { EzComponent } from "../../EzComponent";
 import {
+    AppendPipe,
     BindCSSClass,
     BindInnerHTML,
     BindStyle,
     BindValue,
+    Pipe,
+    PrependPipe,
+    ReplacePipe,
 } from "../../bind.decorators";
 import {
     Click,
@@ -11,6 +15,7 @@ import {
     Blur,
     Change,
     Input,
+    Timer,
 } from "../../event.decorators";
 import { TestChild1Component } from "./test-child1.component";
 import { TestChild2Component } from "./test-child2.component";
@@ -34,6 +39,11 @@ const html = `<div id="child1"></div>
 <div id="bindDiv6"></div>
 <div id="bindDiv7"></div>
 <div id="bindDiv8"></div>
+<div id="bindDiv9"></div>
+<div id="bindDiv10"></div>
+<div id="bindDiv11"></div>
+<div id="bindDiv12"></div>
+<div id="bindDiv13"></div>
 <div id="styleDiv1"></div>
 <div id="styleDiv2"></div>
 <div id="styleDiv3"></div>
@@ -79,6 +89,22 @@ export class TestComponent extends EzComponent {
     @BindCSSClass("bindDiv8")
     testbind6: string = "hello";
 
+    @BindInnerHTML("bindDiv9")
+    @ReplacePipe("world", "World")
+    @PrependPipe("$$$")
+    @AppendPipe("!!!")
+    @Pipe((val: string) => val + " world")
+    @BindInnerHTML("bindDiv10")
+    testbind7: string = "hello";
+
+    @BindCSSClass("bindDiv11")
+    @BindCSSClass("bindDiv12")
+    testcss1: string = "btn";
+
+    @BindCSSClass("bindDiv13")
+    testcss2: string = "btn";
+
+    timerTest1: number = 0;
     constructor() {
         super(html, css);
         this.addComponent(this.child1, "child1");
@@ -87,6 +113,13 @@ export class TestComponent extends EzComponent {
         this.addComponent(this.child4, "child4", true);
     }
 
+    fn: () => void = () => {};
+    @Timer(1000)
+    testTimer(kill: () => void) {
+        this.fn();
+        this.timerTest1++;
+        if (this.timerTest1 >= 5) kill();
+    }
     @Click("evtButton2")
     @Click("evtDiv2")
     evtDiv2Click() {

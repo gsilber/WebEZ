@@ -14,8 +14,6 @@ export function bootstrap<T extends EzComponent>(
     let obj: T = Object.assign(new target()) as T;
     const element = window.document.getElementById("main-target");
 
-    // Can't test both branches simultaneously, tested manually
-    /* istanbul ignore next */
     if (element) obj.appendToDomElement(element);
     else obj.appendToDomElement(window.document.body);
     return obj;

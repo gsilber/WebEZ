@@ -1,19 +1,30 @@
-import { describe, expect, test, beforeAll } from "@jest/globals";
+import {
+    describe,
+    jest,
+    expect,
+    test,
+    beforeAll,
+    afterEach,
+} from "@jest/globals";
 import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
 
 describe("WebEZ-Event", () => {
     let toplevel: any = undefined;
-    beforeAll(() => {
-        const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
-        toplevel = bootstrap<TestComponent>(TestComponent, html);
-    });
     describe("Constructor", () => {
+        beforeAll(() => {
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent>(TestComponent, html);
+        });
         test("Create Instance", () => {
             expect(toplevel).toBeInstanceOf(TestComponent);
         });
     });
     describe("Single Events:Parent", () => {
+        beforeAll(() => {
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent>(TestComponent, html);
+        });
         test("Click event on parent", () => {
             toplevel.testVal = false;
             expect(toplevel.testVal).toBe(false);
@@ -49,6 +60,10 @@ describe("WebEZ-Event", () => {
         });
     });
     describe("Events:Grandchild", () => {
+        beforeAll(() => {
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent>(TestComponent, html);
+        });
         test("Click event on grandchild", () => {
             //***TODO */
             toplevel.child1.baby1.testVal = false;
@@ -57,6 +72,30 @@ describe("WebEZ-Event", () => {
                 .getElementById("evtButton1")
                 .click();
             expect(toplevel.child1.baby1.testVal).toBe(true);
+        });
+    });
+    describe("Timer Test", () => {
+        beforeAll(() => {
+            jest.useFakeTimers();
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent>(TestComponent, html);
+        });
+        test("Test timer after interval", () => {
+            toplevel.fn = jest.fn();
+            expect(toplevel.fn).toHaveBeenCalledTimes(0);
+            jest.advanceTimersByTime(1005);
+            expect(toplevel.fn).toHaveBeenCalledTimes(1);
+            jest.advanceTimersByTime(500);
+            expect(toplevel.fn).toHaveBeenCalledTimes(1);
+            jest.advanceTimersByTime(3500);
+            expect(toplevel.fn).toHaveBeenCalledTimes(5);
+            jest.advanceTimersByTime(10000);
+            expect(toplevel.fn).toHaveBeenCalledTimes(5);
+            expect(toplevel.timerTest1).toBe(5);
+        });
+        afterEach(() => {
+            jest.runOnlyPendingTimers();
+            jest.useRealTimers();
         });
     });
 });

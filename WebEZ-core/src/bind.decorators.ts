@@ -116,14 +116,9 @@ function hookPropertySetter<This extends EzComponent>(
     Object.defineProperty(target, publicKey, {
         get: origDescriptor.get, // Leave the get accessor as it was
         set(value: string): void {
-            // This should not happen normally, only hear in case.
-            /* istanbul ignore next */
-            if (!origDescriptor.set) {
-                throw new Error(
-                    `can not find setter with name: ${publicKey as string}`,
-                );
+            if (origDescriptor.set) {
+                origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
             }
-            origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
             setter(value);
         },
         enumerable: origDescriptor.enumerable,
@@ -141,6 +136,7 @@ function getPropertyDescriptor<This extends EzComponent>(
     key: keyof This,
 ): PropertyDescriptor {
     let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
+    /* this can't happen.  Just here for type safety checking*/
     /* istanbul ignore next */
     if (!origDescriptor) {
         throw new Error(`can not find setter with name: ${key as string}`);
@@ -165,8 +161,6 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
     ) {
         context.addInitializer(function (this: This) {
             const element = this.shadow.getElementById(id);
-            //no easy way to test in Jest
-            /* istanbul ignore next */
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -224,8 +218,6 @@ export function BindCSSClass(id: string) {
     ) {
         context.addInitializer(function (this: This) {
             const element = this.shadow.getElementById(id);
-            //no easy way to test in Jest
-            /* istanbul ignore next */
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -271,8 +263,6 @@ export function BindInnerHTML(id: string) {
     ) {
         context.addInitializer(function (this: This) {
             const element = this.shadow.getElementById(id);
-            //no easy way to test in Jest
-            /* istanbul ignore next */
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -327,8 +317,6 @@ export function BindValue(id: string) {
             const element = this.shadow.getElementById(id) as
                 | HTMLInputElement
                 | undefined;
-            //no easy way to test in Jest
-            /* istanbul ignore next */
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -338,8 +326,6 @@ export function BindValue(id: string) {
 
             element.value = value;
             //hook both getter and setter to value
-            //no easy way to test in jet
-            /* istanbul ignore next */
             if (origDescriptor.set) {
                 throw new Error(
                     "Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.",
