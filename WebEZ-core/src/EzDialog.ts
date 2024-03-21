@@ -140,6 +140,7 @@ export class EzDialog extends EzComponent {
 
         attachTo.addComponent(dialog);
         dialog.show();
+        attachTo["removeComponent"](dialog);
         return dialog.closeEvent;
     }
 }
