@@ -140,7 +140,7 @@ export abstract class EzComponent {
      * @returns {Promise<T>} A promise that resolves with the response data
      * @memberof EzComponent
      */
-    protected ajax<T>(
+    protected ajax<T = any>(
         url: string,
         method: HttpMethod,
         headers?: any,
