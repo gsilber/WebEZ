@@ -1,5 +1,5 @@
 import { EzComponent } from "../../EzComponent";
-import { Click } from "../../decorators";
+import { Click } from "../../event.decorators";
 const html = `<button id="evtButton1"></button>`;
 const css = "";
 

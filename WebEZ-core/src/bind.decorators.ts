@@ -47,20 +47,6 @@ function getPipeKey<This extends EzComponent>(
     return `__${String(name)}_pipe` as keyof This;
 }
 
-let refCount: number = 0;
-/**
- * @description Gets a unique marker key for each decorator
- * @param name the name of the field
- * @returns the marker key
- * @export
- */
-function getMerkerKey<This extends EzComponent>(
-    name: string | symbol,
-    index: number,
-): keyof This {
-    return `__${String(name)}_${index.toString()}_marker` as keyof This;
-}
-
 /**
  * @description computes a piped value
  * @param target the class to decorate
@@ -71,20 +57,11 @@ function computePipe<This extends EzComponent>(
     target: This,
     name: string | symbol,
     value: string,
-    index: number,
 ): string {
     const pipeKey = getPipeKey(name);
-    const markerKey = getMerkerKey(name, index);
     let newValue = value;
-    console.log(markerKey, target[markerKey]);
-    if ((target[pipeKey] as any) && (!target[markerKey] as any)) {
+    if (target[pipeKey] as any) {
         newValue = (target[pipeKey] as any)(newValue) as string;
-        Object.defineProperty(target, markerKey, {
-            value: true,
-            writable: true,
-            enumerable: true,
-            configurable: true,
-        });
     }
     return newValue;
 }
@@ -100,10 +77,9 @@ function hookProperty<This extends EzComponent>(
     name: string | symbol,
     value: string,
     setter: (value: string) => void,
-    index: number,
 ) {
-    const publicKey = getPublicKey(name);
-    const privateKey = getPrivateKey(name);
+    const publicKey: keyof This = getPublicKey(name);
+    const privateKey: keyof This = getPrivateKey(name);
     Object.defineProperty(target, privateKey, {
         value,
         writable: true,
@@ -115,9 +91,8 @@ function hookProperty<This extends EzComponent>(
             return this[privateKey] as string;
         },
         set(value: string) {
-            const newValue = computePipe(this, name, value, index);
-            this[privateKey] = newValue;
-            setter(newValue);
+            this[privateKey] = value;
+            setter(value);
         },
         enumerable: true,
         configurable: true,
@@ -136,9 +111,8 @@ function hookPropertySetter<This extends EzComponent>(
     name: string | symbol,
     origDescriptor: PropertyDescriptor,
     setter: (value: string) => void,
-    index: number,
 ) {
-    const publicKey = getPublicKey(name);
+    const publicKey: keyof This = getPublicKey(name);
     Object.defineProperty(target, publicKey, {
         get: origDescriptor.get, // Leave the get accessor as it was
         set(value: string): void {
@@ -150,8 +124,7 @@ function hookPropertySetter<This extends EzComponent>(
                 );
             }
             origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
-            let newValue = computePipe(this, name, value, index);
-            setter(newValue);
+            setter(value);
         },
         enumerable: origDescriptor.enumerable,
         configurable: origDescriptor.configurable,
@@ -197,16 +170,14 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
-            const publicKey = getPublicKey(context.name);
+            const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             //replace the style tag with the new value
-            let index = refCount++;
             (element.style[style] as any) = computePipe(
                 this,
                 context.name,
                 value,
-                index,
             );
             if (origDescriptor.set) {
                 hookPropertySetter(
@@ -214,9 +185,12 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
                     context.name,
                     origDescriptor,
                     (value: string): void => {
-                        (element.style[style] as any) = value;
+                        (element.style[style] as any) = computePipe(
+                            this,
+                            context.name,
+                            value,
+                        );
                     },
-                    index,
                 );
             } else {
                 hookProperty(
@@ -224,9 +198,12 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
                     context.name,
                     value,
                     (value: string): void => {
-                        (element.style[style] as any) = value;
+                        (element.style[style] as any) = computePipe(
+                            this,
+                            context.name,
+                            value,
+                        );
                     },
-                    index,
                 );
             }
         });
@@ -234,9 +211,10 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
 }
 
 /**
- * @description Decorator to bind the className property to an element.
+ * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
  * @param id the element to bind the property to
  * @returns DecoratorCallback
+ *
  * @export
  */
 export function BindCSSClass(id: string) {
@@ -251,14 +229,12 @@ export function BindCSSClass(id: string) {
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
-            const publicKey = getPublicKey(context.name);
+            const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 
             const origValue = element.className;
             const value = context.access.get(this);
-            let index = refCount++;
-            element.className =
-                origValue + " " + computePipe(this, context.name, value, index);
+            element.className = origValue + " " + value;
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
@@ -267,7 +243,6 @@ export function BindCSSClass(id: string) {
                     (value: string): void => {
                         (element as any)["className"] = origValue + " " + value;
                     },
-                    index,
                 );
             } else {
                 hookProperty(
@@ -277,7 +252,6 @@ export function BindCSSClass(id: string) {
                     (value: string): void => {
                         (element as any)["className"] = origValue + " " + value;
                     },
-                    index,
                 );
             }
         });
@@ -302,20 +276,22 @@ export function BindInnerHTML(id: string) {
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
-            const publicKey = getPublicKey(context.name);
+            const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            let index = refCount++;
-            element.innerHTML = computePipe(this, context.name, value, index);
+            element.innerHTML = computePipe(this, context.name, value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: string): void => {
-                        (element as any)["innerHTML"] = value;
+                        (element as any)["innerHTML"] = computePipe(
+                            this,
+                            context.name,
+                            value,
+                        );
                     },
-                    index,
                 );
             } else {
                 hookProperty(
@@ -323,9 +299,12 @@ export function BindInnerHTML(id: string) {
                     context.name,
                     value,
                     (value: string): void => {
-                        (element as any)["innerHTML"] = value;
+                        (element as any)["innerHTML"] = computePipe(
+                            this,
+                            context.name,
+                            value,
+                        );
                     },
-                    index,
                 );
             }
         });
@@ -353,12 +332,11 @@ export function BindValue(id: string) {
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
-            const publicKey = getPublicKey(context.name);
+            const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
 
-            let index = refCount++;
-            element.value = computePipe(this, context.name, value, index);
+            element.value = value;
             //hook both getter and setter to value
             //no easy way to test in jet
             /* istanbul ignore next */
@@ -374,7 +352,6 @@ export function BindValue(id: string) {
                     (value: string): void => {
                         (element as any)["value"] = value;
                     },
-                    index,
                 );
                 element.addEventListener("input", () => {
                     (this[publicKey] as any) = element.value;
@@ -396,7 +373,7 @@ export function Pipe(fn: PipeFunction) {
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
         context.addInitializer(function (this: This) {
-            const privateKey = `__${String(context.name)}_pipe` as keyof This;
+            const privateKey: keyof This = getPipeKey(context.name);
             //get method descriptor for publicKey in This
             if (this[privateKey]) {
                 //overwrite it and call the original first
@@ -408,107 +385,11 @@ export function Pipe(fn: PipeFunction) {
                 };
                 context.access.set(this, context.access.get(this) as Value);
             } else {
-                //add pipe method to class under __publicKey__pipe
                 (this[privateKey] as any) = fn;
                 context.access.set(this, context.access.get(this) as Value);
             }
         });
     };
-}
-
-/**
- * @description Decorator to call a method periodically with a timer
- * @param intervalMS the interval in milliseconds to call the method
- * @returns DecoratorCallback
- * @note This executes repeatedly.  The decorated function is passed a cancel function that can be called to stop the timer.
- * @export
- */
-export function Timer(intervalMS: number) {
-    return function <This extends EzComponent, Value extends () => void>(
-        target: (this: This, cancelFn: () => void) => void,
-        context: ClassMethodDecoratorContext<
-            This,
-            (this: This, cancel: Value) => void
-        >,
-    ): void {
-        context.addInitializer(function (this: This) {
-            const intervalID = setInterval(() => {
-                target.call(this, () => {
-                    clearInterval(intervalID);
-                });
-            }, intervalMS);
-        });
-    };
-}
-
-/**
- * @description Decorator to bind a generic event to an element
- * @param htmlElementID the element to bind the event to
- * @param type the event to bind
- * @returns DecoratorCallback
- * @export
- */
-export function GenericEvent<K extends keyof HTMLElementEventMap>(
-    htmlElementID: string,
-    type: K,
-) {
-    return function <This extends EzComponent>(
-        target: (this: This, event: HTMLElementEventMap[K]) => void,
-        context: ClassMethodDecoratorContext<
-            This,
-            (this: This, event: HTMLElementEventMap[K]) => void
-        >,
-    ): void {
-        context.addInitializer(function (this: This) {
-            const element: HTMLElement | null =
-                this.shadow.getElementById(htmlElementID);
-            if (element) {
-                element.addEventListener(type, (e: HTMLElementEventMap[K]) => {
-                    target.call(this, e);
-                });
-            }
-        });
-    };
-}
-
-/**
- * @description Decorator to bind a click event to an element
- * @param htmlElementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Click(htmlElementID: string) {
-    return GenericEvent(htmlElementID, "click");
-}
-
-/**
- * @description Decorator to bind a blur event to an element
- * @param htmlElementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Blur(htmlElementID: string) {
-    return GenericEvent(htmlElementID, "blur");
-}
-
-/**
- * @description Decorator to bind a change event to an element
- * @param htmlElementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Change(htmlElementID: string) {
-    return GenericEvent(htmlElementID, "change");
-}
-
-/**
- * @description Decorator to bind an input event to an element
- * @param htmlElementID the element to bind the event to
- * @returns DecoratorCallback
- * @export
- */
-export function Input(htmlElementID: string) {
-    return GenericEvent(htmlElementID, "input");
 }
 
 /**

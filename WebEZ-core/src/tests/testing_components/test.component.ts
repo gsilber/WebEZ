@@ -4,12 +4,14 @@ import {
     BindInnerHTML,
     BindStyle,
     BindValue,
-    Blur,
-    Change,
+} from "../../bind.decorators";
+import {
     Click,
     GenericEvent,
+    Blur,
+    Change,
     Input,
-} from "../../decorators";
+} from "../../event.decorators";
 import { TestChild1Component } from "./test-child1.component";
 import { TestChild2Component } from "./test-child2.component";
 
