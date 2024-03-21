@@ -1,6 +1,4 @@
-import "reflect-metadata";
 import { EventSubject } from "./eventsubject";
-
 declare const window: Window;
 export enum HttpMethod {
     GET = "GET",

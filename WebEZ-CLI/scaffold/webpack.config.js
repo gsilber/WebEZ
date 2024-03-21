@@ -3,6 +3,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const css = require("css-loader");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: "development",
@@ -18,38 +19,29 @@ module.exports = {
         rules: [
             {
                 test: /\.html$/i,
-                use:[{
-                    loader: 'html-loader',
-                    options: {
-                        esModule: false,
-                    }
-                }]
-                
-              },
-			// TypeScript
+                use: [
+                    {
+                        loader: "raw-loader",
+                        options: {
+                            esModule: false,
+                        },
+                    },
+                ],
+            },
+            // TypeScript
             {
                 test: /\.tsx?$/,
                 use: "ts-loader",
                 exclude: /node_modules/,
             },
-			// CSS
-			{
+            // CSS
+            {
                 test: /src\/.+\.css$/i,
-                use: [ "css-loader"],
-            },            
-			{
+                use: ["raw-loader"],
+            },
+            {
                 test: /^((?!src\/).)*.css$/i,
                 use: ["style-loader", "css-loader"],
-            },            
-			// Images
-            {
-                test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
-                type: "asset/resource",
-            },
-            // Fonts and SVGs
-            {
-                test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
-                type: "asset/inline",
             },
         ],
     },
@@ -64,11 +56,13 @@ module.exports = {
         filename: "[name].bundle.js",
     },
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: [{ from: "assets", to: "assets" }],
+        }),
         new HtmlWebpackPlugin({
             title: "webpack Boilerplate",
             template: path.resolve(__dirname, "./src/index.html"), // template file
             filename: "index.html", // output file
         }),
-        new CleanWebpackPlugin(),
     ],
 };

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = '0.2.4';
+const version: string = '0.2.5';
 
 import fs from "fs";
 import path from "path";
@@ -171,7 +171,7 @@ function runProgram() {
                 else createComponent(process.argv[3], true);
             else
                 console.error(
-                    "This command is only valid within a webez application created with webez new <appname>"
+                    "This command is only valid within the app folder of a webez application created with webez new <appname>"
                 );
         }
     } catch (e: any) {
