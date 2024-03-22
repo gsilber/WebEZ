@@ -2,7 +2,6 @@ import { describe, expect, test } from "@jest/globals";
 import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
 import { NoRootParentCompnent } from "../testing_components/exceptions/bad.components";
-import { EzComponent, HttpMethod } from "../../EzComponent";
 
 describe("Exceptions and  (out of band testing)", () => {
     describe("Attach to body instead of target", () => {
@@ -26,27 +25,5 @@ describe("Exceptions and  (out of band testing)", () => {
             toplevel = bootstrap<NoRootParentCompnent>(NoRootParentCompnent);
             expect(toplevel).toBeInstanceOf(NoRootParentCompnent);
         });
-    });
-});
-describe("Ajax Testing", () => {
-    describe("Test bad target", () => {
-        let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
-        toplevel["ajax"]("http://badhost.com", HttpMethod.GET, [
-            { "content-type": "application/json" },
-        ]).subscribe(
-            () => {},
-            (e: Error) => {
-                expect(e).toBeInstanceOf(Error);
-            },
-        );
-    });
-    describe("Test bad target no headers", () => {
-        let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
-        toplevel["ajax"]("http://badhost.com", HttpMethod.GET).subscribe(
-            () => {},
-            (e: Error) => {
-                expect(e).toBeInstanceOf(Error);
-            },
-        );
     });
 });

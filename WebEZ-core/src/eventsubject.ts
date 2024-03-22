@@ -23,4 +23,16 @@ export class EventSubject<T = void> {
     error(value: Error) {
         for (const errorFn of this.errorFns) errorFn.fn(value);
     }
+    toPromise(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.subscribe(
+                (value) => {
+                    resolve(value);
+                },
+                (error) => {
+                    reject(error);
+                },
+            );
+        });
+    }
 }
