@@ -48,8 +48,6 @@ export abstract class EzComponent {
         this.template = window.document.createElement("template");
         this.template.innerHTML = this.html;
         for (let style of window.document.styleSheets) {
-            /* No way to test this with jsdom that I can find */
-            /* istanbul ignore next */
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
         }
