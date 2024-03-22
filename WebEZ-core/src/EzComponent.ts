@@ -48,6 +48,8 @@ export abstract class EzComponent {
         this.template = window.document.createElement("template");
         this.template.innerHTML = this.html;
         for (let style of window.document.styleSheets) {
+            /* Jest does not populate the ownerNode member, so this can't be tested*/
+            /* istanbul ignore next */
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
         }

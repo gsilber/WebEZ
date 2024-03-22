@@ -99,6 +99,18 @@ export class EzDialog extends EzComponent {
         const outside = this.shadow.getElementById("rootTemplate");
         if (outside) this.popup.appendChild(outside);
     }
+
+    /**
+     * @description Show or hide the dialog
+     * @param {boolean} [show=true] Show or hide the dialog
+     * @returns void
+     * @memberof EzDialog
+     * @example const dialog = new MyDialog();
+     *   dialog.closeEvent.subscribe((value) => {
+     *    console.log(value);
+     *    dialog.show(false);
+     *  });
+     */
     show(show: boolean = true) {
         if (show) {
             this.background.style.display = "inline-block";
