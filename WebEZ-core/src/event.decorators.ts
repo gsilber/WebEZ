@@ -1,5 +1,6 @@
 import { EzComponent } from "./EzComponent";
 
+declare const window: Window;
 /**
  * @description Decorator to bind a generic event to an element
  * @param htmlElementID the element to bind the event to
@@ -19,13 +20,39 @@ export function GenericEvent<K extends keyof HTMLElementEventMap>(
         >,
     ): void {
         context.addInitializer(function (this: This) {
-            const element: HTMLElement | null =
-                this.shadow.getElementById(htmlElementID);
-            if (element) {
+            let element: HTMLElement | Window | null;
+            if (htmlElementID === "_root") {
+                element = window;
+            } else {
+                element = this.shadow.getElementById(htmlElementID);
+            }
+            if (element && element instanceof HTMLElement) {
                 element.addEventListener(type, (e: HTMLElementEventMap[K]) => {
                     target.call(this, e);
                 });
             }
+        });
+    };
+}
+
+/**
+ * @description Decorator to bind a window event to the window
+ * @param type the event to bind
+ * @returns DecoratorCallback
+ * @export
+ */
+export function WindowEvent<K extends keyof WindowEventMap>(type: K) {
+    return function <This extends EzComponent>(
+        target: (this: This, event: WindowEventMap[K]) => void,
+        context: ClassMethodDecoratorContext<
+            This,
+            (this: This, event: WindowEventMap[K]) => void
+        >,
+    ): void {
+        context.addInitializer(function (this: This) {
+            window.addEventListener(type, (e: WindowEventMap[K]) => {
+                target.call(this, e);
+            });
         });
     };
 }
