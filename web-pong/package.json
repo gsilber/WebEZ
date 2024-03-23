@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-	"deploy": "mkdir -p ../docs/example && cp -r dist/* ../docs/example",
+	"deploy": "mkdir -p ../docs/webpong && cp -r dist/* ../docs/webpong",
         "build": "webpack --mode development && npm run deploy",
         "build:dev": "webpack --mode development && npm run deploy",
         "build:prod": "webpack --mode production && npm run deploy",
