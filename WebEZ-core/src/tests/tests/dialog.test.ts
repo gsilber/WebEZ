@@ -14,7 +14,7 @@ describe("WebEZ-Construction and DOM", () => {
         test("Create Instance", () => {
             let testDlg = new TestDialog();
             toplevel.addComponent(testDlg);
-            let root = testDlg.shadow.getElementById("background-root");
+            let root = testDlg["shadow"].getElementById("background-root");
             expect(toplevel).toBeInstanceOf(TestComponent);
             expect(root).not.toBeNull();
             expect(root?.style.display).toBe("none");
@@ -29,11 +29,16 @@ describe("WebEZ-Construction and DOM", () => {
             TestDialog.popup(toplevel, "This is a test").subscribe((result) => {
                 expect(result).toBe("Ok");
             });
-            let btn = popupDialog?.shadow.getElementById(
-                "btn_Ok",
-            ) as HTMLElement;
-            expect(btn).not.toBeNull();
-            btn.dispatchEvent(new Event("click"));
+            if (popupDialog) {
+                let btn = popupDialog["shadow"].getElementById(
+                    "btn_Ok",
+                ) as HTMLElement;
+                expect(btn).not.toBeNull();
+                btn.dispatchEvent(new Event("click"));
+            } else {
+                //should not happen
+                expect(true).toBe(false);
+            }
         });
     });
 });

@@ -144,6 +144,6 @@ export class TestComponent extends EzComponent {
 
     @WindowEvent("resize")
     windowResize(event: UIEvent) {
-        console.log("resize", event);
+        event.preventDefault();
     }
 }

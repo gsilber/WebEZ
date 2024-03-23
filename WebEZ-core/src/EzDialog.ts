@@ -84,7 +84,7 @@ export class EzDialog extends EzComponent {
         super(html, css);
         const styleEl = window.document.createElement("style");
         styleEl.innerHTML = backgroundTemplate + popupTemplate;
-        this.shadow.appendChild(styleEl);
+        this["shadow"].appendChild(styleEl);
         //now add 2 more divs
         this.background = window.document.createElement("div");
         this.background.className = "dialog-background";
@@ -93,9 +93,9 @@ export class EzDialog extends EzComponent {
         this.popup = window.document.createElement("div");
         this.popup.className = "dialog-popup";
         this.background.appendChild(this.popup);
-        this.shadow.appendChild(this.background);
+        this["shadow"].appendChild(this.background);
 
-        const outside = this.shadow.getElementById("rootTemplate");
+        const outside = this["shadow"].getElementById("rootTemplate");
         if (outside) this.popup.appendChild(outside);
     }
 
@@ -127,12 +127,12 @@ export class EzDialog extends EzComponent {
         const dialog = new EzDialog(alertDialogTempalte);
         popupDialog = dialog;
 
-        let titleEl = dialog.shadow.getElementById("title");
+        let titleEl = dialog["shadow"].getElementById("title");
         if (titleEl) titleEl.innerHTML = title;
-        let contentEl = dialog.shadow.getElementById("content");
+        let contentEl = dialog["shadow"].getElementById("content");
         if (contentEl) contentEl.innerHTML = message;
         //add buttons
-        const buttonDiv = dialog.shadow.getElementById("buttonDiv");
+        const buttonDiv = dialog["shadow"].getElementById("buttonDiv");
         if (buttonDiv) {
             for (let btn of buttons) {
                 let button = window.document.createElement("button");

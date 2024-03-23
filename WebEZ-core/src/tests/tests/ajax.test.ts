@@ -17,7 +17,7 @@ describe("Ajax Testing", () => {
         test("Create Instance", async () => {
             mock.get("/api/good", (req: any, res: any): any => {
                 expect(req.header("Content-Type")).toEqual("application/json");
-                return res.status(200).body('{"data":{"id":"abc-123"}}') as any;
+                return res.status(200).body('{"data":{"id":"abc-123"}}');
             });
             let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
             try {
@@ -77,10 +77,9 @@ describe("Ajax Testing", () => {
                     await toplevel["ajax"]<{
                         data: any;
                     }>("/api/good", HttpMethod.GET).toPromise();
+                    //make sure this doesn't happen
                     expect(true).toBeFalsy();
                 } catch (e) {
-                    console.log(e);
-                    //make sure this doesn't happen
                     expect(e).toBeInstanceOf(Error);
                 }
             });

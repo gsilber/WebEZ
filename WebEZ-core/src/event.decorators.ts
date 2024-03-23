@@ -21,7 +21,7 @@ export function GenericEvent<K extends keyof HTMLElementEventMap>(
     ): void {
         context.addInitializer(function (this: This) {
             let element: HTMLElement | null =
-                this.shadow.getElementById(htmlElementID);
+                this["shadow"].getElementById(htmlElementID);
             if (element) {
                 element.addEventListener(type, (e: HTMLElementEventMap[K]) => {
                     target.call(this, e);

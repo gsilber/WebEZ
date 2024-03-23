@@ -38,7 +38,7 @@ export abstract class EzComponent {
     /**
      * @hidden
      */
-    public shadow: ShadowRoot;
+    private shadow: ShadowRoot;
     private template: HTMLTemplateElement;
     private styles: HTMLStyleElement;
 

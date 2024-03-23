@@ -160,7 +160,7 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
         context.addInitializer(function (this: This) {
-            const element = this.shadow.getElementById(id);
+            const element = this["shadow"].getElementById(id);
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -217,7 +217,7 @@ export function BindCSSClass(id: string) {
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
         context.addInitializer(function (this: This) {
-            const element = this.shadow.getElementById(id);
+            const element = this["shadow"].getElementById(id);
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -262,7 +262,7 @@ export function BindInnerHTML(id: string) {
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
         context.addInitializer(function (this: This) {
-            const element = this.shadow.getElementById(id);
+            const element = this["shadow"].getElementById(id);
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
@@ -314,7 +314,7 @@ export function BindValue(id: string) {
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
         context.addInitializer(function (this: This) {
-            const element = this.shadow.getElementById(id) as
+            const element = this["shadow"].getElementById(id) as
                 | HTMLInputElement
                 | undefined;
             if (!element) {
