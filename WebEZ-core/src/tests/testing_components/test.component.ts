@@ -16,6 +16,7 @@ import {
     Change,
     Input,
     Timer,
+    WindowEvent,
 } from "../../event.decorators";
 import { TestChild1Component } from "./test-child1.component";
 import { TestChild2Component } from "./test-child2.component";
@@ -139,5 +140,10 @@ export class TestComponent extends EzComponent {
     @Input("evtInput1")
     evtInput1Change(event: Event) {
         this.testVal4 = (event.target as HTMLInputElement).value;
+    }
+
+    @WindowEvent("resize")
+    windowResize(event: UIEvent) {
+        console.log("resize", event);
     }
 }

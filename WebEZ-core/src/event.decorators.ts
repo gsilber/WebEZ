@@ -20,13 +20,9 @@ export function GenericEvent<K extends keyof HTMLElementEventMap>(
         >,
     ): void {
         context.addInitializer(function (this: This) {
-            let element: HTMLElement | Window | null;
-            if (htmlElementID === "_root") {
-                element = window;
-            } else {
-                element = this.shadow.getElementById(htmlElementID);
-            }
-            if (element && element instanceof HTMLElement) {
+            let element: HTMLElement | null =
+                this.shadow.getElementById(htmlElementID);
+            if (element) {
                 element.addEventListener(type, (e: HTMLElementEventMap[K]) => {
                     target.call(this, e);
                 });

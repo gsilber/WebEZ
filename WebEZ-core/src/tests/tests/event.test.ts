@@ -9,6 +9,8 @@ import {
 import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
 
+declare const window: Window;
+
 describe("WebEZ-Event", () => {
     let toplevel: any = undefined;
     describe("Constructor", () => {
@@ -96,6 +98,14 @@ describe("WebEZ-Event", () => {
         afterEach(() => {
             jest.runOnlyPendingTimers();
             jest.useRealTimers();
+        });
+    });
+    describe("Window Events", () => {
+        test("Test window events", () => {
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent>(TestComponent, html);
+            const event = new Event("resize");
+            window.dispatchEvent(event);
         });
     });
 });
