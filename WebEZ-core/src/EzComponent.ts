@@ -107,9 +107,9 @@ export abstract class EzComponent {
      * @param id The id of the element to append the component to (optional)
      * @returns void
      * @memberof EzComponent
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
-     *   component.addComponent(component);
-     *   component.addComponent(component, "myDiv");
+     * @example
+     *   component.addComponent(childComponent);
+     *   component.addComponent(childComponent, "myDiv");
      */
     public addComponent(
         component: EzComponent,
@@ -148,8 +148,9 @@ export abstract class EzComponent {
      * @param component
      * @returns EzComponent
      * @memberof EzComponent
-     * @example component.addComponent(childComponent);
-     *   component.removeComponent(childComponent);
+     * @example
+     * component.addComponent(childComponent);
+     * component.removeComponent(childComponent);
      */
     protected removeComponent(component: EzComponent): EzComponent {
         component.htmlElement.remove();
