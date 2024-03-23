@@ -3,7 +3,7 @@ interface CallbackDescription {
     fn: (value: any) => void;
 }
 export class EventSubject<T = void> {
-    refCount: number = 0;
+    private refCount: number = 0;
     private callbacks: CallbackDescription[] = [];
     private errorFns: CallbackDescription[] = [];
     constructor() {}
