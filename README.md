@@ -374,6 +374,8 @@ We are specifying the title, the buttons to display, and a class for the buttons
 ## Working example program
 A fully working example can be found here: 
 [https://gsilber.github.io/WebEZ/example](https://gsilber.github.io/WebEZ/example)
+Another here:
+[https://gsilber.github.io/WebEZ/webpong](https://gsilber.github.io/WebEZ/webpong)
 
 ## Full Technical Documenation
 
