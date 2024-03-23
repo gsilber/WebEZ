@@ -79,17 +79,17 @@ export class EventSubject<T = void> {
 
     /**
      * Convert the event subject to a promise
+     * @description Convert the event subject to a promise.
+     * This is useful for the async/await style async pattern.
+     * @param none
      * @returns Promise<T>
      * @example
-     * const subject = new EventSubject<string>();
-     * const promise = subject.toPromise();
-     * subject.next("1");
-     * promise.then((value:string) => {
-     *  console.log(value);
-     * }).catch((error) => {
-     *  console.error(error);
-     * });
-     * subject.unsubscribe(id);
+     * async myFunction() {
+     *   const result=await EzDialog.popup(
+     *     "Hello World",
+     *     "Alert", ["Ok","Cancel"]).toPromise();
+     *   console.log(result);
+     * }
      */
     toPromise(): Promise<T> {
         return new Promise((resolve, reject) => {
