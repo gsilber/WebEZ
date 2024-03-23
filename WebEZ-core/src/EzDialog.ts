@@ -42,7 +42,7 @@ const alertDialogTempalte = `
 const backgroundTemplate = `
 .dialog-background {
     display: none;
-    position: fixed;
+    position: absolute;
     text-align:center;
     z-index: 1050;
     top: 0;
@@ -57,12 +57,11 @@ const backgroundTemplate = `
 const popupTemplate = `
 .dialog-popup {
     position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-125%, -50%);
+    top:50%;
     background-color: white;
     border-radius: 10px;
     padding: 10px;
+    transform: translateY(-50%);
     margin:auto;
     box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);
 	display:inline-block;
