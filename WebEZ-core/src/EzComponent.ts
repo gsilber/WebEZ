@@ -8,6 +8,19 @@ export enum HttpMethod {
     PATCH = "PATCH",
     OPTIONS = "OPTIONS",
 }
+/**
+ * @description An interface for the size of the window
+ * @export
+ * @interface SizeInfo
+ * @example const sizeInfo: SizeInfo = {
+ *  windowWidth: window.innerWidth,
+ *  windowHeight: window.innerHeight
+ * };
+ */
+export interface SizeInfo {
+    windowWidth: number;
+    windowHeight: number;
+}
 
 /**
  * @description A base class for creating web components
@@ -28,6 +41,23 @@ export abstract class EzComponent {
     public shadow: ShadowRoot;
     private template: HTMLTemplateElement;
     private styles: HTMLStyleElement;
+
+    private static resizeEvent: EventSubject<SizeInfo> =
+        new EventSubject<SizeInfo>();
+
+    /**
+     * @description An event that fires when the window is resized
+     * @readonly
+     * @type {EventSubject<SizeInfo>}
+     * @memberof EzComponent
+     * @example this.onResizeEvent.subscribe((sizeInfo) => {
+     *  console.log(sizeInfo.windowWidth);
+     *  console.log(sizeInfo.windowHeight);
+     * });
+     */
+    public get onResizeEvent(): EventSubject<SizeInfo> {
+        return EzComponent.resizeEvent;
+    }
 
     /**
      * @description Creates an instance of EzComponent.
@@ -62,6 +92,14 @@ export abstract class EzComponent {
         this.template.content.appendChild(innerDiv);
         this.shadow.appendChild(innerDiv);
         this.shadow.appendChild(this.template.content.cloneNode(true));
+        if (!window.onresize) {
+            window.onresize = () => {
+                EzComponent.resizeEvent.next({
+                    windowWidth: window.innerWidth,
+                    windowHeight: window.innerHeight,
+                });
+            };
+        }
     }
 
     /**
@@ -167,5 +205,17 @@ export abstract class EzComponent {
         };
         xhr.send(JSON.stringify(data));
         return evt;
+    }
+
+    /**
+     * @description Get the size of the window
+     * @returns {SizeInfo} The size of the window
+     * @memberof EzComponent
+     */
+    public getWindowSize(): SizeInfo {
+        return {
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight,
+        };
     }
 }

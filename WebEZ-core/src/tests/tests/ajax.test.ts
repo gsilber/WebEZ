@@ -15,9 +15,9 @@ describe("Ajax Testing", () => {
     });
     describe("Test bad target", () => {
         test("Create Instance", async () => {
-            mock.get("/api/good", (req, res) => {
+            mock.get("/api/good", (req: any, res: any): any => {
                 expect(req.header("Content-Type")).toEqual("application/json");
-                return res.status(200).body('{"data":{"id":"abc-123"}}');
+                return res.status(200).body('{"data":{"id":"abc-123"}}') as any;
             });
             let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
             try {
