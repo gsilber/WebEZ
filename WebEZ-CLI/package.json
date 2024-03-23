@@ -1,6 +1,6 @@
 {
     "name": "@gsilber/webez-cli",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -17,5 +17,8 @@
         "@types/node": "^20.11.26",
         "ts-node": "^10.9.2",
         "typescript": "^5.4.2"
+    },
+    "dependencies": {
+        "@gsilber/webez-cli": "^0.3.1"
     }
 }
