@@ -1,0 +1,8 @@
+.paddle-holder {
+    position: relative;
+    width: 100%;
+    flex: 1;
+}
+#paddle {
+    position: absolute;
+}

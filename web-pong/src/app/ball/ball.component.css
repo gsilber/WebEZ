@@ -1,0 +1,9 @@
+.ball-holder {
+    position: relative;
+    width: 100%;
+    flex: 1;
+}
+#ball {
+    position: absolute;
+    border-radius: 50%;
+}
