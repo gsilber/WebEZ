@@ -318,6 +318,14 @@ onTimer(cancel: CancelFunction){
 }
 ```
 This example will be called once per second.  It will print a counter from 0 to 15, and will stop the timer permenantly after 15 is printed.
+### @WindowEvent(event)
+There is another decorator ```@WindowEvent(event)``` which captures events on the entire window.  Useful for picking up keystrokes, mouse events, or resize events.
+```
+@WindowEvent("resize")
+onMainWindowResize(sz:SizeInfo){
+    console.log("The whole window is "+sz.windowWidth+" pixels wide.");
+}
+```
 ### ajax\<T>(url,method,headers,data):EventSubject\<T>
 This allows you to make an asyncronous call and will return an EventSubject<T> for you to subscribe.  The eventsource will fire the subscription when the request is complete.
 ```
