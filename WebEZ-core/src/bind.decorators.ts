@@ -150,6 +150,10 @@ function getPropertyDescriptor<This extends EzComponent>(
  * @param style the style to bind (i.e. background-color, left, top, etc.)
  * @returns DecoratorCallback
  * @export
+ * @example
+ * //This will set the background color of the div with id myDiv to the value in backgroundColor
+ * @BindStyle("myDiv", "backgroundColor")
+ * public backgroundColor: string = "red";
  */
 export function BindStyle<K extends keyof CSSStyleDeclaration>(
     id: string,
@@ -208,8 +212,11 @@ export function BindStyle<K extends keyof CSSStyleDeclaration>(
  * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
  * @param id the element to bind the property to
  * @returns DecoratorCallback
- *
  * @export
+ * @example
+ * //This will set the CSS class of the div with id myDiv to the value in cssClass
+ * @BindCSSClass("myDiv")
+ * public cssClass: string = "myCSSClass";
  */
 export function BindCSSClass(id: string) {
     return function <This extends EzComponent, Value extends string>(
@@ -255,6 +262,10 @@ export function BindCSSClass(id: string) {
  * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello World";
  */
 export function BindInnerHTML(id: string) {
     return function <This extends EzComponent, Value extends string>(
@@ -307,6 +318,10 @@ export function BindInnerHTML(id: string) {
  * @returns DecoratorCallback
  * @note This decorator should be last in the list of decorators for a property and can only appear once.
  * @export
+ * @example
+ * //This will bind the value of the input element with id myInput to the value property of the class
+ * @BindValue("myInput")
+ * public value: string = "Hello";
  */
 export function BindValue(id: string) {
     return function <This extends EzComponent, Value extends string>(
@@ -351,6 +366,11 @@ export function BindValue(id: string) {
  * @description Decorator to transform the value of a property before it is set on the html element.
  * @param fn {PipeFunction} the function to transform the value
  * @returns DecoratorCallback
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @Pipe((v: string) => v + " World")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello";
  * @export
  */
 export function Pipe(fn: PipeFunction) {
@@ -383,6 +403,11 @@ export function Pipe(fn: PipeFunction) {
  * @param val string to append
  * @returns DecoratorCallback
  * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @AppendPipe(" World")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello";
  */
 export function AppendPipe(val: string) {
     return Pipe((v: string) => v + val);
@@ -392,19 +417,27 @@ export function AppendPipe(val: string) {
  * @param val The string to prepend
  * @returns DecoratorCallback
  * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @PrependPipe("Hello ")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "World";
  */
-
 export function PrependPipe(val: string) {
     return Pipe((v: string) => val + v);
 }
 /**
  * @description Decorator to replace the value of a property before it is set on the html element.
- * @param search The string to replace
- * @param replaceWith The string to replace in the current string
+ * @param search {string | RegExp} The string to replace
+ * @param  replaceWith The string to replace in the current string
  * @returns DecoratorCallback
  * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @ReplacePipe("planet", "World")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello planet";
  */
-
 export function ReplacePipe(search: string | RegExp, replaceWith: string) {
     return Pipe((v: string) => v.replace(search, replaceWith));
 }

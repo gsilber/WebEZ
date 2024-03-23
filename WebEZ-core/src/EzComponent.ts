@@ -66,7 +66,6 @@ export abstract class EzComponent {
      * @memberof EzComponent
      * @public
      * @constructor
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
      */
     constructor(
         private html: string,
@@ -149,9 +148,8 @@ export abstract class EzComponent {
      * @param component
      * @returns EzComponent
      * @memberof EzComponent
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
-     *   component.addComponent(component);
-     *   component.removeComponent(component);
+     * @example component.addComponent(childComponent);
+     *   component.removeComponent(childComponent);
      */
     protected removeComponent(component: EzComponent): EzComponent {
         component.htmlElement.remove();
@@ -162,8 +160,7 @@ export abstract class EzComponent {
      * @param domElement
      * @returns void
      * @memberof EzComponent
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
-     *   component.appendToDomElement(document.getElementById("myDiv"));
+     * @example component.appendToDomElement(document.getElementById("myDiv"));
      */
     public appendToDomElement(domElement: HTMLElement) {
         domElement.appendChild(this.htmlElement);
@@ -177,6 +174,12 @@ export abstract class EzComponent {
      * @param {T} data The data to send in the request body (optional)
      * @returns {Promise<T>} A promise that resolves with the response data
      * @memberof EzComponent
+     * @example myComponent.ajax("https://some.api.url.com/posts", HttpMethod.GET)
+     *  .subscribe((data) => {
+     *   console.log(data);
+     * }, (error) => {
+     *   console.error(error);
+     * });
      */
     protected ajax<T = any>(
         url: string,
@@ -211,6 +214,7 @@ export abstract class EzComponent {
      * @description Get the size of the window
      * @returns {SizeInfo} The size of the window
      * @memberof EzComponent
+     * @example const sizeInfo: SizeInfo = myComponent.getWindowSize();
      */
     public getWindowSize(): SizeInfo {
         return {

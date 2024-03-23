@@ -1,6 +1,7 @@
 import { EzComponent } from "./EzComponent";
 import { EventSubject } from "./eventsubject";
 declare const window: Window;
+/** @hidden */
 export let popupDialog: EzDialog | undefined = undefined;
 
 const alertDialogTempalte = `
@@ -67,6 +68,14 @@ const popupTemplate = `
 	display:inline-block;
 	overflow:hidden;
 }`;
+
+/**
+ * @description A dialog component that can be used to create a popup dialog
+ * @export
+ * @class EzDialog
+ * @extends {EzComponent}
+ * @example const dialog = new EzDialog("<h1>Hello World</h1>", "h1{color:red;}");
+ */
 export class EzDialog extends EzComponent {
     private popup: HTMLDivElement;
     private background: HTMLDivElement;
@@ -78,7 +87,7 @@ export class EzDialog extends EzComponent {
      * @memberof EzComponent
      * @public
      * @constructor
-     * @example const component = new EzComponent("<h1>Hello World</h1>", "h1{color:red;}");
+     * @example const dlg = new EzDialog("<h1>Hello World</h1>", "h1{color:red;}");
      */
     constructor(html: string = "", css: string = "") {
         super(html, css);
@@ -104,11 +113,13 @@ export class EzDialog extends EzComponent {
      * @param {boolean} [show=true] Show or hide the dialog
      * @returns void
      * @memberof EzDialog
-     * @example const dialog = new MyDialog();
-     *   dialog.closeEvent.subscribe((value) => {
+     * @example
+     * const dialog = new MyDialog();
+     * dialog.show();
+     * dialog.closeEvent.subscribe((value) => {
      *    console.log(value);
      *    dialog.show(false);
-     *  });
+     * });
      */
     show(show: boolean = true) {
         if (show) {
@@ -117,6 +128,26 @@ export class EzDialog extends EzComponent {
             this.background.style.display = "none";
         }
     }
+
+    /**
+     * @description Show a popup dialog
+     * @static
+     * @param {EzComponent} attachTo The component to attach the dialog to
+     * @param {string} message The message to display
+     * @param {string} [title="Alert"] The title of the dialog
+     * @param {string[]} [buttons=["Ok"]] The buttons to display
+     * @param {string} [btnClass=""] The class to apply to the buttons
+     * @returns {EventSubject<string>} The event subject that is triggered when the dialog is closed
+     * @memberof EzDialog
+     * @example
+     * EzDialog.popup("Hello World", "Alert", ["Ok","Cancel"], "btn btn-primary")
+     *    .subscribe((value:string) => {
+     *       if (value === "Ok") console.log("Ok was clicked");
+     *       else console.log("Cancel was clicked");
+     *   });
+     *
+     *
+     */
     static popup(
         attachTo: EzComponent,
         message: string,

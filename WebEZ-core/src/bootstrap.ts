@@ -4,6 +4,7 @@ declare const window: Window;
 
 type Constructor<T> = { new (): T };
 
+/** @hidden */
 export function bootstrap<T extends EzComponent>(
     target: Constructor<T>,
     testModeHTML: string = "",

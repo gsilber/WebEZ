@@ -15,7 +15,7 @@ export class EventSubject<T = void> {
      * @returns The id of the subscription
      * @example
      * const subject = new EventSubject<number>();
-     * const id = subject.subscribe((value) => {
+     * const id = subject.subscribe((value:number) => {
      *  console.log(value);
      * });
      * subject.next(1);
@@ -32,7 +32,7 @@ export class EventSubject<T = void> {
      * @returns void
      * @example
      * const subject = new EventSubject<number>();
-     * const id = subject.subscribe((value) => {
+     * const id = subject.subscribe((value:number) => {
      *   console.log(value);
      * });
      * subject.next(1);
@@ -49,7 +49,7 @@ export class EventSubject<T = void> {
      * @returns void
      * @example
      * const subject = new EventSubject<number>();
-     * const id = subject.subscribe((value) => {
+     * const id = subject.subscribe((value:number) => {
      *   console.log(value);
      * });
      * subject.next(1);
@@ -65,7 +65,7 @@ export class EventSubject<T = void> {
      * @returns void
      * @example
      * const subject = new EventSubject<number>();
-     * const id = subject.subscribe((value) => {
+     * const id = subject.subscribe((value:number) => {
      *   console.log(value);
      * }, (error) => {
      *  console.error(error);
@@ -81,10 +81,10 @@ export class EventSubject<T = void> {
      * Convert the event subject to a promise
      * @returns Promise<T>
      * @example
-     * const subject = new EventSubject<number>();
+     * const subject = new EventSubject<string>();
      * const promise = subject.toPromise();
-     * subject.next(1);
-     * promise.then((value) => {
+     * subject.next("1");
+     * promise.then((value:string) => {
      *  console.log(value);
      * }).catch((error) => {
      *  console.error(error);
