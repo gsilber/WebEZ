@@ -65,4 +65,5 @@ module.exports = {
             filename: "index.html", // output file
         }),
     ],
+    devtool: "source-map",
 };
