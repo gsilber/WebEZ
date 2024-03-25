@@ -291,7 +291,7 @@ You can prepend the text to a field before it is displayed.
 ### @ReplacePipe(search:string|RegExp,replaceWith:string)
 YOu can replace the search text with the repaceWith text before it is displayed.
 ## Stacking Methods
-With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list
+With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list.  Stacked decorators are applied from bottom to top.
 ```
 @BindInnerHTML("div1"}
 @BindInnerHTML("div2")
@@ -378,6 +378,21 @@ A confirmation box can be shown by using:
         });
 ```
 We are specifying the title, the buttons to display, and a class for the buttons to style them.  It will return a subscription that will evaluate to the button name passed into the method.
+### EventSubject
+The ```EventSubject``` class can be used to handle asynchronous code. You can either ```subscribe``` to it or convert it to a promise with the ```toPromise``` method.  Many functions in ```WebEZ``` return an ```EventSubject``` that you can subscribe to.
+```
+event:EventSubject<boolean> = new EventSubject<boolean>();
+event.subscribe((result:boolean)=>{
+    console.log(result);
+},(err:Error)=>{
+    console.log(err);
+}
+```
+or
+```
+event:EventSubject<boolean> = new EventSubject<boolean>();
+let result:boolean = await event.toPromise();
+```
 
 ## Working example program
 A fully working example can be found here: 
