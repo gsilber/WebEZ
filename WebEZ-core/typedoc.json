@@ -9,7 +9,4 @@
         "@alpha": false,
         "@beta": false
     },
-    "theme_opts": {
-  "default_theme": "dark" // "light", "fallback-dark", "fallback-light"
-}
 }
