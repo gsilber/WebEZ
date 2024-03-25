@@ -233,4 +233,14 @@ export abstract class EzComponent {
         let el = this.shadow.getElementById(elementId);
         if (el) el.focus();
     }
+
+    /**
+     * @description Click an element on this component
+     * @param {string} elementId The id of the element to click
+     * @returns void
+     */
+    click(elementId: string) {
+        let el = this.shadow.getElementById(elementId);
+        if (el) el.click();
+    }
 }

@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (v.0.3.6)
+# WebEZ - A simple web framework for Typescript (v.0.3.7)
 
 ## Getting Started
 
@@ -331,6 +331,11 @@ Set the focus to an element on the current component by id
 ```
 this.setfocus('input1');
 ```
+### click(htmlElementId)
+Click the element on the current component by id.  This is useful for testing.
+```
+this.click('button1')
+```
 ### ajax\<T>(url,method,headers,data):EventSubject\<T>
 This allows you to make an asyncronous call and will return an EventSubject<T> for you to subscribe.  The eventsource will fire the subscription when the request is complete.
 ```
@@ -383,6 +388,7 @@ A confirmation box can be shown by using:
         });
 ```
 We are specifying the title, the buttons to display, and a class for the buttons to style them.  It will return a subscription that will evaluate to the button name passed into the method.
+## Utility Classes
 ### EventSubject
 The ```EventSubject``` class can be used to handle asynchronous code. You can either ```subscribe``` to it or convert it to a promise with the ```toPromise``` method.  Many functions in ```WebEZ``` return an ```EventSubject``` that you can subscribe to.
 ```
