@@ -1,0 +1,20 @@
+.lander-holder {
+    /*actual 50px;*/
+    height: 60px;
+    width: 65px;
+    position: absolute;
+
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+#flame {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-39%);
+    width: 10px;
+    height: 15px;
+    background-image: url(assets/flame.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}

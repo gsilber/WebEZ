@@ -1,0 +1,68 @@
+.hud-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    border: solid 1px white;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.hud-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    border: solid 1px white;
+    border-radius: 10px;
+    background: gray;
+    opacity: 30%;
+    z-index: 0;
+}
+#hud {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    color: white;
+    border: solid 1px white;
+    border-radius: 10px;
+    opacity: 100%;
+    display: flex;
+    flex-direction: row;
+}
+.hud-left,
+.hud-right {
+    text-align: left;
+    vertical-align: middle;
+    padding: 5px;
+    font-size: 12px;
+    overflow: hidden;
+}
+.hud-right {
+    flex: 1;
+}
+
+.hud-left {
+    border-right: 1px solid white;
+    width: 130px;
+}
+.hud-left,
+.hud-right,
+.hud-left > div,
+.hud-right > div {
+    display: inline-block;
+}
+
+.warning {
+    color: yellow;
+}
+.danger {
+    color: red;
+    font-weight: bold;
+}

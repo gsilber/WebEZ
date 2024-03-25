@@ -1,0 +1,79 @@
+#header {
+    display: flex;
+    flex-direction: row;
+    color: black;
+}
+#header .left {
+    flex: 1;
+    color: white;
+    line-height: 50px;
+    padding-left: 30px;
+    font-size: 35px;
+    font-style: italic;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px silver;
+}
+.lander-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    background-image: url(assets/bg2.jpg);
+    background-size: cover;
+}
+#header {
+    height: 50px;
+    margin: 0;
+    width: 100%;
+}
+#header button {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin: 0;
+}
+#header .right {
+    margin-top: 0;
+    padding-top: 0;
+    padding-right: 10px;
+    line-height: 50px;
+}
+
+#content {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    padding: 0;
+}
+#terrain {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 150px;
+}
+#start {
+    margin-top: 15px;
+    margin-right: 20px;
+}
+
+.disabledContent,
+.disabledContent:hover {
+    cursor: not-allowed;
+    background-color: rgb(229, 229, 229) !important;
+    pointer-events: none;
+}
+
+.disabledContent * {
+    pointer-events: none;
+}
+#hud {
+    position: absolute;
+    top: 10px;
+    width: 270px;
+    right: 10px;
+    height: 95px;
+}
