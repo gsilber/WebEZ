@@ -1996,8 +1996,9 @@ let TaskeditorComponent = (() => {
     let _onSave_decorators;
     let _onCancel_decorators;
     return _a = class TaskeditorComponent extends _classSuper {
-            onTaskTextChange() {
-                this.saveDisabled = this.tasktext === "" ? "disabled" : "";
+            onTaskTextChange(evt) {
+                this.saveDisabled =
+                    evt.target.value === "" ? "disabled" : "";
             }
             /**
              * @description Creates an instance of TaskEditorComponent.
