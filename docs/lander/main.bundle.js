@@ -1659,14 +1659,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Globals = void 0;
 exports.Globals = {
     LANDER_ROTATION_SPEED: 10,
-    LANDER_FUEL_CAPACITY: 140,
+    LANDER_FUEL_CAPACITY: 100,
     LANDER_FUEL_CONSUMPTION: 1,
     THRUST_MULTIPLIER: 2,
     GRAVITY: 1,
     TERRAIN_PART_WIDTH: 100,
     TERRAIN_GOOD_DIFFERENCE: 5,
     TERRAIN_GOOD_VELOCITYX: 3,
-    TERRAIN_GOOD_VELOCITYY: 10,
+    TERRAIN_GOOD_VELOCITYY: 7,
 };
 
 
