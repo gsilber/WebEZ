@@ -27,6 +27,28 @@ export class MainComponent extends EzComponent {
         this.addComponent(this.terrain, "terrain");
         this.addComponent(this.lander, "content");
         this.addComponent(this.hud, "hud");
+        this.setupGame();
+    }
+
+    @BindCSSClass("start")
+    private _startClass: string = "";
+    @Click("start")
+    startGame() {
+        if (this._startClass === "disabledContent") return;
+        this._startClass = "disabledContent";
+        this.lander.startFlying();
+    }
+
+    async setupGame() {
+        await EzDialog.popup(
+            this,
+
+            "Use the <em><b>'A'</b></em> and <em><b>'D'</b></em> keys to rotate the lander.<br/> Use the 'Space Bar' to thrust. <br/>Land on a flat area!<br/><br/>Good Luck!!!",
+            "Welcome to Lunar Lander!",
+            ["Play Game"],
+            "btn btn-success",
+        ).toPromise();
+
         this.lander.gameOver.subscribe((status) => {
             let title: string = "";
             if (status === GameStatus.Crash) {
@@ -53,14 +75,5 @@ export class MainComponent extends EzComponent {
                 }
             });
         });
-    }
-
-    @BindCSSClass("start")
-    private _startClass: string = "";
-    @Click("start")
-    startGame() {
-        if (this._startClass === "disabledContent") return;
-        this._startClass = "disabledContent";
-        this.lander.startFlying();
     }
 }

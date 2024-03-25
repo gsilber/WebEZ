@@ -1930,6 +1930,15 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -1966,36 +1975,42 @@ let MainComponent = (() => {
                 this.addComponent(this.terrain, "terrain");
                 this.addComponent(this.lander, "content");
                 this.addComponent(this.hud, "hud");
-                this.lander.gameOver.subscribe((status) => {
-                    let title = "";
-                    if (status === utils_1.GameStatus.Crash) {
-                        title = "You crashed!";
-                    }
-                    else if (status === utils_1.GameStatus.Orbit) {
-                        title = "You have achieved escape velocity!";
-                    }
-                    else if (status === utils_1.GameStatus.Miss) {
-                        title = "You left the landing zone!";
-                    }
-                    else if (status === utils_1.GameStatus.Land) {
-                        title = "You landed!";
-                    }
-                    webez_1.EzDialog.popup(this, "Try again?", title, ["Yes", "No"], "btn btn-primary").subscribe((response) => {
-                        if (response === "Yes") {
-                            this._startClass = "";
-                            this.startGame();
-                        }
-                        else {
-                            this._startClass = "";
-                        }
-                    });
-                });
+                this.setupGame();
             }
             startGame() {
                 if (this._startClass === "disabledContent")
                     return;
                 this._startClass = "disabledContent";
                 this.lander.startFlying();
+            }
+            setupGame() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    yield webez_1.EzDialog.popup(this, "Use the <em><b>'A'</b></em> and <em><b>'D'</b></em> keys to rotate the lander.<br/> Use the 'Space Bar' to thrust. <br/>Land on a flat area!<br/><br/>Good Luck!!!", "Welcome to Lunar Lander!", ["Play Game"], "btn btn-success").toPromise();
+                    this.lander.gameOver.subscribe((status) => {
+                        let title = "";
+                        if (status === utils_1.GameStatus.Crash) {
+                            title = "You crashed!";
+                        }
+                        else if (status === utils_1.GameStatus.Orbit) {
+                            title = "You have achieved escape velocity!";
+                        }
+                        else if (status === utils_1.GameStatus.Miss) {
+                            title = "You left the landing zone!";
+                        }
+                        else if (status === utils_1.GameStatus.Land) {
+                            title = "You landed!";
+                        }
+                        webez_1.EzDialog.popup(this, "Try again?", title, ["Yes", "No"], "btn btn-primary").subscribe((response) => {
+                            if (response === "Yes") {
+                                this._startClass = "";
+                                this.startGame();
+                            }
+                            else {
+                                this._startClass = "";
+                            }
+                        });
+                    });
+                });
             }
         },
         (() => {
