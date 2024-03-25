@@ -4,6 +4,10 @@ const version: string = '0.3.6';
 import fs from "fs";
 import path from "path";
 
+/**
+ * Display the usage of the webez command
+ * @returns void
+ */
 function usage() {
     console.error("Usage: webez <command> <name>");
     console.error("\tWhere command is one of [new, component, dialog]");
@@ -13,6 +17,11 @@ function usage() {
     console.error("\tExample: webez dialog mydialog");
 }
 
+/**
+ * Find the .webez.json file above the directory path
+ * @param directoryPath The directory path to search above for the .webez.json file
+ * @returns boolean
+ */
 function findWebezConfigFile(directoryPath: string): boolean {
     let currentPath = directoryPath;
     while (currentPath !== "/") {
@@ -24,6 +33,16 @@ function findWebezConfigFile(directoryPath: string): boolean {
     }
     return false;
 }
+
+/**
+ * Copy the scaffold directory to the destination directory replacing template
+ * with the app name ######## exact and $$$$$$$$ converted to camel case
+ * and @@@@@@@@ converted to lowercase
+ * @param src The source directory path
+ * @param dest The destination directory path
+ * @param appName The name of the app
+ * @returns void
+ */
 function copyDirectory(src: string, dest: string, appName: string) {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest);
@@ -51,6 +70,12 @@ function copyDirectory(src: string, dest: string, appName: string) {
     });
 }
 
+/**
+ * Create a new app with the given name if the directory does not exist
+ * @param appName The name of the app to create
+ * @returns void
+ * @throws Error if the directory already exists
+ */
 function newApp(appName: string) {
     console.log("Creating a new app: " + appName);
     if (fs.existsSync(appName))
@@ -72,6 +97,13 @@ function newApp(appName: string) {
     console.log("Done");
 }
 
+/**
+ * Create a new component with the given name if the directory does not exist
+ * @param componentName The name of the component to create
+ * @param dialog A boolean value indicating whether the component is a dialog
+ * @returns void
+ * @throws Error if the directory already exists
+ */
 function createComponent(componentName: string, dialog: boolean) {
     if (
         (!dialog && componentName.endsWith("Component")) ||
@@ -129,6 +161,11 @@ function createComponent(componentName: string, dialog: boolean) {
     console.log("Component scaffold created");
 }
 
+/**
+ * Convert the name to camel case
+ * @param name The name to convert to camel case
+ * @returns string
+ */
 function toCamelCase(name: string) {
     // Convert the name to camel case
     // Implementation of converting name to camel case
@@ -139,6 +176,10 @@ function toCamelCase(name: string) {
     return camelCaseName;
 }
 
+/**
+ * Run the webez command
+ * @returns void
+ */
 function runProgram() {
     // Provide a title to the process in `ps`.
     // Due to an obscure Mac bug, do not start this title with any symbol.
@@ -178,6 +219,8 @@ function runProgram() {
         console.log("Error: " + e.message);
     }
 }
+
+// Run the program
 console.log(`webez v.${version} is starting...`);
 runProgram();
 console.log("Finished");
