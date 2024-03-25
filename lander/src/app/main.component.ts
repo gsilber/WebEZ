@@ -11,15 +11,52 @@ import {
 import { LanderComponent } from "./objects/lander/lander.component";
 import { TerrainComponent } from "./objects/terrain/terrain.component";
 import { GameStatus } from "./objects/utils";
-import { HudComponent } from "./hud/hud.component";
+import { HudComponent } from "./objects/hud/hud.component";
 
+/**
+ * Main Component
+ * @description The main component of the game
+ * @class
+ * @extends EzComponent
+ * @method startGame - Starts the game
+ * @method setupGame - Sets up the game
+ * @property {LanderComponent} lander - The lander object
+ * @property {TerrainComponent} terrain - The terrain object
+ * @property {HudComponent} hud - The hud object
+ */
 export class MainComponent extends EzComponent {
     lander: LanderComponent;
     terrain: TerrainComponent;
     hud: HudComponent = new HudComponent();
+
+    /**
+     * @description The height of the terrain
+     * @type {string}
+     * @default "150"
+     * @summary The height of the terrain
+     * @summary Binds to the terrain component's height
+     * @summary Appends "px" to the value
+     */
     @BindStyle("terrain", "height")
     @AppendPipe("px")
     private _terrainHeight: string = "150";
+
+    /**
+     * @description The class of the start button (for disabling)
+     * @type {string}
+     * @default ""
+     * @summary The class of the start button
+     * @summary Binds to the start button's class (adds disableContent)
+     */
+    @BindCSSClass("start")
+    private _startClass: string = "";
+
+    /**
+     * @description The constructor of the MainComponent
+     * @summary Creates the main component
+     * @memberof MainComponent
+     * @constructor
+     */
     constructor() {
         super(html, css);
         this.terrain = new TerrainComponent(parseInt(this._terrainHeight));
@@ -30,8 +67,13 @@ export class MainComponent extends EzComponent {
         this.setupGame();
     }
 
-    @BindCSSClass("start")
-    private _startClass: string = "";
+    /**
+     * @description Starts the game
+     * @summary Starts the game
+     * @method
+     * @memberof MainComponent
+     * @summary Binds to start button click event
+     */
     @Click("start")
     startGame() {
         if (this._startClass === "disabledContent") return;
@@ -39,6 +81,13 @@ export class MainComponent extends EzComponent {
         this.lander.startFlying();
     }
 
+    /**
+     * @description Sets up the game
+     * @summary Sets up the game.  Shows the help screen, then subscribes to the game over event
+     * @method
+     * @memberof MainComponent
+     * @async
+     */
     async setupGame() {
         await EzDialog.popup(
             this,

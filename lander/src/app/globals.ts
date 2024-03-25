@@ -1,3 +1,6 @@
+/**
+ * Global constants used in the game.
+ */
 export const Globals = {
     LANDER_ROTATION_SPEED: 10,
     LANDER_FUEL_CAPACITY: 100,

@@ -1229,21 +1229,6 @@ module.exports = function (item) {
 
 /***/ }),
 
-/***/ "./src/app/hud/hud.component.css":
-/*!***************************************!*\
-  !*** ./src/app/hud/hud.component.css ***!
-  \***************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".hud-container {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    color: white;\n    border: solid 1px white;\n    border-radius: 10px;\n    z-index: 1;\n}\n\n.hud-border {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    color: white;\n    border: solid 1px white;\n    border-radius: 10px;\n    background: gray;\n    opacity: 30%;\n    z-index: 0;\n}\n#hud {\n    position: absolute;\n    top: 5px;\n    left: 5px;\n    right: 5px;\n    bottom: 5px;\n    color: white;\n    border: solid 1px white;\n    border-radius: 10px;\n    opacity: 100%;\n    display: flex;\n    flex-direction: row;\n}\n.hud-left,\n.hud-right {\n    text-align: left;\n    vertical-align: middle;\n    padding: 5px;\n    font-size: 12px;\n    overflow: hidden;\n}\n.hud-right {\n    flex: 1;\n}\n\n.hud-left {\n    border-right: 1px solid white;\n    width: 130px;\n}\n.hud-left,\n.hud-right,\n.hud-left > div,\n.hud-right > div {\n    display: inline-block;\n}\n\n.warning {\n    color: yellow;\n}\n.danger {\n    color: red;\n    font-weight: bold;\n}\n");
-
-/***/ }),
-
 /***/ "./src/app/main.component.css":
 /*!************************************!*\
   !*** ./src/app/main.component.css ***!
@@ -1256,6 +1241,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#header {\n    display: flex;\n    flex-direction: row;\n    color: black;\n}\n#header .left {\n    flex: 1;\n    color: white;\n    line-height: 50px;\n    padding-left: 30px;\n    font-size: 35px;\n    font-style: italic;\n    font-weight: bold;\n    text-shadow: 2px 2px 4px silver;\n}\n.lander-container {\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    display: flex;\n    flex-direction: column;\n    background-color: black;\n    background-image: url(assets/bg2.jpg);\n    background-size: cover;\n}\n#header {\n    height: 50px;\n    margin: 0;\n    width: 100%;\n}\n#header button {\n    padding-top: 3px;\n    padding-bottom: 3px;\n    margin: 0;\n}\n#header .right {\n    margin-top: 0;\n    padding-top: 0;\n    padding-right: 10px;\n    line-height: 50px;\n}\n\n#content {\n    position: relative;\n    flex: 1;\n    overflow: hidden;\n    padding: 0;\n}\n#terrain {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 150px;\n}\n#start {\n    margin-top: 15px;\n    margin-right: 20px;\n}\n\n.disabledContent,\n.disabledContent:hover {\n    cursor: not-allowed;\n    background-color: rgb(229, 229, 229) !important;\n    pointer-events: none;\n}\n\n.disabledContent * {\n    pointer-events: none;\n}\n#hud {\n    position: absolute;\n    top: 10px;\n    width: 270px;\n    right: 10px;\n    height: 95px;\n}\n");
+
+/***/ }),
+
+/***/ "./src/app/objects/hud/hud.component.css":
+/*!***********************************************!*\
+  !*** ./src/app/objects/hud/hud.component.css ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".hud-container {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    color: white;\n    border: solid 1px white;\n    border-radius: 10px;\n    z-index: 1;\n}\n\n.hud-border {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    color: white;\n    border: solid 1px white;\n    border-radius: 10px;\n    background: gray;\n    opacity: 30%;\n    z-index: 0;\n}\n#hud {\n    position: absolute;\n    top: 5px;\n    left: 5px;\n    right: 5px;\n    bottom: 5px;\n    color: white;\n    border: solid 1px white;\n    border-radius: 10px;\n    opacity: 100%;\n    display: flex;\n    flex-direction: row;\n}\n.hud-left,\n.hud-right {\n    text-align: left;\n    vertical-align: middle;\n    padding: 5px;\n    font-size: 12px;\n    overflow: hidden;\n}\n.hud-right {\n    flex: 1;\n}\n\n.hud-left {\n    border-right: 1px solid white;\n    width: 130px;\n}\n.hud-left,\n.hud-right,\n.hud-left > div,\n.hud-right > div {\n    display: inline-block;\n}\n\n.warning {\n    color: yellow;\n}\n.danger {\n    color: red;\n    font-weight: bold;\n}\n");
 
 /***/ }),
 
@@ -1289,16 +1289,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/app/hud/hud.component.html":
-/*!****************************************!*\
-  !*** ./src/app/hud/hud.component.html ***!
-  \****************************************/
-/***/ ((module) => {
-
-module.exports = "<div class=\"hud-border\"></div>\n<div class=\"hud-container\">\n    <div id=\"hud\">\n        <div class=\"hud-left\">\n            X DeltaV:\n            <div id=\"deltax\">0</div>\n            <br />\n            Y DeltaV:\n            <div id=\"deltay\">0</div>\n            <br />\n            Alt: (msl):\n            <div id=\"altitudemsl\">0</div>\n            <br />\n            Alt: (ground):\n            <div id=\"altitudeterrain\">0</div>\n        </div>\n        <div class=\"hud-right\">\n            Fuel:\n            <div id=\"fuel\">1000</div>\n            <br />\n            Time:\n            <div id=\"time\">0</div>\n            <br />Rotation (deg):\n            <div id=\"rotation\">0</div>\n            <br />Status:\n            <div id=\"status\">flying</div>\n        </div>\n    </div>\n</div>\n";
-
-/***/ }),
-
 /***/ "./src/app/main.component.html":
 /*!*************************************!*\
   !*** ./src/app/main.component.html ***!
@@ -1306,6 +1296,16 @@ module.exports = "<div class=\"hud-border\"></div>\n<div class=\"hud-container\"
 /***/ ((module) => {
 
 module.exports = "<div class=\"lander-container\">\n    <div id=\"header\">\n        <div class=\"left\">WebEZ Lander Game</div>\n        <div class=\"right\">\n            <button id=\"start\" class=\"btn btn-success\">Start Game</button>\n        </div>\n    </div>\n    <div id=\"content\">\n        <div id=\"terrain\"></div>\n        <div id=\"hud\"></div>\n    </div>\n</div>\n";
+
+/***/ }),
+
+/***/ "./src/app/objects/hud/hud.component.html":
+/*!************************************************!*\
+  !*** ./src/app/objects/hud/hud.component.html ***!
+  \************************************************/
+/***/ ((module) => {
+
+module.exports = "<div class=\"hud-border\"></div>\n<div class=\"hud-container\">\n    <div id=\"hud\">\n        <div class=\"hud-left\">\n            X DeltaV:\n            <div id=\"deltax\">0</div>\n            <br />\n            Y DeltaV:\n            <div id=\"deltay\">0</div>\n            <br />\n            Alt: (msl):\n            <div id=\"altitudemsl\">0</div>\n            <br />\n            Alt: (ground):\n            <div id=\"altitudeterrain\">0</div>\n        </div>\n        <div class=\"hud-right\">\n            Fuel:\n            <div id=\"fuel\">1000</div>\n            <br />\n            Time:\n            <div id=\"time\">0</div>\n            <br />Rotation (deg):\n            <div id=\"rotation\">0</div>\n            <br />Status:\n            <div id=\"status\">flying</div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ }),
 
@@ -1667,6 +1667,9 @@ module.exports = styleTagTransform;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Globals = void 0;
+/**
+ * Global constants used in the game.
+ */
 exports.Globals = {
     LANDER_ROTATION_SPEED: 10,
     LANDER_FUEL_CAPACITY: 100,
@@ -1682,10 +1685,199 @@ exports.Globals = {
 
 /***/ }),
 
-/***/ "./src/app/hud/hud.component.ts":
-/*!**************************************!*\
-  !*** ./src/app/hud/hud.component.ts ***!
-  \**************************************/
+/***/ "./src/app/main.component.ts":
+/*!***********************************!*\
+  !*** ./src/app/main.component.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MainComponent = void 0;
+const main_component_html_1 = __importDefault(__webpack_require__(/*! ./main.component.html */ "./src/app/main.component.html"));
+const main_component_css_1 = __importDefault(__webpack_require__(/*! ./main.component.css */ "./src/app/main.component.css"));
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const lander_component_1 = __webpack_require__(/*! ./objects/lander/lander.component */ "./src/app/objects/lander/lander.component.ts");
+const terrain_component_1 = __webpack_require__(/*! ./objects/terrain/terrain.component */ "./src/app/objects/terrain/terrain.component.ts");
+const utils_1 = __webpack_require__(/*! ./objects/utils */ "./src/app/objects/utils.ts");
+const hud_component_1 = __webpack_require__(/*! ./objects/hud/hud.component */ "./src/app/objects/hud/hud.component.ts");
+/**
+ * Main Component
+ * @description The main component of the game
+ * @class
+ * @extends EzComponent
+ * @method startGame - Starts the game
+ * @method setupGame - Sets up the game
+ * @property {LanderComponent} lander - The lander object
+ * @property {TerrainComponent} terrain - The terrain object
+ * @property {HudComponent} hud - The hud object
+ */
+let MainComponent = (() => {
+    var _a;
+    let _classSuper = webez_1.EzComponent;
+    let _instanceExtraInitializers = [];
+    let __terrainHeight_decorators;
+    let __terrainHeight_initializers = [];
+    let __terrainHeight_extraInitializers = [];
+    let __startClass_decorators;
+    let __startClass_initializers = [];
+    let __startClass_extraInitializers = [];
+    let _startGame_decorators;
+    return _a = class MainComponent extends _classSuper {
+            /**
+             * @description The constructor of the MainComponent
+             * @summary Creates the main component
+             * @memberof MainComponent
+             * @constructor
+             */
+            constructor() {
+                super(main_component_html_1.default, main_component_css_1.default);
+                this.lander = __runInitializers(this, _instanceExtraInitializers);
+                this.hud = new hud_component_1.HudComponent();
+                /**
+                 * @description The height of the terrain
+                 * @type {string}
+                 * @default "150"
+                 * @summary The height of the terrain
+                 * @summary Binds to the terrain component's height
+                 * @summary Appends "px" to the value
+                 */
+                this._terrainHeight = __runInitializers(this, __terrainHeight_initializers, "150");
+                /**
+                 * @description The class of the start button (for disabling)
+                 * @type {string}
+                 * @default ""
+                 * @summary The class of the start button
+                 * @summary Binds to the start button's class (adds disableContent)
+                 */
+                this._startClass = (__runInitializers(this, __terrainHeight_extraInitializers), __runInitializers(this, __startClass_initializers, ""));
+                __runInitializers(this, __startClass_extraInitializers);
+                this.terrain = new terrain_component_1.TerrainComponent(parseInt(this._terrainHeight));
+                this.lander = new lander_component_1.LanderComponent(this.terrain.terrainItems, this.hud);
+                this.addComponent(this.terrain, "terrain");
+                this.addComponent(this.lander, "content");
+                this.addComponent(this.hud, "hud");
+                this.setupGame();
+            }
+            /**
+             * @description Starts the game
+             * @summary Starts the game
+             * @method
+             * @memberof MainComponent
+             * @summary Binds to start button click event
+             */
+            startGame() {
+                if (this._startClass === "disabledContent")
+                    return;
+                this._startClass = "disabledContent";
+                this.lander.startFlying();
+            }
+            /**
+             * @description Sets up the game
+             * @summary Sets up the game.  Shows the help screen, then subscribes to the game over event
+             * @method
+             * @memberof MainComponent
+             * @async
+             */
+            setupGame() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    yield webez_1.EzDialog.popup(this, "Use the <em><b>'A'</b></em> and <em><b>'D'</b></em> keys to rotate the lander.<br/> Use the 'Space Bar' to thrust. <br/>Land on a flat area!<br/><br/>Good Luck!!!", "Welcome to Lunar Lander!", ["Play Game"], "btn btn-success").toPromise();
+                    this.lander.gameOver.subscribe((status) => {
+                        let title = "";
+                        if (status === utils_1.GameStatus.Crash) {
+                            title = "You crashed!";
+                        }
+                        else if (status === utils_1.GameStatus.Orbit) {
+                            title = "You have achieved escape velocity!";
+                        }
+                        else if (status === utils_1.GameStatus.Miss) {
+                            title = "You left the landing zone!";
+                        }
+                        else if (status === utils_1.GameStatus.Land) {
+                            title = "You landed!";
+                        }
+                        webez_1.EzDialog.popup(this, "Try again?", title, ["Yes", "No"], "btn btn-primary").subscribe((response) => {
+                            if (response === "Yes") {
+                                this._startClass = "";
+                                this.startGame();
+                            }
+                            else {
+                                this._startClass = "";
+                            }
+                        });
+                    });
+                });
+            }
+        },
+        (() => {
+            var _b;
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
+            __terrainHeight_decorators = [(0, webez_1.BindStyle)("terrain", "height"), (0, webez_1.AppendPipe)("px")];
+            __startClass_decorators = [(0, webez_1.BindCSSClass)("start")];
+            _startGame_decorators = [(0, webez_1.Click)("start")];
+            __esDecorate(_a, null, _startGame_decorators, { kind: "method", name: "startGame", static: false, private: false, access: { has: obj => "startGame" in obj, get: obj => obj.startGame }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(null, null, __terrainHeight_decorators, { kind: "field", name: "_terrainHeight", static: false, private: false, access: { has: obj => "_terrainHeight" in obj, get: obj => obj._terrainHeight, set: (obj, value) => { obj._terrainHeight = value; } }, metadata: _metadata }, __terrainHeight_initializers, __terrainHeight_extraInitializers);
+            __esDecorate(null, null, __startClass_decorators, { kind: "field", name: "_startClass", static: false, private: false, access: { has: obj => "_startClass" in obj, get: obj => obj._startClass, set: (obj, value) => { obj._startClass = value; } }, metadata: _metadata }, __startClass_initializers, __startClass_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+})();
+exports.MainComponent = MainComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/objects/hud/hud.component.ts":
+/*!**********************************************!*\
+  !*** ./src/app/objects/hud/hud.component.ts ***!
+  \**********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -1730,10 +1922,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.HudComponent = void 0;
 const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
-const hud_component_html_1 = __importDefault(__webpack_require__(/*! ./hud.component.html */ "./src/app/hud/hud.component.html"));
-const hud_component_css_1 = __importDefault(__webpack_require__(/*! ./hud.component.css */ "./src/app/hud/hud.component.css"));
-const utils_1 = __webpack_require__(/*! ../objects/utils */ "./src/app/objects/utils.ts");
-const globals_1 = __webpack_require__(/*! ../globals */ "./src/app/globals.ts");
+const hud_component_html_1 = __importDefault(__webpack_require__(/*! ./hud.component.html */ "./src/app/objects/hud/hud.component.html"));
+const hud_component_css_1 = __importDefault(__webpack_require__(/*! ./hud.component.css */ "./src/app/objects/hud/hud.component.css"));
+const utils_1 = __webpack_require__(/*! ../utils */ "./src/app/objects/utils.ts");
+const globals_1 = __webpack_require__(/*! ../../globals */ "./src/app/globals.ts");
 let HudComponent = (() => {
     var _a;
     let _classSuper = webez_1.EzComponent;
@@ -1898,149 +2090,6 @@ exports.HudComponent = HudComponent;
 
 /***/ }),
 
-/***/ "./src/app/main.component.ts":
-/*!***********************************!*\
-  !*** ./src/app/main.component.ts ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
-};
-var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _, done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-        var context = {};
-        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-        if (kind === "accessor") {
-            if (result === void 0) continue;
-            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-            if (_ = accept(result.get)) descriptor.get = _;
-            if (_ = accept(result.set)) descriptor.set = _;
-            if (_ = accept(result.init)) initializers.unshift(_);
-        }
-        else if (_ = accept(result)) {
-            if (kind === "field") initializers.unshift(_);
-            else descriptor[key] = _;
-        }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.MainComponent = void 0;
-const main_component_html_1 = __importDefault(__webpack_require__(/*! ./main.component.html */ "./src/app/main.component.html"));
-const main_component_css_1 = __importDefault(__webpack_require__(/*! ./main.component.css */ "./src/app/main.component.css"));
-const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
-const lander_component_1 = __webpack_require__(/*! ./objects/lander/lander.component */ "./src/app/objects/lander/lander.component.ts");
-const terrain_component_1 = __webpack_require__(/*! ./objects/terrain/terrain.component */ "./src/app/objects/terrain/terrain.component.ts");
-const utils_1 = __webpack_require__(/*! ./objects/utils */ "./src/app/objects/utils.ts");
-const hud_component_1 = __webpack_require__(/*! ./hud/hud.component */ "./src/app/hud/hud.component.ts");
-let MainComponent = (() => {
-    var _a;
-    let _classSuper = webez_1.EzComponent;
-    let _instanceExtraInitializers = [];
-    let __terrainHeight_decorators;
-    let __terrainHeight_initializers = [];
-    let __terrainHeight_extraInitializers = [];
-    let __startClass_decorators;
-    let __startClass_initializers = [];
-    let __startClass_extraInitializers = [];
-    let _startGame_decorators;
-    return _a = class MainComponent extends _classSuper {
-            constructor() {
-                super(main_component_html_1.default, main_component_css_1.default);
-                this.lander = __runInitializers(this, _instanceExtraInitializers);
-                this.hud = new hud_component_1.HudComponent();
-                this._terrainHeight = __runInitializers(this, __terrainHeight_initializers, "150");
-                this._startClass = (__runInitializers(this, __terrainHeight_extraInitializers), __runInitializers(this, __startClass_initializers, ""));
-                __runInitializers(this, __startClass_extraInitializers);
-                this.terrain = new terrain_component_1.TerrainComponent(parseInt(this._terrainHeight));
-                this.lander = new lander_component_1.LanderComponent(this.terrain.terrainItems, this.hud);
-                this.addComponent(this.terrain, "terrain");
-                this.addComponent(this.lander, "content");
-                this.addComponent(this.hud, "hud");
-                this.setupGame();
-            }
-            startGame() {
-                if (this._startClass === "disabledContent")
-                    return;
-                this._startClass = "disabledContent";
-                this.lander.startFlying();
-            }
-            setupGame() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    yield webez_1.EzDialog.popup(this, "Use the <em><b>'A'</b></em> and <em><b>'D'</b></em> keys to rotate the lander.<br/> Use the 'Space Bar' to thrust. <br/>Land on a flat area!<br/><br/>Good Luck!!!", "Welcome to Lunar Lander!", ["Play Game"], "btn btn-success").toPromise();
-                    this.lander.gameOver.subscribe((status) => {
-                        let title = "";
-                        if (status === utils_1.GameStatus.Crash) {
-                            title = "You crashed!";
-                        }
-                        else if (status === utils_1.GameStatus.Orbit) {
-                            title = "You have achieved escape velocity!";
-                        }
-                        else if (status === utils_1.GameStatus.Miss) {
-                            title = "You left the landing zone!";
-                        }
-                        else if (status === utils_1.GameStatus.Land) {
-                            title = "You landed!";
-                        }
-                        webez_1.EzDialog.popup(this, "Try again?", title, ["Yes", "No"], "btn btn-primary").subscribe((response) => {
-                            if (response === "Yes") {
-                                this._startClass = "";
-                                this.startGame();
-                            }
-                            else {
-                                this._startClass = "";
-                            }
-                        });
-                    });
-                });
-            }
-        },
-        (() => {
-            var _b;
-            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            __terrainHeight_decorators = [(0, webez_1.BindStyle)("terrain", "height"), (0, webez_1.AppendPipe)("px")];
-            __startClass_decorators = [(0, webez_1.BindCSSClass)("start")];
-            _startGame_decorators = [(0, webez_1.Click)("start")];
-            __esDecorate(_a, null, _startGame_decorators, { kind: "method", name: "startGame", static: false, private: false, access: { has: obj => "startGame" in obj, get: obj => obj.startGame }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(null, null, __terrainHeight_decorators, { kind: "field", name: "_terrainHeight", static: false, private: false, access: { has: obj => "_terrainHeight" in obj, get: obj => obj._terrainHeight, set: (obj, value) => { obj._terrainHeight = value; } }, metadata: _metadata }, __terrainHeight_initializers, __terrainHeight_extraInitializers);
-            __esDecorate(null, null, __startClass_decorators, { kind: "field", name: "_startClass", static: false, private: false, access: { has: obj => "_startClass" in obj, get: obj => obj._startClass, set: (obj, value) => { obj._startClass = value; } }, metadata: _metadata }, __startClass_initializers, __startClass_extraInitializers);
-            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
-        })(),
-        _a;
-})();
-exports.MainComponent = MainComponent;
-
-
-/***/ }),
-
 /***/ "./src/app/objects/lander/lander.component.ts":
 /*!****************************************************!*\
   !*** ./src/app/objects/lander/lander.component.ts ***!
@@ -2090,13 +2139,19 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LanderComponent = void 0;
 const lander_component_html_1 = __importDefault(__webpack_require__(/*! ./lander.component.html */ "./src/app/objects/lander/lander.component.html"));
 const lander_component_css_1 = __importDefault(__webpack_require__(/*! ./lander.component.css */ "./src/app/objects/lander/lander.component.css"));
-const object_base_component_1 = __webpack_require__(/*! ../object-base.component */ "./src/app/objects/object-base.component.ts");
 const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
 const globals_1 = __webpack_require__(/*! ../../globals */ "./src/app/globals.ts");
 const utils_1 = __webpack_require__(/*! ../utils */ "./src/app/objects/utils.ts");
+/**
+ * @description The Lander Component
+ * @class
+ * @extends EzComponent
+
+ * @property {EventSubject<GameStatus>} gameOver - The game over event
+ */
 let LanderComponent = (() => {
     var _a;
-    let _classSuper = object_base_component_1.ObjectBaseComponent;
+    let _classSuper = webez_1.EzComponent;
     let _instanceExtraInitializers = [];
     let __landerImg_decorators;
     let __landerImg_initializers = [];
@@ -2120,13 +2175,34 @@ let LanderComponent = (() => {
     let _moveAndFlame_decorators;
     let _UpdatePosition_decorators;
     return _a = class LanderComponent extends _classSuper {
+            /**
+             * @description The position of the lander
+             * @returns {Position} The position of the lander
+             * @private
+             * @memberof LanderComponent
+             * @summary Gets the position of the lander in screen coordinates
+             */
             get position() {
                 return { x: parseInt(this._xPos), y: parseInt(this._yPos) };
             }
+            /**
+             * @description Sets the position of the lander
+             * @param {Position} value The new position
+             * @private
+             * @memberof LanderComponent
+             * @summary Sets the position of the lander in screen coordinates within the game div
+             */
             set position(value) {
                 this._xPos = value.x.toString();
                 this._yPos = value.y.toString();
             }
+            /**
+             * @description The world position of the lander
+             * @returns {Position} The world position of the lander
+             * @private
+             * @memberof LanderComponent
+             * @summary Gets the position of the lander in world coordinates origin lower left
+             */
             get worldPosition() {
                 //Note: 50 is the title height
                 //12 is the height of the flame
@@ -2139,6 +2215,12 @@ let LanderComponent = (() => {
                         12,
                 };
             }
+            /**
+             * @description Set The rotation of the lander in degrees
+             * @type {number} The rotation of the lander in degrees
+             * @private
+             * @memberof LanderComponent
+             */
             set rotation(value) {
                 if (value < 0)
                     value = 360 + value;
@@ -2147,49 +2229,187 @@ let LanderComponent = (() => {
                 this._angle = value;
                 this._transform = `rotate(${value}deg)`;
             }
+            /**
+             * @description Get The rotation of the lander in degrees
+             * @returns {number} The rotation of the lander in degrees
+             * @private
+             * @memberof LanderComponent
+             */
             get rotation() {
                 return this._angle;
             }
+            /**
+             * @description Set The flame display
+             * @param {boolean} value The flame display
+             * @memberof LanderComponent
+             * @summary Sets the flame display to show or hide
+             * @private
+             */
             set flameDisplay(value) {
                 this._flameDisplay = value ? "block" : "none";
             }
+            /**
+             * @description Get The flame display
+             * @returns {boolean} The flame display
+             * @private
+             * @memberof LanderComponent
+             * @summary Gets the flame display
+             */
             get flameDisplay() {
                 return this._flameDisplay === "block";
             }
+            /**
+             * @description Get The display of the lander (block or none)
+             * @returns {boolean} The display of the lander
+             * @private
+             * @memberof LanderComponent
+             */
+            get showLander() {
+                return this._showLander === "block";
+            }
+            /**
+             * @description Set The display of the lander (block or none)
+             * @param {boolean} value The display of the lander
+             * @memberof LanderComponent
+             * @summary Sets the display of the lander to show or hide
+             * @private
+             */
+            set showLander(value) {
+                this._showLander = value ? "block" : "none";
+            }
+            /**
+             * @description The altitude above the terrain
+             * @type {number}
+             * @private
+             * @memberof LanderComponent
+             */
+            get altitudeTerrain() {
+                return this.getAltitudeAt(this.position.x + this.landerWidth / 2);
+            }
+            /**
+             * @description The terrain altitude
+             * @type {number}
+             * @private
+             * @memberof LanderComponent
+             */
             constructor(_terrain, hud) {
                 super(lander_component_html_1.default, lander_component_css_1.default);
                 this._terrain = (__runInitializers(this, _instanceExtraInitializers), _terrain);
                 this.hud = hud;
+                /**
+                 * @description The lander image
+                 * @type {string}
+                 * @default "assets/lander.png"
+                 * @private
+                 */
                 this._landerImg = __runInitializers(this, __landerImg_initializers, "assets/lander.png");
+                /** @description Various lander stats
+                 * @private
+                 * @memberof LanderComponent
+                 */
                 this.landerWidth = (__runInitializers(this, __landerImg_extraInitializers), 65);
                 this.landerHeight = 60;
                 this.fuel = 0;
+                /**
+                 * @description The start time for elapsed time calculation
+                 * @private
+                 */
                 this.startTime = new Date();
+                /**
+                 * @description The x position of the lander
+                 * @type {string}
+                 * @default "0"
+                 * @private
+                 * @summary Binds to the lander's style.left
+                 */
                 this._xPos = __runInitializers(this, __xPos_initializers, "0");
+                /**
+                 * @description The y position of the lander
+                 * @type {string}
+                 * @default "0"
+                 * @private
+                 * @summary Binds to the lander's style.top
+                 */
                 this._yPos = (__runInitializers(this, __xPos_extraInitializers), __runInitializers(this, __yPos_initializers, "0"));
+                /**
+                 * @description The rotation transform for the lander
+                 * @type {string}
+                 * @default "0"
+                 * @private
+                 * @summary Binds to the lander's style.transform
+                 * @memberof LanderComponent
+                 * @default "rotate(0 deg)"
+                 */
                 this._transform = (__runInitializers(this, __yPos_extraInitializers), __runInitializers(this, __transform_initializers, "rotate(0 deg)"));
+                /**
+                 * @description The rotation of the lander in degrees
+                 * @type {number}
+                 * @default 0
+                 * @private
+                 * @memberof LanderComponent
+                 */
                 this._angle = (__runInitializers(this, __transform_extraInitializers), 0);
+                /**
+                 * @description The flame display
+                 * @type {string}
+                 * @default "none"
+                 * @private
+                 * @memberof LanderComponent
+                 * @summary Binds to the flame's style.display : show or hide
+                 */
                 this._flameDisplay = __runInitializers(this, __flameDisplay_initializers, "none");
+                /**
+                 * @description The velocity of the lander
+                 * @type {Position}
+                 * @private
+                 * @memberof LanderComponent
+                 */
                 this.velocity = (__runInitializers(this, __flameDisplay_extraInitializers), { x: 0, y: 0 });
+                /**
+                 * @description The display of the lander (block or none)
+                 * @type {string}
+                 * @default "none"
+                 * @private
+                 * @memberof LanderComponent
+                 * @summary Binds to the lander's style.display : show or hide
+                 */
                 this._showLander = __runInitializers(this, __showLander_initializers, "none");
+                /**
+                 * @description boolean as to whether the game is active
+                 * @type {TerrainItem[]}
+                 * @private
+                 * @memberof LanderComponent
+                 */
                 this.flying = (__runInitializers(this, __showLander_extraInitializers), false);
+                /**
+                 * @description The game over event
+                 * @type {EventSubject<GameStatus>}
+                 * @private
+                 * @memberof LanderComponent
+                 */
                 this.gameOver = new webez_1.EventSubject();
                 this.position = { x: 50, y: 50 };
             }
-            get showLander() {
-                return this._showLander === "block";
-            }
-            set showLander(value) {
-                this._showLander = value ? "block" : "none";
-            }
-            get altitudeTerrain() {
-                return this.getAltitudeAt(this.position.x + this.landerWidth / 2);
-            }
+            /**
+             * @description Stops the flame
+             * @param {KeyboardEvent} event The keyboard event
+             * @method
+             * @memberof LanderComponent
+             * @summary Stops the flame on a space bar keyup event
+             */
             stopFlame(event) {
                 if (event.key === " ") {
                     this.flameDisplay = false;
                 }
             }
+            /**
+             * @description Moves and flames the lander
+             * @param {KeyboardEvent} event The keyboard event
+             * @method
+             * @memberof LanderComponent
+             * @summary Rotate the lander left or right and apply thrust by turning
+             * on the flame
+             */
             moveAndFlame(event) {
                 if (this.flying) {
                     switch (event.key) {
@@ -2207,10 +2427,25 @@ let LanderComponent = (() => {
                     }
                 }
             }
+            /**
+             * @description Tests the velocity of the lander
+             * @returns {boolean} Whether the velocity is slow enough to land
+             * @private
+             * @memberof LanderComponent
+             */
             velocityTest() {
                 return (Math.abs(this.velocity.x) < globals_1.Globals.TERRAIN_GOOD_VELOCITYX &&
                     Math.abs(this.velocity.y) < globals_1.Globals.TERRAIN_GOOD_VELOCITYY);
             }
+            /**
+             * @description Main loop Updates the position of the lander
+             * @method
+             * @memberof LanderComponent
+             * @summary Updates the position of the lander based on thrust, gravity and collision detection
+             * @summary Stops the game if the lander crashes, lands, orbits or misses
+             * @summary Binds to timer event every 100ms
+             *      * @private
+             */
             UpdatePosition() {
                 if (this.flying) {
                     //shouldn't happen after collision detection
@@ -2292,6 +2527,11 @@ let LanderComponent = (() => {
                     }
                 }
             }
+            /**
+             * @description Resets the HUD
+             * @method
+             * @memberof LanderComponent
+             */
             resetHud() {
                 this.hud.Rotation = this.rotation;
                 this.hud.Velocity = this.velocity;
@@ -2302,6 +2542,12 @@ let LanderComponent = (() => {
                 this.hud.Time = 0;
                 this.hud.resetFlags();
             }
+            /**
+             * @description Starts the lander flying
+             * @method
+             * @memberof LanderComponent
+             * @summary Starts the lander flying with a random x position
+             */
             startFlying() {
                 this._landerImg = "assets/lander.png";
                 this.startTime = new Date();
@@ -2319,10 +2565,24 @@ let LanderComponent = (() => {
                 this.hud.status = stopType;
                 this.gameOver.next(stopType);
             }
+            /**
+             * @description Gets the altitude above the terrain at a given x position
+             * @param {number} x The x position
+             * @returns {number} The altitude at the x position
+             * @method
+             * @memberof LanderComponent
+             */
             getAltitudeAt(x) {
                 const terrain = this._terrain[Math.floor(x / globals_1.Globals.TERRAIN_PART_WIDTH)];
                 return this.worldPosition.y - terrain.height + terrain.getYatX(x);
             }
+            /**
+             * @description Gets the terrain height at a given x position
+             * @param {number} x The x position
+             * @returns {number} The terrain height at the x position
+             * @method
+             * @memberof LanderComponent
+             */
             getTerrainHeightAt(x) {
                 return this._terrain[Math.floor(x / globals_1.Globals.TERRAIN_PART_WIDTH)].getHeightatX(x);
             }
@@ -2353,27 +2613,6 @@ let LanderComponent = (() => {
         _a;
 })();
 exports.LanderComponent = LanderComponent;
-
-
-/***/ }),
-
-/***/ "./src/app/objects/object-base.component.ts":
-/*!**************************************************!*\
-  !*** ./src/app/objects/object-base.component.ts ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ObjectBaseComponent = void 0;
-const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
-class ObjectBaseComponent extends webez_1.EzComponent {
-    constructor(html, css) {
-        super(html, css);
-    }
-}
-exports.ObjectBaseComponent = ObjectBaseComponent;
 
 
 /***/ }),
@@ -2480,6 +2719,10 @@ exports.TerrainComponent = TerrainComponent;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GameStatus = void 0;
+/**
+ * @description Describes possible game states
+ * @enum
+ */
 var GameStatus;
 (function (GameStatus) {
     GameStatus[GameStatus["Ok"] = 0] = "Ok";

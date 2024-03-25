@@ -13,24 +13,88 @@ import { PaddleComponent } from "./paddle/paddle.component";
 import { Globals } from "./globals";
 import { BallComponent } from "./ball/ball.component";
 
+/**
+ * @description The main component of the game
+ * @export
+ * @class MainComponent
+ * @extends {EzComponent}
+ * @method startGame : event handler for start button
+ * @method updateTimer : Main game loop timer
+ * @method start : Reset and start a new game
+ * @method stop : Stop the game
+ */
 export class MainComponent extends EzComponent {
+    /**
+     * @description The width of the game board
+     * @private
+     * @type {string}
+     * @memberof MainComponent
+     * @summary Binds to game-board style.width
+     */
     @BindStyle("game-board", "width")
     @AppendPipe("px")
     private boardWidth: string = Globals.BOARD_WIDTH.toString();
 
+    /**
+     * @description The height of the game board
+     * @private
+     * @type {string}
+     * @memberof MainComponent
+     * @summary Binds to game-board style.height
+     */
     @BindStyle("game-board", "height")
     @AppendPipe("px")
     private boardHeight: string = Globals.BOARD_HEIGHT.toString();
 
+    /**
+     * @description The paddle component
+     * @private
+     * @type {PaddleComponent}
+     * @memberof MainComponent
+     */
     private paddle: PaddleComponent = new PaddleComponent();
+
+    /**
+     * @description The ball component
+     * @private
+     * @type {BallComponent}
+     * @memberof MainComponent
+     */
     private ball: BallComponent;
 
+    /**
+     * @description The start time of the game
+     * @private
+     * @type {Date}
+     * @memberof MainComponent
+     * @summary Used to calculate the elapsed time
+     */
     private startTime: Date = new Date();
+
+    /**
+     * @description Whether the game is currently playing
+     * @private
+     * @type {boolean}
+     * @memberof MainComponent
+     */
     private playing: boolean = false;
 
+    /**
+     * @description The time elapsed in the game
+     * @private
+     * @type {string}
+     * @memberof MainComponent
+     * @summary Binds to timer innerHTML
+     */
     @BindInnerHTML("timer")
     private time: string = "00:00";
 
+    /**
+     * @description Creates an instance of MainComponent.
+     * @memberof MainComponent
+     * @summary Initializes the game board and components
+     * @summary Subscribes to the ball's gameOver event to handle game over
+     */
     constructor() {
         super(html, css);
         this.ball = new BallComponent(this.paddle);
@@ -51,20 +115,44 @@ export class MainComponent extends EzComponent {
             });
         });
     }
+
+    /**
+     * @description Start a new game
+     * @memberof MainComponent
+     * @summary Resets the game timer and ball
+     * @summary Starts the game loop
+     */
     start() {
         this.time = "00:00";
         this.startTime = new Date();
         this.playing = true;
         this.ball.restart();
     }
+    /**
+     * @description Stop the game
+     * @memberof MainComponent
+     * @summary Stops the game loop
+     */
     stop() {
         this.playing = false;
     }
 
+    /**
+     * @description Event handler for the start button
+     * @memberof MainComponent
+     * @summary Starts the game
+     * @summary Binds to the go button click event
+     */
     @Click("go")
     startGame() {
         this.start();
     }
+
+    /**
+     * @description Main game loop timer
+     * @memberof MainComponent
+     * @summary Updates the game timer every second
+     */
     @Timer(1000)
     updateTimer() {
         if (this.playing) {

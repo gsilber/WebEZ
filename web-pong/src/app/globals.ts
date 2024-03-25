@@ -1,3 +1,6 @@
+/** @description Global values to set up game
+ * @summary These values are used to set up the game board, paddle, and ball
+ */
 export const Globals = {
     BOARD_WIDTH: 600,
     BOARD_HEIGHT: 400,
