@@ -386,6 +386,11 @@ A fully working example can be found here:
 Another here:
 [https://gsilber.github.io/WebEZ/webpong](https://gsilber.github.io/WebEZ/webpong)
 
+And my personal favorite:
+[https://gsilber.github.io/WebEZ/lander](https://gsilber.github.io/WebEZ/lander)
+
+All of these were created with WebEZ without accessing any DOM elements directly.
+
 ## Full Technical Documenation
 
 Full technical documentation is available [https://gsilber.github.io/WebEZ/](https://gsilber.github.io/WebEZ/)

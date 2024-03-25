@@ -4,9 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "webpack --mode development",
-        "build:dev": "webpack --mode development",
-        "build:prod": "webpack --mode production",
+        "deploy": "mkdir -p ../docs/lander && cp -r dist/* ../docs/lander",
+        "build": "webpack --mode development && npm run deploy",
+        "build:dev": "webpack --mode development && npm run deploy",
+        "build:prod": "webpack --mode production && npm run deploy",
         "start": "webpack serve",
         "test": "jest",
         "watch": "jest --watchAll=true",
