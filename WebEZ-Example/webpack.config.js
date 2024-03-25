@@ -18,30 +18,31 @@ module.exports = {
         rules: [
             {
                 test: /\.html$/i,
-                use:[{
-                    loader: 'raw-loader',
-                    options: {
-                        esModule: false,
-                    }
-                }]
-                
-              },
-			// TypeScript
+                use: [
+                    {
+                        loader: "raw-loader",
+                        options: {
+                            esModule: false,
+                        },
+                    },
+                ],
+            },
+            // TypeScript
             {
                 test: /\.tsx?$/,
                 use: "ts-loader",
                 exclude: /node_modules/,
             },
-			// CSS
-			{
+            // CSS
+            {
                 test: /src\/.+\.css$/i,
-                use: [ "css-loader"],
-            },            
-			{
+                use: ["css-loader"],
+            },
+            {
                 test: /^((?!src\/).)*.css$/i,
                 use: ["style-loader", "css-loader"],
-            },            
-			// Images
+            },
+            // Images
             {
                 test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
                 type: "asset/resource",
@@ -71,4 +72,5 @@ module.exports = {
         }),
         new CleanWebpackPlugin(),
     ],
+    devtool: "source-map",
 };

@@ -30,8 +30,7 @@ export interface TaskData {
 export class TaskeditorComponent extends EzComponent {
     @BindValue("tasktext") private tasktext: string = "";
     @BindCSSClass("save") private saveDisabled: string = "disabled";
-    @Input("tasktext") private onTaskTextChange(event: Event) {
-        console.info(event);
+    @Input("tasktext") private onTaskTextChange() {
         this.saveDisabled = this.tasktext === "" ? "disabled" : "";
     }
 

@@ -1,11 +1,3 @@
-/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -16,7 +8,200 @@
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.EzComponent = exports.HttpMethod = void 0;\nconst eventsubject_1 = __webpack_require__(/*! ./eventsubject */ \"./node_modules/@gsilber/webez/eventsubject.js\");\nvar HttpMethod;\n(function (HttpMethod) {\n    HttpMethod[\"GET\"] = \"GET\";\n    HttpMethod[\"POST\"] = \"POST\";\n    HttpMethod[\"PUT\"] = \"PUT\";\n    HttpMethod[\"DELETE\"] = \"DELETE\";\n    HttpMethod[\"PATCH\"] = \"PATCH\";\n    HttpMethod[\"OPTIONS\"] = \"OPTIONS\";\n})(HttpMethod || (exports.HttpMethod = HttpMethod = {}));\n/**\n * @description A base class for creating web components\n * @export\n * @abstract\n * @class EzComponent\n * @example class MyComponent extends EzComponent {\n *   constructor() {\n *     super(\"<h1>Hello World</h1>\", \"h1{color:red;}\");\n *   }\n * }\n */\nclass EzComponent {\n    /**\n     * @description An event that fires when the window is resized\n     * @readonly\n     * @type {EventSubject<SizeInfo>}\n     * @memberof EzComponent\n     * @example this.onResizeEvent.subscribe((sizeInfo) => {\n     *  console.log(sizeInfo.windowWidth);\n     *  console.log(sizeInfo.windowHeight);\n     * });\n     */\n    get onResizeEvent() {\n        return EzComponent.resizeEvent;\n    }\n    /**\n     * @description Creates an instance of EzComponent.\n     * @param {string} [html=\"\"] The html as a string to be used as the body of this component\n     * @param {string} [css=\"\"] The css as a string to be used as the style of this component\n     * @memberof EzComponent\n     * @public\n     * @constructor\n     */\n    constructor(html, css) {\n        this.html = html;\n        this.css = css;\n        this.htmlElement = window.document.createElement(\"div\");\n        this.shadow = this.htmlElement.attachShadow({ mode: \"open\" });\n        this.template = window.document.createElement(\"template\");\n        this.template.innerHTML = this.html;\n        for (let style of window.document.styleSheets) {\n            /* Jest does not populate the ownerNode member, so this can't be tested*/\n            /* istanbul ignore next */\n            if (style.ownerNode)\n                this.shadow.appendChild(style.ownerNode.cloneNode(true));\n        }\n        this.styles = window.document.createElement(\"style\");\n        this.styles.innerHTML = this.css;\n        this.shadow.appendChild(this.styles);\n        const innerDiv = window.document.createElement(\"div\");\n        innerDiv.id = \"rootTemplate\";\n        innerDiv.appendChild(this.template.content);\n        this.template.content.appendChild(innerDiv);\n        this.shadow.appendChild(innerDiv);\n        this.shadow.appendChild(this.template.content.cloneNode(true));\n        if (!window.onresize) {\n            window.onresize = () => {\n                EzComponent.resizeEvent.next({\n                    windowWidth: window.innerWidth,\n                    windowHeight: window.innerHeight,\n                });\n            };\n        }\n    }\n    /**\n     * @description Add a component to the dom\n     * @param component The component to add\n     * @param id The id of the element to append the component to (optional)\n     * @returns void\n     * @memberof EzComponent\n     * @example\n     *   component.addComponent(childComponent);\n     *   component.addComponent(childComponent, \"myDiv\");\n     */\n    addComponent(component, id = \"root\", front = false) {\n        if (front) {\n            if (id === \"root\") {\n                if (this.shadow.firstChild)\n                    this.shadow.insertBefore(component.htmlElement, this.shadow.firstChild);\n            }\n            else {\n                let el = this.shadow.getElementById(id);\n                if (el) {\n                    if (el.firstChild)\n                        el.insertBefore(component.htmlElement, el.firstChild);\n                    else\n                        el.appendChild(component.htmlElement);\n                }\n            }\n        }\n        else {\n            if (id === \"root\") {\n                this.shadow.appendChild(component.htmlElement);\n            }\n            else {\n                let el = this.shadow.getElementById(id);\n                if (el) {\n                    el.appendChild(component.htmlElement);\n                }\n            }\n        }\n    }\n    /**\n     * @description Remove a component from the dom\n     * @param component\n     * @returns EzComponent\n     * @memberof EzComponent\n     * @example\n     * component.addComponent(childComponent);\n     * component.removeComponent(childComponent);\n     */\n    removeComponent(component) {\n        component.htmlElement.remove();\n        return component;\n    }\n    /**\n     * @description Append the component to a dom element\n     * @param domElement\n     * @returns void\n     * @memberof EzComponent\n     * @example component.appendToDomElement(document.getElementById(\"myDiv\"));\n     */\n    appendToDomElement(domElement) {\n        domElement.appendChild(this.htmlElement);\n    }\n    /**\n     * @description Makes an AJAX call\n     * @param {string} url The URL to make the AJAX call to\n     * @param {HttpMethod} method The HTTP method to use (GET or POST)\n     * @param {Headers} headers The headers to send with the request (optional)\n     * @param {T} data The data to send in the request body (optional)\n     * @returns {Promise<T>} A promise that resolves with the response data\n     * @memberof EzComponent\n     * @example myComponent.ajax(\"https://some.api.url.com/posts\", HttpMethod.GET)\n     *  .subscribe((data) => {\n     *   console.log(data);\n     * }, (error) => {\n     *   console.error(error);\n     * });\n     */\n    ajax(url, method, headers = [], data) {\n        const evt = new eventsubject_1.EventSubject();\n        const xhr = new XMLHttpRequest();\n        xhr.open(method, url);\n        for (let header of headers) {\n            Object.keys(header).forEach((key) => {\n                if (header[key])\n                    xhr.setRequestHeader(key, header[key]);\n            });\n        }\n        xhr.setRequestHeader(\"Content-Type\", \"application/json\");\n        xhr.onload = () => {\n            if (xhr.status >= 200 && xhr.status < 300) {\n                evt.next(JSON.parse(xhr.responseText));\n            }\n            else {\n                evt.error(new Error(xhr.statusText));\n            }\n        };\n        xhr.onerror = () => {\n            evt.error(new Error(\"Network error\"));\n        };\n        xhr.send(JSON.stringify(data));\n        return evt;\n    }\n    /**\n     * @description Get the size of the window\n     * @returns {SizeInfo} The size of the window\n     * @memberof EzComponent\n     * @example const sizeInfo: SizeInfo = myComponent.getWindowSize();\n     */\n    getWindowSize() {\n        return {\n            windowWidth: window.innerWidth,\n            windowHeight: window.innerHeight,\n        };\n    }\n}\nexports.EzComponent = EzComponent;\nEzComponent.resizeEvent = new eventsubject_1.EventSubject();\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/EzComponent.js?");
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EzComponent = exports.HttpMethod = void 0;
+const eventsubject_1 = __webpack_require__(/*! ./eventsubject */ "./node_modules/@gsilber/webez/eventsubject.js");
+var HttpMethod;
+(function (HttpMethod) {
+    HttpMethod["GET"] = "GET";
+    HttpMethod["POST"] = "POST";
+    HttpMethod["PUT"] = "PUT";
+    HttpMethod["DELETE"] = "DELETE";
+    HttpMethod["PATCH"] = "PATCH";
+    HttpMethod["OPTIONS"] = "OPTIONS";
+})(HttpMethod || (exports.HttpMethod = HttpMethod = {}));
+/**
+ * @description A base class for creating web components
+ * @export
+ * @abstract
+ * @class EzComponent
+ * @example class MyComponent extends EzComponent {
+ *   constructor() {
+ *     super("<h1>Hello World</h1>", "h1{color:red;}");
+ *   }
+ * }
+ */
+class EzComponent {
+    /**
+     * @description An event that fires when the window is resized
+     * @readonly
+     * @type {EventSubject<SizeInfo>}
+     * @memberof EzComponent
+     * @example this.onResizeEvent.subscribe((sizeInfo) => {
+     *  console.log(sizeInfo.windowWidth);
+     *  console.log(sizeInfo.windowHeight);
+     * });
+     */
+    get onResizeEvent() {
+        return EzComponent.resizeEvent;
+    }
+    /**
+     * @description Creates an instance of EzComponent.
+     * @param {string} [html=""] The html as a string to be used as the body of this component
+     * @param {string} [css=""] The css as a string to be used as the style of this component
+     * @memberof EzComponent
+     * @public
+     * @constructor
+     */
+    constructor(html, css) {
+        this.html = html;
+        this.css = css;
+        this.htmlElement = window.document.createElement("div");
+        this.shadow = this.htmlElement.attachShadow({ mode: "open" });
+        this.template = window.document.createElement("template");
+        this.template.innerHTML = this.html;
+        for (let style of window.document.styleSheets) {
+            /* Jest does not populate the ownerNode member, so this can't be tested*/
+            /* istanbul ignore next */
+            if (style.ownerNode)
+                this.shadow.appendChild(style.ownerNode.cloneNode(true));
+        }
+        this.styles = window.document.createElement("style");
+        this.styles.innerHTML = this.css;
+        this.shadow.appendChild(this.styles);
+        const innerDiv = window.document.createElement("div");
+        innerDiv.id = "rootTemplate";
+        innerDiv.appendChild(this.template.content);
+        this.template.content.appendChild(innerDiv);
+        this.shadow.appendChild(innerDiv);
+        this.shadow.appendChild(this.template.content.cloneNode(true));
+        if (!window.onresize) {
+            window.onresize = () => {
+                EzComponent.resizeEvent.next({
+                    windowWidth: window.innerWidth,
+                    windowHeight: window.innerHeight,
+                });
+            };
+        }
+    }
+    /**
+     * @description Add a component to the dom
+     * @param component The component to add
+     * @param id The id of the element to append the component to (optional)
+     * @returns void
+     * @memberof EzComponent
+     * @example
+     *   component.addComponent(childComponent);
+     *   component.addComponent(childComponent, "myDiv");
+     */
+    addComponent(component, id = "root", front = false) {
+        if (front) {
+            if (id === "root") {
+                if (this.shadow.firstChild)
+                    this.shadow.insertBefore(component.htmlElement, this.shadow.firstChild);
+            }
+            else {
+                let el = this.shadow.getElementById(id);
+                if (el) {
+                    if (el.firstChild)
+                        el.insertBefore(component.htmlElement, el.firstChild);
+                    else
+                        el.appendChild(component.htmlElement);
+                }
+            }
+        }
+        else {
+            if (id === "root") {
+                this.shadow.appendChild(component.htmlElement);
+            }
+            else {
+                let el = this.shadow.getElementById(id);
+                if (el) {
+                    el.appendChild(component.htmlElement);
+                }
+            }
+        }
+    }
+    /**
+     * @description Remove a component from the dom
+     * @param component
+     * @returns EzComponent
+     * @memberof EzComponent
+     * @example
+     * component.addComponent(childComponent);
+     * component.removeComponent(childComponent);
+     */
+    removeComponent(component) {
+        component.htmlElement.remove();
+        return component;
+    }
+    /**
+     * @description Append the component to a dom element
+     * @param domElement
+     * @returns void
+     * @memberof EzComponent
+     * @example component.appendToDomElement(document.getElementById("myDiv"));
+     */
+    appendToDomElement(domElement) {
+        domElement.appendChild(this.htmlElement);
+    }
+    /**
+     * @description Makes an AJAX call
+     * @param {string} url The URL to make the AJAX call to
+     * @param {HttpMethod} method The HTTP method to use (GET or POST)
+     * @param {Headers} headers The headers to send with the request (optional)
+     * @param {T} data The data to send in the request body (optional)
+     * @returns {Promise<T>} A promise that resolves with the response data
+     * @memberof EzComponent
+     * @example myComponent.ajax("https://some.api.url.com/posts", HttpMethod.GET)
+     *  .subscribe((data) => {
+     *   console.log(data);
+     * }, (error) => {
+     *   console.error(error);
+     * });
+     */
+    ajax(url, method, headers = [], data) {
+        const evt = new eventsubject_1.EventSubject();
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        for (let header of headers) {
+            Object.keys(header).forEach((key) => {
+                if (header[key])
+                    xhr.setRequestHeader(key, header[key]);
+            });
+        }
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                evt.next(JSON.parse(xhr.responseText));
+            }
+            else {
+                evt.error(new Error(xhr.statusText));
+            }
+        };
+        xhr.onerror = () => {
+            evt.error(new Error("Network error"));
+        };
+        xhr.send(JSON.stringify(data));
+        return evt;
+    }
+    /**
+     * @description Get the size of the window
+     * @returns {SizeInfo} The size of the window
+     * @memberof EzComponent
+     * @example const sizeInfo: SizeInfo = myComponent.getWindowSize();
+     */
+    getWindowSize() {
+        return {
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight,
+        };
+    }
+}
+exports.EzComponent = EzComponent;
+EzComponent.resizeEvent = new eventsubject_1.EventSubject();
+
 
 /***/ }),
 
@@ -27,7 +212,189 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.EzDialog = exports.popupDialog = void 0;\nconst EzComponent_1 = __webpack_require__(/*! ./EzComponent */ \"./node_modules/@gsilber/webez/EzComponent.js\");\nconst eventsubject_1 = __webpack_require__(/*! ./eventsubject */ \"./node_modules/@gsilber/webez/eventsubject.js\");\n/** @hidden */\nexports.popupDialog = undefined;\nconst alertDialogTempalte = `\n<div style=\"width: 600px; margin: -10px\">\n    <div\n        id=\"title\"\n        style=\"\n            background: silver;\n            padding: 10px;\n            font-size: 20pt;\n            font-weight: bold;\n            overflow: hidden;\n        \"\n    >\n        My Dialog\n    </div>\n    <div\n        style=\"\n            display: flex;\n            min-height: 100px;\n            margin: 10px;\n            font-size: 20px;\n            text-align: center;\n            align-items: center;\n            justify-items: center;\n            line-height: 20px;\n        \"\n    >\n        <div\n            id=\"content\"\n            style=\"display: block; width: 100%; text-align: center\"\n        >\n            Question goes here\n        </div>\n    </div>\n    <div id=\"buttonDiv\" style=\"margin: 10px; text-align: right; justify-content: center\">\n    </div>\n</div>`;\nconst backgroundTemplate = `\n.dialog-background {\n    display: none;\n    position: absolute;\n    text-align:center;\n    z-index: 1050;\n    top: 0;\n    right: 0;\n    bottom: 0;\n    left: 0;\n    overflow: hidden;\n    outline: 0;\n    background-color: rgb(0, 0, 0, 0.5);\n\n}`;\nconst popupTemplate = `\n.dialog-popup {\n    position: relative;\n    top:50%;\n    background-color: white;\n    border-radius: 10px;\n    padding: 10px;\n    transform: translateY(-50%);\n    margin:auto;\n    box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);\n\tdisplay:inline-block;\n\toverflow:hidden;\n}`;\n/**\n * @description A dialog component that can be used to create a popup dialog\n * @export\n * @class EzDialog\n * @extends {EzComponent}\n * @example const dialog = new EzDialog(\"<h1>Hello World</h1>\", \"h1{color:red;}\");\n */\nclass EzDialog extends EzComponent_1.EzComponent {\n    /**\n     * @description Creates an instance of EzComponent.\n     * @param {string} [html=\"\"] The html as a string to be used as the body of this component\n     * @param {string} [css=\"\"] The css as a string to be used as the style of this component\n     * @memberof EzComponent\n     * @public\n     * @constructor\n     * @example const dlg = new EzDialog(\"<h1>Hello World</h1>\", \"h1{color:red;}\");\n     */\n    constructor(html = \"\", css = \"\") {\n        super(html, css);\n        this.closeEvent = new eventsubject_1.EventSubject();\n        const styleEl = window.document.createElement(\"style\");\n        styleEl.innerHTML = backgroundTemplate + popupTemplate;\n        this[\"shadow\"].appendChild(styleEl);\n        //now add 2 more divs\n        this.background = window.document.createElement(\"div\");\n        this.background.className = \"dialog-background\";\n        this.background.id = \"background-root\";\n        this.background.style.display = \"none\";\n        this.popup = window.document.createElement(\"div\");\n        this.popup.className = \"dialog-popup\";\n        this.background.appendChild(this.popup);\n        this[\"shadow\"].appendChild(this.background);\n        const outside = this[\"shadow\"].getElementById(\"rootTemplate\");\n        if (outside)\n            this.popup.appendChild(outside);\n    }\n    /**\n     * @description Show or hide the dialog\n     * @param {boolean} [show=true] Show or hide the dialog\n     * @returns void\n     * @memberof EzDialog\n     * @example\n     * const dialog = new MyDialog();\n     * dialog.show();\n     * dialog.closeEvent.subscribe((value) => {\n     *    console.log(value);\n     *    dialog.show(false);\n     * });\n     */\n    show(show = true) {\n        if (show) {\n            this.background.style.display = \"inline-block\";\n        }\n        else {\n            this.background.style.display = \"none\";\n        }\n    }\n    /**\n     * @description Show a popup dialog\n     * @static\n     * @param {EzComponent} attachTo The component to attach the dialog to\n     * @param {string} message The message to display\n     * @param {string} [title=\"Alert\"] The title of the dialog\n     * @param {string[]} [buttons=[\"Ok\"]] The buttons to display\n     * @param {string} [btnClass=\"\"] The class to apply to the buttons\n     * @returns {EventSubject<string>} The event subject that is triggered when the dialog is closed\n     * @memberof EzDialog\n     * @example\n     * EzDialog.popup(\"Hello World\", \"Alert\", [\"Ok\",\"Cancel\"], \"btn btn-primary\")\n     *    .subscribe((value:string) => {\n     *       if (value === \"Ok\") console.log(\"Ok was clicked\");\n     *       else console.log(\"Cancel was clicked\");\n     *   });\n     *\n     *\n     */\n    static popup(attachTo, message, title = \"Alert\", buttons = [\"Ok\"], btnClass = \"\") {\n        const dialog = new EzDialog(alertDialogTempalte);\n        exports.popupDialog = dialog;\n        let titleEl = dialog[\"shadow\"].getElementById(\"title\");\n        if (titleEl)\n            titleEl.innerHTML = title;\n        let contentEl = dialog[\"shadow\"].getElementById(\"content\");\n        if (contentEl)\n            contentEl.innerHTML = message;\n        //add buttons\n        const buttonDiv = dialog[\"shadow\"].getElementById(\"buttonDiv\");\n        if (buttonDiv) {\n            for (let btn of buttons) {\n                let button = window.document.createElement(\"button\");\n                button.innerHTML = btn;\n                button.value = btn;\n                button.id = \"btn_\" + btn;\n                button.className = btnClass;\n                button.style.marginLeft = \"10px\";\n                button.addEventListener(\"click\", () => {\n                    dialog.show(false);\n                    dialog.closeEvent.next(button.value);\n                });\n                buttonDiv.appendChild(button);\n            }\n        }\n        attachTo.addComponent(dialog);\n        dialog.show();\n        dialog.closeEvent.subscribe(() => {\n            attachTo[\"removeComponent\"](dialog);\n        });\n        return dialog.closeEvent;\n    }\n}\nexports.EzDialog = EzDialog;\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/EzDialog.js?");
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EzDialog = exports.popupDialog = void 0;
+const EzComponent_1 = __webpack_require__(/*! ./EzComponent */ "./node_modules/@gsilber/webez/EzComponent.js");
+const eventsubject_1 = __webpack_require__(/*! ./eventsubject */ "./node_modules/@gsilber/webez/eventsubject.js");
+/** @hidden */
+exports.popupDialog = undefined;
+const alertDialogTempalte = `
+<div style="width: 600px; margin: -10px">
+    <div
+        id="title"
+        style="
+            background: silver;
+            padding: 10px;
+            font-size: 20pt;
+            font-weight: bold;
+            overflow: hidden;
+        "
+    >
+        My Dialog
+    </div>
+    <div
+        style="
+            display: flex;
+            min-height: 100px;
+            margin: 10px;
+            font-size: 20px;
+            text-align: center;
+            align-items: center;
+            justify-items: center;
+            line-height: 20px;
+        "
+    >
+        <div
+            id="content"
+            style="display: block; width: 100%; text-align: center"
+        >
+            Question goes here
+        </div>
+    </div>
+    <div id="buttonDiv" style="margin: 10px; text-align: right; justify-content: center">
+    </div>
+</div>`;
+const backgroundTemplate = `
+.dialog-background {
+    display: none;
+    position: absolute;
+    text-align:center;
+    z-index: 1050;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    outline: 0;
+    background-color: rgb(0, 0, 0, 0.5);
+
+}`;
+const popupTemplate = `
+.dialog-popup {
+    position: relative;
+    top:50%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    transform: translateY(-50%);
+    margin:auto;
+    box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);
+	display:inline-block;
+	overflow:hidden;
+}`;
+/**
+ * @description A dialog component that can be used to create a popup dialog
+ * @export
+ * @class EzDialog
+ * @extends {EzComponent}
+ * @example const dialog = new EzDialog("<h1>Hello World</h1>", "h1{color:red;}");
+ */
+class EzDialog extends EzComponent_1.EzComponent {
+    /**
+     * @description Creates an instance of EzComponent.
+     * @param {string} [html=""] The html as a string to be used as the body of this component
+     * @param {string} [css=""] The css as a string to be used as the style of this component
+     * @memberof EzComponent
+     * @public
+     * @constructor
+     * @example const dlg = new EzDialog("<h1>Hello World</h1>", "h1{color:red;}");
+     */
+    constructor(html = "", css = "") {
+        super(html, css);
+        this.closeEvent = new eventsubject_1.EventSubject();
+        const styleEl = window.document.createElement("style");
+        styleEl.innerHTML = backgroundTemplate + popupTemplate;
+        this["shadow"].appendChild(styleEl);
+        //now add 2 more divs
+        this.background = window.document.createElement("div");
+        this.background.className = "dialog-background";
+        this.background.id = "background-root";
+        this.background.style.display = "none";
+        this.popup = window.document.createElement("div");
+        this.popup.className = "dialog-popup";
+        this.background.appendChild(this.popup);
+        this["shadow"].appendChild(this.background);
+        const outside = this["shadow"].getElementById("rootTemplate");
+        if (outside)
+            this.popup.appendChild(outside);
+    }
+    /**
+     * @description Show or hide the dialog
+     * @param {boolean} [show=true] Show or hide the dialog
+     * @returns void
+     * @memberof EzDialog
+     * @example
+     * const dialog = new MyDialog();
+     * dialog.show();
+     * dialog.closeEvent.subscribe((value) => {
+     *    console.log(value);
+     *    dialog.show(false);
+     * });
+     */
+    show(show = true) {
+        if (show) {
+            this.background.style.display = "inline-block";
+        }
+        else {
+            this.background.style.display = "none";
+        }
+    }
+    /**
+     * @description Show a popup dialog
+     * @static
+     * @param {EzComponent} attachTo The component to attach the dialog to
+     * @param {string} message The message to display
+     * @param {string} [title="Alert"] The title of the dialog
+     * @param {string[]} [buttons=["Ok"]] The buttons to display
+     * @param {string} [btnClass=""] The class to apply to the buttons
+     * @returns {EventSubject<string>} The event subject that is triggered when the dialog is closed
+     * @memberof EzDialog
+     * @example
+     * EzDialog.popup("Hello World", "Alert", ["Ok","Cancel"], "btn btn-primary")
+     *    .subscribe((value:string) => {
+     *       if (value === "Ok") console.log("Ok was clicked");
+     *       else console.log("Cancel was clicked");
+     *   });
+     *
+     *
+     */
+    static popup(attachTo, message, title = "Alert", buttons = ["Ok"], btnClass = "") {
+        const dialog = new EzDialog(alertDialogTempalte);
+        exports.popupDialog = dialog;
+        let titleEl = dialog["shadow"].getElementById("title");
+        if (titleEl)
+            titleEl.innerHTML = title;
+        let contentEl = dialog["shadow"].getElementById("content");
+        if (contentEl)
+            contentEl.innerHTML = message;
+        //add buttons
+        const buttonDiv = dialog["shadow"].getElementById("buttonDiv");
+        if (buttonDiv) {
+            for (let btn of buttons) {
+                let button = window.document.createElement("button");
+                button.innerHTML = btn;
+                button.value = btn;
+                button.id = "btn_" + btn;
+                button.className = btnClass;
+                button.style.marginLeft = "10px";
+                button.addEventListener("click", () => {
+                    dialog.show(false);
+                    dialog.closeEvent.next(button.value);
+                });
+                buttonDiv.appendChild(button);
+            }
+        }
+        attachTo.addComponent(dialog);
+        dialog.show();
+        dialog.closeEvent.subscribe(() => {
+            attachTo["removeComponent"](dialog);
+        });
+        return dialog.closeEvent;
+    }
+}
+exports.EzDialog = EzDialog;
+
 
 /***/ }),
 
@@ -38,7 +405,336 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.ReplacePipe = exports.PrependPipe = exports.AppendPipe = exports.Pipe = exports.BindValue = exports.BindInnerHTML = exports.BindCSSClass = exports.BindStyle = void 0;\n/**\n * @description Gets the public key of the field name\n * @param name the name of the field\n * @returns the public key\n */\nfunction getPublicKey(name) {\n    return String(name);\n}\n/**\n * @description Gets the private key of the field name\n * @param name the name of the field\n * @returns the private key\n */\nfunction getPrivateKey(name) {\n    return `__${String(name)}`;\n}\n/**\n * @description Gets the pipe key of the field name\n * @param name the name of the field\n * @returns the pipe key\n */\nfunction getPipeKey(name) {\n    return `__${String(name)}_pipe`;\n}\n/**\n * @description computes a piped value\n * @param target the class to decorate\n * @param name the name of the field\n * @returns The field with the pipe applied if it has not already been applied\n */\nfunction computePipe(target, name, value) {\n    const pipeKey = getPipeKey(name);\n    let newValue = value;\n    if (target[pipeKey]) {\n        newValue = target[pipeKey](newValue);\n    }\n    return newValue;\n}\n/**\n * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.\n * @param target the class to replace the setter in\n * @param name the property to replace the setter for\n * @param value the initial value of the property\n * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.\n */\nfunction hookProperty(target, name, value, setter) {\n    const publicKey = getPublicKey(name);\n    const privateKey = getPrivateKey(name);\n    Object.defineProperty(target, privateKey, {\n        value,\n        writable: true,\n        enumerable: false,\n        configurable: true,\n    });\n    Object.defineProperty(target, publicKey, {\n        get() {\n            return this[privateKey];\n        },\n        set(value) {\n            this[privateKey] = value;\n            setter(value);\n        },\n        enumerable: true,\n        configurable: true,\n    });\n}\n/**\n * @description Replace setter and getter with the ones provided.  These may call the original setter and getter.\n * @param target the class to replace the setter and getter in\n * @param name the property to replace the setter and getter for\n * @param origDescriptor the original property descriptor\n * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.\n */\nfunction hookPropertySetter(target, name, origDescriptor, setter) {\n    const publicKey = getPublicKey(name);\n    Object.defineProperty(target, publicKey, {\n        get: origDescriptor.get, // Leave the get accessor as it was\n        set(value) {\n            if (origDescriptor.set) {\n                origDescriptor.set.call(target, value); // Call the original set accessor with the provided value\n            }\n            setter(value);\n        },\n        enumerable: origDescriptor.enumerable,\n        configurable: origDescriptor.configurable,\n    });\n}\n/**\n * @description Returns a property descriptor for a property in this class\n * @param target the class to get the property descriptor from\n * @param key the property to get the descriptor for\n * @returns PropertyDescriptor\n */\nfunction getPropertyDescriptor(target, key) {\n    let origDescriptor = Object.getOwnPropertyDescriptor(target, key);\n    /* this can't happen.  Just here for type safety checking*/\n    /* istanbul ignore next */\n    if (!origDescriptor) {\n        throw new Error(`can not find setter with name: ${key}`);\n    }\n    return origDescriptor;\n}\n/**\n * @description Decorator to bind a specific style to an element\n * @param id the element to bind the property to\n * @param style the style to bind (i.e. background-color, left, top, etc.)\n * @returns DecoratorCallback\n * @export\n * @example\n * //This will set the background color of the div with id myDiv to the value in backgroundColor\n * @BindStyle(\"myDiv\", \"backgroundColor\")\n * public backgroundColor: string = \"red\";\n */\nfunction BindStyle(id, style) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            const element = this[\"shadow\"].getElementById(id);\n            if (!element) {\n                throw new Error(`can not find HTML element with id: ${id}`);\n            }\n            const publicKey = getPublicKey(context.name);\n            const origDescriptor = getPropertyDescriptor(this, publicKey);\n            const value = context.access.get(this);\n            //replace the style tag with the new value\n            element.style[style] = computePipe(this, context.name, value);\n            if (origDescriptor.set) {\n                hookPropertySetter(this, context.name, origDescriptor, (value) => {\n                    element.style[style] = computePipe(this, context.name, value);\n                });\n            }\n            else {\n                hookProperty(this, context.name, value, (value) => {\n                    element.style[style] = computePipe(this, context.name, value);\n                });\n            }\n        });\n    };\n}\nexports.BindStyle = BindStyle;\n/**\n * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators\n * @param id the element to bind the property to\n * @returns DecoratorCallback\n * @export\n * @example\n * //This will set the CSS class of the div with id myDiv to the value in cssClass\n * @BindCSSClass(\"myDiv\")\n * public cssClass: string = \"myCSSClass\";\n */\nfunction BindCSSClass(id) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            const element = this[\"shadow\"].getElementById(id);\n            if (!element) {\n                throw new Error(`can not find HTML element with id: ${id}`);\n            }\n            const publicKey = getPublicKey(context.name);\n            const origDescriptor = getPropertyDescriptor(this, publicKey);\n            const origValue = element.className;\n            const value = context.access.get(this);\n            element.className = origValue + \" \" + value;\n            if (origDescriptor.set) {\n                hookPropertySetter(this, context.name, origDescriptor, (value) => {\n                    element[\"className\"] = origValue + \" \" + value;\n                });\n            }\n            else {\n                hookProperty(this, context.name, value, (value) => {\n                    element[\"className\"] = origValue + \" \" + value;\n                });\n            }\n        });\n    };\n}\nexports.BindCSSClass = BindCSSClass;\n/**\n * @description Decorator to bind the innerHtml property to an element.\n * @param id the element to bind the property to\n * @returns DecoratorCallback\n * @export\n * @example\n * //This will display Hello World in the div with id myDiv\n * @BindInnerHTML(\"myDiv\")\n * public hello: string = \"Hello World\";\n */\nfunction BindInnerHTML(id) {\n    return function (_target, context) {\n        context.addInitializer(function () {\n            const element = this[\"shadow\"].getElementById(id);\n            if (!element) {\n                throw new Error(`can not find HTML element with id: ${id}`);\n            }\n            const publicKey = getPublicKey(context.name);\n            const origDescriptor = getPropertyDescriptor(this, publicKey);\n            const value = context.access.get(this);\n            element.innerHTML = computePipe(this, context.name, value);\n            if (origDescriptor.set) {\n                hookPropertySetter(this, context.name, origDescriptor, (value) => {\n                    element[\"innerHTML\"] = computePipe(this, context.name, value);\n                });\n            }\n            else {\n                hookProperty(this, context.name, value, (value) => {\n                    element[\"innerHTML\"] = computePipe(this, context.name, value);\n                });\n            }\n        });\n    };\n}\nexports.BindInnerHTML = BindInnerHTML;\n/**\n * @description Decorator to bind the Value property to an element.  Should be input elements\n * @param id the element to bind the property to\n * @returns DecoratorCallback\n * @note This decorator should be last in the list of decorators for a property and can only appear once.\n * @export\n * @example\n * //This will bind the value of the input element with id myInput to the value property of the class\n * @BindValue(\"myInput\")\n * public value: string = \"Hello\";\n */\nfunction BindValue(id) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            const element = this[\"shadow\"].getElementById(id);\n            if (!element) {\n                throw new Error(`can not find HTML element with id: ${id}`);\n            }\n            const publicKey = getPublicKey(context.name);\n            const origDescriptor = getPropertyDescriptor(this, publicKey);\n            const value = context.access.get(this);\n            element.value = value;\n            //hook both getter and setter to value\n            if (origDescriptor.set) {\n                throw new Error(\"Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.\");\n            }\n            else {\n                hookProperty(this, context.name, value, (value) => {\n                    element[\"value\"] = value;\n                });\n                element.addEventListener(\"input\", () => {\n                    this[publicKey] = element.value;\n                });\n            }\n        });\n    };\n}\nexports.BindValue = BindValue;\n/**\n * @description Decorator to transform the value of a property before it is set on the html element.\n * @param fn {PipeFunction} the function to transform the value\n * @returns DecoratorCallback\n * @example\n * //This will display Hello World in the div with id myDiv\n * @Pipe((v: string) => v + \" World\")\n * @BindInnerHTML(\"myDiv\")\n * public hello: string = \"Hello\";\n * @export\n */\nfunction Pipe(fn) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            const privateKey = getPipeKey(context.name);\n            //get method descriptor for publicKey in This\n            if (this[privateKey]) {\n                //overwrite it and call the original first\n                const origMethod = this[privateKey];\n                this[privateKey] = (value) => {\n                    return fn(origMethod(value));\n                };\n                context.access.set(this, context.access.get(this));\n            }\n            else {\n                this[privateKey] = fn;\n                context.access.set(this, context.access.get(this));\n            }\n        });\n    };\n}\nexports.Pipe = Pipe;\n/**\n * @description Decorator to append to the value of a property before it is set on the html element.\n * @param val string to append\n * @returns DecoratorCallback\n * @export\n * @example\n * //This will display Hello World in the div with id myDiv\n * @AppendPipe(\" World\")\n * @BindInnerHTML(\"myDiv\")\n * public hello: string = \"Hello\";\n */\nfunction AppendPipe(val) {\n    return Pipe((v) => v + val);\n}\nexports.AppendPipe = AppendPipe;\n/**\n * @description Decorator to prepend the value of a property before it is set on the html element.\n * @param val The string to prepend\n * @returns DecoratorCallback\n * @export\n * @example\n * //This will display Hello World in the div with id myDiv\n * @PrependPipe(\"Hello \")\n * @BindInnerHTML(\"myDiv\")\n * public hello: string = \"World\";\n */\nfunction PrependPipe(val) {\n    return Pipe((v) => val + v);\n}\nexports.PrependPipe = PrependPipe;\n/**\n * @description Decorator to replace the value of a property before it is set on the html element.\n * @param search {string | RegExp} The string to replace\n * @param  replaceWith The string to replace in the current string\n * @returns DecoratorCallback\n * @export\n * @example\n * //This will display Hello World in the div with id myDiv\n * @ReplacePipe(\"planet\", \"World\")\n * @BindInnerHTML(\"myDiv\")\n * public hello: string = \"Hello planet\";\n */\nfunction ReplacePipe(search, replaceWith) {\n    return Pipe((v) => v.replace(search, replaceWith));\n}\nexports.ReplacePipe = ReplacePipe;\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/bind.decorators.js?");
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReplacePipe = exports.PrependPipe = exports.AppendPipe = exports.Pipe = exports.BindValue = exports.BindInnerHTML = exports.BindCSSClass = exports.BindStyle = void 0;
+/**
+ * @description Gets the public key of the field name
+ * @param name the name of the field
+ * @returns the public key
+ */
+function getPublicKey(name) {
+    return String(name);
+}
+/**
+ * @description Gets the private key of the field name
+ * @param name the name of the field
+ * @returns the private key
+ */
+function getPrivateKey(name) {
+    return `__${String(name)}`;
+}
+/**
+ * @description Gets the pipe key of the field name
+ * @param name the name of the field
+ * @returns the pipe key
+ */
+function getPipeKey(name) {
+    return `__${String(name)}_pipe`;
+}
+/**
+ * @description computes a piped value
+ * @param target the class to decorate
+ * @param name the name of the field
+ * @returns The field with the pipe applied if it has not already been applied
+ */
+function computePipe(target, name, value) {
+    const pipeKey = getPipeKey(name);
+    let newValue = value;
+    if (target[pipeKey]) {
+        newValue = target[pipeKey](newValue);
+    }
+    return newValue;
+}
+/**
+ * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
+ * @param target the class to replace the setter in
+ * @param name the property to replace the setter for
+ * @param value the initial value of the property
+ * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
+ */
+function hookProperty(target, name, value, setter) {
+    const publicKey = getPublicKey(name);
+    const privateKey = getPrivateKey(name);
+    Object.defineProperty(target, privateKey, {
+        value,
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
+    Object.defineProperty(target, publicKey, {
+        get() {
+            return this[privateKey];
+        },
+        set(value) {
+            this[privateKey] = value;
+            setter(value);
+        },
+        enumerable: true,
+        configurable: true,
+    });
+}
+/**
+ * @description Replace setter and getter with the ones provided.  These may call the original setter and getter.
+ * @param target the class to replace the setter and getter in
+ * @param name the property to replace the setter and getter for
+ * @param origDescriptor the original property descriptor
+ * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
+ */
+function hookPropertySetter(target, name, origDescriptor, setter) {
+    const publicKey = getPublicKey(name);
+    Object.defineProperty(target, publicKey, {
+        get: origDescriptor.get, // Leave the get accessor as it was
+        set(value) {
+            if (origDescriptor.set) {
+                origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
+            }
+            setter(value);
+        },
+        enumerable: origDescriptor.enumerable,
+        configurable: origDescriptor.configurable,
+    });
+}
+/**
+ * @description Returns a property descriptor for a property in this class
+ * @param target the class to get the property descriptor from
+ * @param key the property to get the descriptor for
+ * @returns PropertyDescriptor
+ */
+function getPropertyDescriptor(target, key) {
+    let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
+    /* this can't happen.  Just here for type safety checking*/
+    /* istanbul ignore next */
+    if (!origDescriptor) {
+        throw new Error(`can not find setter with name: ${key}`);
+    }
+    return origDescriptor;
+}
+/**
+ * @description Decorator to bind a specific style to an element
+ * @param id the element to bind the property to
+ * @param style the style to bind (i.e. background-color, left, top, etc.)
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will set the background color of the div with id myDiv to the value in backgroundColor
+ * @BindStyle("myDiv", "backgroundColor")
+ * public backgroundColor: string = "red";
+ */
+function BindStyle(id, style) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            //replace the style tag with the new value
+            element.style[style] = computePipe(this, context.name, value);
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, (value) => {
+                    element.style[style] = computePipe(this, context.name, value);
+                });
+            }
+            else {
+                hookProperty(this, context.name, value, (value) => {
+                    element.style[style] = computePipe(this, context.name, value);
+                });
+            }
+        });
+    };
+}
+exports.BindStyle = BindStyle;
+/**
+ * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will set the CSS class of the div with id myDiv to the value in cssClass
+ * @BindCSSClass("myDiv")
+ * public cssClass: string = "myCSSClass";
+ */
+function BindCSSClass(id) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const origValue = element.className;
+            const value = context.access.get(this);
+            element.className = origValue + " " + value;
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, (value) => {
+                    element["className"] = origValue + " " + value;
+                });
+            }
+            else {
+                hookProperty(this, context.name, value, (value) => {
+                    element["className"] = origValue + " " + value;
+                });
+            }
+        });
+    };
+}
+exports.BindCSSClass = BindCSSClass;
+/**
+ * @description Decorator to bind the innerHtml property to an element.
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello World";
+ */
+function BindInnerHTML(id) {
+    return function (_target, context) {
+        context.addInitializer(function () {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.innerHTML = computePipe(this, context.name, value);
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, (value) => {
+                    element["innerHTML"] = computePipe(this, context.name, value);
+                });
+            }
+            else {
+                hookProperty(this, context.name, value, (value) => {
+                    element["innerHTML"] = computePipe(this, context.name, value);
+                });
+            }
+        });
+    };
+}
+exports.BindInnerHTML = BindInnerHTML;
+/**
+ * @description Decorator to bind the Value property to an element.  Should be input elements
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @note This decorator should be last in the list of decorators for a property and can only appear once.
+ * @export
+ * @example
+ * //This will bind the value of the input element with id myInput to the value property of the class
+ * @BindValue("myInput")
+ * public value: string = "Hello";
+ */
+function BindValue(id) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.value = value;
+            //hook both getter and setter to value
+            if (origDescriptor.set) {
+                throw new Error("Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.");
+            }
+            else {
+                hookProperty(this, context.name, value, (value) => {
+                    element["value"] = value;
+                });
+                element.addEventListener("input", () => {
+                    this[publicKey] = element.value;
+                });
+            }
+        });
+    };
+}
+exports.BindValue = BindValue;
+/**
+ * @description Decorator to transform the value of a property before it is set on the html element.
+ * @param fn {PipeFunction} the function to transform the value
+ * @returns DecoratorCallback
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @Pipe((v: string) => v + " World")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello";
+ * @export
+ */
+function Pipe(fn) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const privateKey = getPipeKey(context.name);
+            //get method descriptor for publicKey in This
+            if (this[privateKey]) {
+                //overwrite it and call the original first
+                const origMethod = this[privateKey];
+                this[privateKey] = (value) => {
+                    return fn(origMethod(value));
+                };
+                context.access.set(this, context.access.get(this));
+            }
+            else {
+                this[privateKey] = fn;
+                context.access.set(this, context.access.get(this));
+            }
+        });
+    };
+}
+exports.Pipe = Pipe;
+/**
+ * @description Decorator to append to the value of a property before it is set on the html element.
+ * @param val string to append
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @AppendPipe(" World")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello";
+ */
+function AppendPipe(val) {
+    return Pipe((v) => v + val);
+}
+exports.AppendPipe = AppendPipe;
+/**
+ * @description Decorator to prepend the value of a property before it is set on the html element.
+ * @param val The string to prepend
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @PrependPipe("Hello ")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "World";
+ */
+function PrependPipe(val) {
+    return Pipe((v) => val + v);
+}
+exports.PrependPipe = PrependPipe;
+/**
+ * @description Decorator to replace the value of a property before it is set on the html element.
+ * @param search {string | RegExp} The string to replace
+ * @param  replaceWith The string to replace in the current string
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will display Hello World in the div with id myDiv
+ * @ReplacePipe("planet", "World")
+ * @BindInnerHTML("myDiv")
+ * public hello: string = "Hello planet";
+ */
+function ReplacePipe(search, replaceWith) {
+    return Pipe((v) => v.replace(search, replaceWith));
+}
+exports.ReplacePipe = ReplacePipe;
+
 
 /***/ }),
 
@@ -49,7 +745,24 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.bootstrap = void 0;\n/** @hidden */\nfunction bootstrap(target, testModeHTML = \"\") {\n    if (testModeHTML.length > 0) {\n        window.document.body.innerHTML = testModeHTML;\n    }\n    let obj = Object.assign(new target());\n    const element = window.document.getElementById(\"main-target\");\n    if (element)\n        obj.appendToDomElement(element);\n    else\n        obj.appendToDomElement(window.document.body);\n    return obj;\n}\nexports.bootstrap = bootstrap;\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/bootstrap.js?");
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.bootstrap = void 0;
+/** @hidden */
+function bootstrap(target, testModeHTML = "") {
+    if (testModeHTML.length > 0) {
+        window.document.body.innerHTML = testModeHTML;
+    }
+    let obj = Object.assign(new target());
+    const element = window.document.getElementById("main-target");
+    if (element)
+        obj.appendToDomElement(element);
+    else
+        obj.appendToDomElement(window.document.body);
+    return obj;
+}
+exports.bootstrap = bootstrap;
+
 
 /***/ }),
 
@@ -60,7 +773,140 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.Timer = exports.Input = exports.Change = exports.Blur = exports.Click = exports.WindowEvent = exports.GenericEvent = void 0;\n/**\n * @description Decorator to bind a generic event to an element\n * @param htmlElementID the element to bind the event to\n * @param type the event to bind\n * @returns DecoratorCallback\n * @export\n * @example\n * @GenericEvent(\"myButton\", \"click\")\n * myButtonClick(e: MouseEvent) {\n *    console.log(\"Button was clicked\");\n * }\n */\nfunction GenericEvent(htmlElementID, type) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            let element = this[\"shadow\"].getElementById(htmlElementID);\n            if (element) {\n                element.addEventListener(type, (e) => {\n                    target.call(this, e);\n                });\n            }\n        });\n    };\n}\nexports.GenericEvent = GenericEvent;\n/**\n * @description Decorator to bind a window event to the window\n * @param type the event to bind\n * @returns DecoratorCallback\n * @export\n * @example\n * @WindowEvent(\"resize\")\n * onResize(e: WindowEvent) {\n *   console.log(\"Window was resized\");\n * }\n */\nfunction WindowEvent(type) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            window.addEventListener(type, (e) => {\n                target.call(this, e);\n            });\n        });\n    };\n}\nexports.WindowEvent = WindowEvent;\n/**\n * @description Decorator to bind a click event to an element\n * @param htmlElementID the element to bind the event to\n * @returns DecoratorCallback\n * @export\n * @example\n * @Click(\"myButton\")\n * myButtonClick(e: MouseEvent) {\n *   console.log(\"Button was clicked\");\n * }\n */\nfunction Click(htmlElementID) {\n    return GenericEvent(htmlElementID, \"click\");\n}\nexports.Click = Click;\n/**\n * @description Decorator to bind a blur event to an element\n * @param htmlElementID the element to bind the event to\n * @returns DecoratorCallback\n * @export\n * @example\n * @Blur(\"myInput\")\n * myInputBlur(e: FocusEvent) {\n *  console.log(\"Input lost focus\");\n * }\n */\nfunction Blur(htmlElementID) {\n    return GenericEvent(htmlElementID, \"blur\");\n}\nexports.Blur = Blur;\n/**\n * @description Decorator to bind a change event to an element\n * @param htmlElementID the element to bind the event to\n * @returns DecoratorCallback\n * @export\n * @example\n * @Change(\"myInput\")\n * myInputChange(e: ChangeEvent) {\n *   console.log(\"Input changed\");\n */\nfunction Change(htmlElementID) {\n    return GenericEvent(htmlElementID, \"change\");\n}\nexports.Change = Change;\n/**\n * @description Decorator to bind an input event to an element\n * @param htmlElementID the element to bind the event to\n * @returns DecoratorCallback\n * @export\n * @example\n * @Input(\"myInput\")\n * myInputChange(e: InputEvent) {\n *  console.log(\"Input changed\");\n * }\n */\nfunction Input(htmlElementID) {\n    return GenericEvent(htmlElementID, \"input\");\n}\nexports.Input = Input;\n/**\n * @description Decorator to call a method periodically with a timer\n * @param intervalMS the interval in milliseconds to call the method\n * @returns DecoratorCallback\n * @note This executes repeatedly.  The decorated function is passed a cancel function that can be called to stop the timer.\n * @export\n * @example\n * let counter=0;\n * @Timer(1000)\n * myTimerMethod(cancel: TimerCancelMethod) {\n *   console.log(\"Timer method called once per second\");\n *   if (counter++ > 5) cancel();\n */\nfunction Timer(intervalMS) {\n    return function (target, context) {\n        context.addInitializer(function () {\n            const intervalID = setInterval(() => {\n                target.call(this, () => {\n                    clearInterval(intervalID);\n                });\n            }, intervalMS);\n        });\n    };\n}\nexports.Timer = Timer;\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/event.decorators.js?");
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Timer = exports.Input = exports.Change = exports.Blur = exports.Click = exports.WindowEvent = exports.GenericEvent = void 0;
+/**
+ * @description Decorator to bind a generic event to an element
+ * @param htmlElementID the element to bind the event to
+ * @param type the event to bind
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * @GenericEvent("myButton", "click")
+ * myButtonClick(e: MouseEvent) {
+ *    console.log("Button was clicked");
+ * }
+ */
+function GenericEvent(htmlElementID, type) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            let element = this["shadow"].getElementById(htmlElementID);
+            if (element) {
+                element.addEventListener(type, (e) => {
+                    target.call(this, e);
+                });
+            }
+        });
+    };
+}
+exports.GenericEvent = GenericEvent;
+/**
+ * @description Decorator to bind a window event to the window
+ * @param type the event to bind
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * @WindowEvent("resize")
+ * onResize(e: WindowEvent) {
+ *   console.log("Window was resized");
+ * }
+ */
+function WindowEvent(type) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            window.addEventListener(type, (e) => {
+                target.call(this, e);
+            });
+        });
+    };
+}
+exports.WindowEvent = WindowEvent;
+/**
+ * @description Decorator to bind a click event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * @Click("myButton")
+ * myButtonClick(e: MouseEvent) {
+ *   console.log("Button was clicked");
+ * }
+ */
+function Click(htmlElementID) {
+    return GenericEvent(htmlElementID, "click");
+}
+exports.Click = Click;
+/**
+ * @description Decorator to bind a blur event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * @Blur("myInput")
+ * myInputBlur(e: FocusEvent) {
+ *  console.log("Input lost focus");
+ * }
+ */
+function Blur(htmlElementID) {
+    return GenericEvent(htmlElementID, "blur");
+}
+exports.Blur = Blur;
+/**
+ * @description Decorator to bind a change event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * @Change("myInput")
+ * myInputChange(e: ChangeEvent) {
+ *   console.log("Input changed");
+ */
+function Change(htmlElementID) {
+    return GenericEvent(htmlElementID, "change");
+}
+exports.Change = Change;
+/**
+ * @description Decorator to bind an input event to an element
+ * @param htmlElementID the element to bind the event to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * @Input("myInput")
+ * myInputChange(e: InputEvent) {
+ *  console.log("Input changed");
+ * }
+ */
+function Input(htmlElementID) {
+    return GenericEvent(htmlElementID, "input");
+}
+exports.Input = Input;
+/**
+ * @description Decorator to call a method periodically with a timer
+ * @param intervalMS the interval in milliseconds to call the method
+ * @returns DecoratorCallback
+ * @note This executes repeatedly.  The decorated function is passed a cancel function that can be called to stop the timer.
+ * @export
+ * @example
+ * let counter=0;
+ * @Timer(1000)
+ * myTimerMethod(cancel: TimerCancelMethod) {
+ *   console.log("Timer method called once per second");
+ *   if (counter++ > 5) cancel();
+ */
+function Timer(intervalMS) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const intervalID = setInterval(() => {
+                target.call(this, () => {
+                    clearInterval(intervalID);
+                });
+            }, intervalMS);
+        });
+    };
+}
+exports.Timer = Timer;
+
 
 /***/ }),
 
@@ -71,7 +917,110 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.EventSubject = void 0;\nclass EventSubject {\n    constructor() {\n        this.refCount = 0;\n        this.callbacks = [];\n        this.errorFns = [];\n    }\n    /**\n     * Subscribe to the event subject\n     * @param callback The callback to call when the event is triggered\n     * @param error The callback to call when an error is triggered\n     * @returns The id of the subscription\n     * @example\n     * const subject = new EventSubject<number>();\n     * const id = subject.subscribe((value:number) => {\n     *  console.log(value);\n     * });\n     * subject.next(1);\n     * subject.unsubscribe(id);\n     */\n    subscribe(callback, error) {\n        this.callbacks.push({ id: this.refCount, fn: callback });\n        if (error)\n            this.errorFns.push({ id: this.refCount, fn: error });\n        return this.refCount++;\n    }\n    /**\n     * Unsubscribe from the event subject\n     * @param id The id of the subscription to remove\n     * @returns void\n     * @example\n     * const subject = new EventSubject<number>();\n     * const id = subject.subscribe((value:number) => {\n     *   console.log(value);\n     * });\n     * subject.next(1);\n     * subject.unsubscribe(id);\n     */\n    unsubscribe(id) {\n        this.callbacks = this.callbacks.filter((cb) => cb.id !== id);\n        this.errorFns = this.errorFns.filter((cb) => cb.id !== id);\n    }\n    /**\n     * Trigger the event subject\n     * @param value The value to pass to the callback\n     * @returns void\n     * @example\n     * const subject = new EventSubject<number>();\n     * const id = subject.subscribe((value:number) => {\n     *   console.log(value);\n     * });\n     * subject.next(1);\n     * subject.unsubscribe(id);\n     */\n    next(value) {\n        for (const callback of this.callbacks)\n            callback.fn(value);\n    }\n    /**\n     * Trigger the error event subject\n     * @param value The value to pass to the callback\n     * @returns void\n     * @example\n     * const subject = new EventSubject<number>();\n     * const id = subject.subscribe((value:number) => {\n     *   console.log(value);\n     * }, (error) => {\n     *  console.error(error);\n     * });\n     * subject.error(new Error(\"It doesnt't work!\"));\n     * subject.unsubscribe(id);\n     */\n    error(value) {\n        for (const errorFn of this.errorFns)\n            errorFn.fn(value);\n    }\n    /**\n     * Convert the event subject to a promise\n     * @returns Promise<T>\n     * @example\n     * const subject = new EventSubject<string>();\n     * const promise = subject.toPromise();\n     * subject.next(\"1\");\n     * promise.then((value:string) => {\n     *  console.log(value);\n     * }).catch((error) => {\n     *  console.error(error);\n     * });\n     * subject.unsubscribe(id);\n     */\n    toPromise() {\n        return new Promise((resolve, reject) => {\n            this.subscribe((value) => {\n                resolve(value);\n            }, (error) => {\n                reject(error);\n            });\n        });\n    }\n}\nexports.EventSubject = EventSubject;\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/eventsubject.js?");
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EventSubject = void 0;
+class EventSubject {
+    constructor() {
+        this.refCount = 0;
+        this.callbacks = [];
+        this.errorFns = [];
+    }
+    /**
+     * Subscribe to the event subject
+     * @param callback The callback to call when the event is triggered
+     * @param error The callback to call when an error is triggered
+     * @returns The id of the subscription
+     * @example
+     * const subject = new EventSubject<number>();
+     * const id = subject.subscribe((value:number) => {
+     *  console.log(value);
+     * });
+     * subject.next(1);
+     * subject.unsubscribe(id);
+     */
+    subscribe(callback, error) {
+        this.callbacks.push({ id: this.refCount, fn: callback });
+        if (error)
+            this.errorFns.push({ id: this.refCount, fn: error });
+        return this.refCount++;
+    }
+    /**
+     * Unsubscribe from the event subject
+     * @param id The id of the subscription to remove
+     * @returns void
+     * @example
+     * const subject = new EventSubject<number>();
+     * const id = subject.subscribe((value:number) => {
+     *   console.log(value);
+     * });
+     * subject.next(1);
+     * subject.unsubscribe(id);
+     */
+    unsubscribe(id) {
+        this.callbacks = this.callbacks.filter((cb) => cb.id !== id);
+        this.errorFns = this.errorFns.filter((cb) => cb.id !== id);
+    }
+    /**
+     * Trigger the event subject
+     * @param value The value to pass to the callback
+     * @returns void
+     * @example
+     * const subject = new EventSubject<number>();
+     * const id = subject.subscribe((value:number) => {
+     *   console.log(value);
+     * });
+     * subject.next(1);
+     * subject.unsubscribe(id);
+     */
+    next(value) {
+        for (const callback of this.callbacks)
+            callback.fn(value);
+    }
+    /**
+     * Trigger the error event subject
+     * @param value The value to pass to the callback
+     * @returns void
+     * @example
+     * const subject = new EventSubject<number>();
+     * const id = subject.subscribe((value:number) => {
+     *   console.log(value);
+     * }, (error) => {
+     *  console.error(error);
+     * });
+     * subject.error(new Error("It doesnt't work!"));
+     * subject.unsubscribe(id);
+     */
+    error(value) {
+        for (const errorFn of this.errorFns)
+            errorFn.fn(value);
+    }
+    /**
+     * Convert the event subject to a promise
+     * @description Convert the event subject to a promise.
+     * This is useful for the async/await style async pattern.
+     * @param none
+     * @returns Promise<T>
+     * @example
+     * async myFunction() {
+     *   const result=await EzDialog.popup(
+     *     "Hello World",
+     *     "Alert", ["Ok","Cancel"]).toPromise();
+     *   console.log(result);
+     * }
+     */
+    toPromise() {
+        return new Promise((resolve, reject) => {
+            this.subscribe((value) => {
+                resolve(value);
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
+}
+exports.EventSubject = EventSubject;
+
 
 /***/ }),
 
@@ -82,7 +1031,29 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexpo
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    var desc = Object.getOwnPropertyDescriptor(m, k);\n    if (!desc || (\"get\" in desc ? !m.__esModule : desc.writable || desc.configurable)) {\n      desc = { enumerable: true, get: function() { return m[k]; } };\n    }\n    Object.defineProperty(o, k2, desc);\n}) : (function(o, m, k, k2) {\n    if (k2 === undefined) k2 = k;\n    o[k2] = m[k];\n}));\nvar __exportStar = (this && this.__exportStar) || function(m, exports) {\n    for (var p in m) if (p !== \"default\" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__exportStar(__webpack_require__(/*! ./bind.decorators */ \"./node_modules/@gsilber/webez/bind.decorators.js\"), exports);\n__exportStar(__webpack_require__(/*! ./event.decorators */ \"./node_modules/@gsilber/webez/event.decorators.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EzComponent */ \"./node_modules/@gsilber/webez/EzComponent.js\"), exports);\n__exportStar(__webpack_require__(/*! ./EzDialog */ \"./node_modules/@gsilber/webez/EzDialog.js\"), exports);\n__exportStar(__webpack_require__(/*! ./eventsubject */ \"./node_modules/@gsilber/webez/eventsubject.js\"), exports);\n__exportStar(__webpack_require__(/*! ./bootstrap */ \"./node_modules/@gsilber/webez/bootstrap.js\"), exports);\n\n\n//# sourceURL=webpack://webez-example/./node_modules/@gsilber/webez/index.js?");
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./bind.decorators */ "./node_modules/@gsilber/webez/bind.decorators.js"), exports);
+__exportStar(__webpack_require__(/*! ./event.decorators */ "./node_modules/@gsilber/webez/event.decorators.js"), exports);
+__exportStar(__webpack_require__(/*! ./EzComponent */ "./node_modules/@gsilber/webez/EzComponent.js"), exports);
+__exportStar(__webpack_require__(/*! ./EzDialog */ "./node_modules/@gsilber/webez/EzDialog.js"), exports);
+__exportStar(__webpack_require__(/*! ./eventsubject */ "./node_modules/@gsilber/webez/eventsubject.js"), exports);
+__exportStar(__webpack_require__(/*! ./bootstrap */ "./node_modules/@gsilber/webez/bootstrap.js"), exports);
+
 
 /***/ }),
 
@@ -93,7 +1064,42 @@ eval("\nvar __createBinding = (this && this.__createBinding) || (Object.create ?
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `.editor-line {\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n    position: relative;\n}\n\n.editor-input {\n    text-align: left;\n    font-size: 14pt;\n    font-weight: bold;\n    flex: 1;\n    display: inline-block;\n    padding-right: 20px;\n}\n.editor-input input {\n    width: 100%;\n    text-align: left;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskeditor/taskeditor.component.css?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.editor-line {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    position: relative;
+}
+
+.editor-input {
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    flex: 1;
+    display: inline-block;
+    padding-right: 20px;
+}
+.editor-input input {
+    width: 100%;
+    text-align: left;
+}
+`, "",{"version":3,"sources":["webpack://./src/app/components/taskeditor/taskeditor.component.css"],"names":[],"mappings":"AAAA;IACI,aAAa;IACb,mBAAmB;IACnB,WAAW;IACX,kBAAkB;AACtB;;AAEA;IACI,gBAAgB;IAChB,eAAe;IACf,iBAAiB;IACjB,OAAO;IACP,qBAAqB;IACrB,mBAAmB;AACvB;AACA;IACI,WAAW;IACX,gBAAgB;AACpB","sourcesContent":[".editor-line {\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n    position: relative;\n}\n\n.editor-input {\n    text-align: left;\n    font-size: 14pt;\n    font-weight: bold;\n    flex: 1;\n    display: inline-block;\n    padding-right: 20px;\n}\n.editor-input input {\n    width: 100%;\n    text-align: left;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -104,7 +1110,35 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `.hidden {\n    display: none;\n}\n.visible {\n    display: block;\n}\n#line {\n    width: 100%;\n    position: relative;\n    padding-bottom: 10px;\n    padding-top: 10px;\n    border-bottom: solid 1px black;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskline/taskline.component.css?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.hidden {
+    display: none;
+}
+.visible {
+    display: block;
+}
+#line {
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: solid 1px black;
+}
+`, "",{"version":3,"sources":["webpack://./src/app/components/taskline/taskline.component.css"],"names":[],"mappings":"AAAA;IACI,aAAa;AACjB;AACA;IACI,cAAc;AAClB;AACA;IACI,WAAW;IACX,oBAAoB;IACpB,iBAAiB;IACjB,8BAA8B;AAClC","sourcesContent":[".hidden {\n    display: none;\n}\n.visible {\n    display: block;\n}\n#line {\n    width: 100%;\n    padding-bottom: 10px;\n    padding-top: 10px;\n    border-bottom: solid 1px black;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -115,7 +1149,66 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `.main-window {\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    position: absolute;\n    border-radius: 20px;\n    box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);\n    display: flex;\n    flex-direction: column;\n}\n\n.header {\n    position: relative;\n    background-color: lightgray;\n    margin: 0;\n    border-radius: 20px 20px 0 0;\n    display: flex;\n    flex-direction: row;\n    padding: 15px;\n}\n\n.title,\n.control {\n    display: inline-flex;\n}\n.title {\n    flex: 1;\n    font-size: 25px;\n    font-weight: bold;\n}\n.list-body {\n    margin: 10px;\n    border: solid 1px silver;\n    flex: 1;\n    overflow-y: scroll;\n    overflow-x: hidden;\n    padding: 10px;\n    border-radius: 10px 0 0 10px;\n}\n.control button {\n    margin-left: 5px;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/tasks/tasks.component.css?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.main-window {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    border-radius: 20px;
+    box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    position: relative;
+    background-color: lightgray;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+}
+
+.title,
+.control {
+    display: inline-flex;
+}
+.title {
+    flex: 1;
+    font-size: 25px;
+    font-weight: bold;
+}
+.list-body {
+    margin: 10px;
+    border: solid 1px silver;
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+}
+.control button {
+    margin-left: 5px;
+}
+`, "",{"version":3,"sources":["webpack://./src/app/components/tasks/tasks.component.css"],"names":[],"mappings":"AAAA;IACI,MAAM;IACN,SAAS;IACT,OAAO;IACP,QAAQ;IACR,kBAAkB;IAClB,mBAAmB;IACnB,8CAA8C;IAC9C,aAAa;IACb,sBAAsB;AAC1B;;AAEA;IACI,kBAAkB;IAClB,2BAA2B;IAC3B,SAAS;IACT,4BAA4B;IAC5B,aAAa;IACb,mBAAmB;IACnB,aAAa;AACjB;;AAEA;;IAEI,oBAAoB;AACxB;AACA;IACI,OAAO;IACP,eAAe;IACf,iBAAiB;AACrB;AACA;IACI,YAAY;IACZ,wBAAwB;IACxB,OAAO;IACP,kBAAkB;IAClB,kBAAkB;IAClB,aAAa;IACb,4BAA4B;AAChC;AACA;IACI,gBAAgB;AACpB","sourcesContent":[".main-window {\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    position: absolute;\n    border-radius: 20px;\n    box-shadow: 4px 8px 8px 4px rgba(0, 0, 0, 0.2);\n    display: flex;\n    flex-direction: column;\n}\n\n.header {\n    position: relative;\n    background-color: lightgray;\n    margin: 0;\n    border-radius: 20px 20px 0 0;\n    display: flex;\n    flex-direction: row;\n    padding: 15px;\n}\n\n.title,\n.control {\n    display: inline-flex;\n}\n.title {\n    flex: 1;\n    font-size: 25px;\n    font-weight: bold;\n}\n.list-body {\n    margin: 10px;\n    border: solid 1px silver;\n    flex: 1;\n    overflow-y: scroll;\n    overflow-x: hidden;\n    padding: 10px;\n    border-radius: 10px 0 0 10px;\n}\n.control button {\n    margin-left: 5px;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -126,7 +1219,42 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `.view-line {\n    display: flex;\n    flex-direction: row;\n}\n\n.task-view {\n    text-align: left;\n    font-size: 14pt;\n    font-weight: bold;\n    flex: 1;\n    display: inline-block;\n}\n\n.task-line {\n    width: 100%;\n    position: relative;\n    padding-bottom: 10px;\n    border-bottom: solid 1px black;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskviewer/taskviewer.component.css?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.view-line {
+    display: flex;
+    flex-direction: row;
+}
+
+.task-view {
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
+    flex: 1;
+    display: inline-block;
+}
+
+.task-line {
+    width: 100%;
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: solid 1px black;
+}
+`, "",{"version":3,"sources":["webpack://./src/app/components/taskviewer/taskviewer.component.css"],"names":[],"mappings":"AAAA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,eAAe;IACf,iBAAiB;IACjB,OAAO;IACP,qBAAqB;AACzB;;AAEA;IACI,WAAW;IACX,kBAAkB;IAClB,oBAAoB;IACpB,8BAA8B;AAClC","sourcesContent":[".view-line {\n    display: flex;\n    flex-direction: row;\n}\n\n.task-view {\n    text-align: left;\n    font-size: 14pt;\n    font-weight: bold;\n    flex: 1;\n    display: inline-block;\n}\n\n.task-line {\n    width: 100%;\n    position: relative;\n    padding-bottom: 10px;\n    border-bottom: solid 1px black;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -137,7 +1265,59 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `div {\n    box-sizing: border-box;\n}\n.header {\n    text-align: center;\n    padding: 10px;\n    margin-bottom: 10px;\n    position: relative;\n}\n.title {\n    color: blue;\n    font-size: 40px;\n    font-weight: bold;\n}\n.subtitle {\n    font-size: 20px;\n    font-weight: bold;\n}\n\n.working-area {\n    position: relative;\n    width: 90%;\n    margin-left: 5%;\n    min-height: 10px;\n    margin-bottom: 50px;\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n}\n.fill-vertical {\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    height: 100vh;\n    position: relative;\n}\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://webez-example/./src/app/main.component.css?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `div {
+    box-sizing: border-box;
+}
+.header {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+.title {
+    color: blue;
+    font-size: 40px;
+    font-weight: bold;
+}
+.subtitle {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.working-area {
+    position: relative;
+    width: 90%;
+    margin-left: 5%;
+    min-height: 10px;
+    margin-bottom: 50px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.fill-vertical {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+}
+`, "",{"version":3,"sources":["webpack://./src/app/main.component.css"],"names":[],"mappings":"AAAA;IACI,sBAAsB;AAC1B;AACA;IACI,kBAAkB;IAClB,aAAa;IACb,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,WAAW;IACX,eAAe;IACf,iBAAiB;AACrB;AACA;IACI,eAAe;IACf,iBAAiB;AACrB;;AAEA;IACI,kBAAkB;IAClB,UAAU;IACV,eAAe;IACf,gBAAgB;IAChB,mBAAmB;IACnB,OAAO;IACP,aAAa;IACb,sBAAsB;AAC1B;AACA;IACI,kBAAkB;IAClB,aAAa;IACb,sBAAsB;IACtB,aAAa;IACb,kBAAkB;AACtB","sourcesContent":["div {\n    box-sizing: border-box;\n}\n.header {\n    text-align: center;\n    padding: 10px;\n    margin-bottom: 10px;\n    position: relative;\n}\n.title {\n    color: blue;\n    font-size: 40px;\n    font-weight: bold;\n}\n.subtitle {\n    font-size: 20px;\n    font-weight: bold;\n}\n\n.working-area {\n    position: relative;\n    width: 90%;\n    margin-left: 5%;\n    min-height: 10px;\n    margin-bottom: 50px;\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n}\n.fill-vertical {\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    height: 100vh;\n    position: relative;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -148,7 +1328,28 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/noSourceMaps.js */ \"./node_modules/css-loader/dist/runtime/noSourceMaps.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\");\n/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);\n// Imports\n\n\nvar ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));\n// Module\n___CSS_LOADER_EXPORT___.push([module.id, `/*Put your global styles here.  \n* Individual components can be styled locatlly\n*/\n\n/* Add your global styles here */\n`, \"\"]);\n// Exports\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);\n\n\n//# sourceURL=webpack://webez-example/./styles.css?./node_modules/css-loader/dist/cjs.js");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `/*Put your global styles here.  
+* Individual components can be styled locatlly
+*/
+
+/* Add your global styles here */
+`, "",{"version":3,"sources":["webpack://./styles.css"],"names":[],"mappings":"AAAA;;CAEC;;AAED,gCAAgC","sourcesContent":["/*Put your global styles here.  \n* Individual components can be styled locatlly\n*/\n\n/* Add your global styles here */\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
 
 /***/ }),
 
@@ -159,18 +1360,117 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module) => {
 
 "use strict";
-eval("\n\n/*\n  MIT License http://www.opensource.org/licenses/mit-license.php\n  Author Tobias Koppers @sokra\n*/\nmodule.exports = function (cssWithMappingToString) {\n  var list = [];\n\n  // return the list of modules as css string\n  list.toString = function toString() {\n    return this.map(function (item) {\n      var content = \"\";\n      var needLayer = typeof item[5] !== \"undefined\";\n      if (item[4]) {\n        content += \"@supports (\".concat(item[4], \") {\");\n      }\n      if (item[2]) {\n        content += \"@media \".concat(item[2], \" {\");\n      }\n      if (needLayer) {\n        content += \"@layer\".concat(item[5].length > 0 ? \" \".concat(item[5]) : \"\", \" {\");\n      }\n      content += cssWithMappingToString(item);\n      if (needLayer) {\n        content += \"}\";\n      }\n      if (item[2]) {\n        content += \"}\";\n      }\n      if (item[4]) {\n        content += \"}\";\n      }\n      return content;\n    }).join(\"\");\n  };\n\n  // import a list of modules into the list\n  list.i = function i(modules, media, dedupe, supports, layer) {\n    if (typeof modules === \"string\") {\n      modules = [[null, modules, undefined]];\n    }\n    var alreadyImportedModules = {};\n    if (dedupe) {\n      for (var k = 0; k < this.length; k++) {\n        var id = this[k][0];\n        if (id != null) {\n          alreadyImportedModules[id] = true;\n        }\n      }\n    }\n    for (var _k = 0; _k < modules.length; _k++) {\n      var item = [].concat(modules[_k]);\n      if (dedupe && alreadyImportedModules[item[0]]) {\n        continue;\n      }\n      if (typeof layer !== \"undefined\") {\n        if (typeof item[5] === \"undefined\") {\n          item[5] = layer;\n        } else {\n          item[1] = \"@layer\".concat(item[5].length > 0 ? \" \".concat(item[5]) : \"\", \" {\").concat(item[1], \"}\");\n          item[5] = layer;\n        }\n      }\n      if (media) {\n        if (!item[2]) {\n          item[2] = media;\n        } else {\n          item[1] = \"@media \".concat(item[2], \" {\").concat(item[1], \"}\");\n          item[2] = media;\n        }\n      }\n      if (supports) {\n        if (!item[4]) {\n          item[4] = \"\".concat(supports);\n        } else {\n          item[1] = \"@supports (\".concat(item[4], \") {\").concat(item[1], \"}\");\n          item[4] = supports;\n        }\n      }\n      list.push(item);\n    }\n  };\n  return list;\n};\n\n//# sourceURL=webpack://webez-example/./node_modules/css-loader/dist/runtime/api.js?");
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+module.exports = function (cssWithMappingToString) {
+  var list = [];
+
+  // return the list of modules as css string
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
+      if (item[2]) {
+        content += "@media ".concat(item[2], " {");
+      }
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+      content += cssWithMappingToString(item);
+      if (needLayer) {
+        content += "}";
+      }
+      if (item[2]) {
+        content += "}";
+      }
+      if (item[4]) {
+        content += "}";
+      }
+      return content;
+    }).join("");
+  };
+
+  // import a list of modules into the list
+  list.i = function i(modules, media, dedupe, supports, layer) {
+    if (typeof modules === "string") {
+      modules = [[null, modules, undefined]];
+    }
+    var alreadyImportedModules = {};
+    if (dedupe) {
+      for (var k = 0; k < this.length; k++) {
+        var id = this[k][0];
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+    for (var _k = 0; _k < modules.length; _k++) {
+      var item = [].concat(modules[_k]);
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        continue;
+      }
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
+        } else {
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
+        }
+      }
+      list.push(item);
+    }
+  };
+  return list;
+};
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/runtime/noSourceMaps.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/css-loader/dist/runtime/noSourceMaps.js ***!
-  \**************************************************************/
+/***/ "./node_modules/css-loader/dist/runtime/sourceMaps.js":
+/*!************************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/sourceMaps.js ***!
+  \************************************************************/
 /***/ ((module) => {
 
 "use strict";
-eval("\n\nmodule.exports = function (i) {\n  return i[1];\n};\n\n//# sourceURL=webpack://webez-example/./node_modules/css-loader/dist/runtime/noSourceMaps.js?");
+
+
+module.exports = function (item) {
+  var content = item[1];
+  var cssMapping = item[3];
+  if (!cssMapping) {
+    return content;
+  }
+  if (typeof btoa === "function") {
+    var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(cssMapping))));
+    var data = "sourceMappingURL=data:application/json;charset=utf-8;base64,".concat(base64);
+    var sourceMapping = "/*# ".concat(data, " */");
+    return [content].concat([sourceMapping]).join("\n");
+  }
+  return [content].join("\n");
+};
 
 /***/ }),
 
@@ -180,7 +1480,70 @@ eval("\n\nmodule.exports = function (i) {\n  return i[1];\n};\n\n//# sourceURL=w
   \***********************************/
 /***/ ((module) => {
 
-eval("(function () {\n  var validator = new RegExp(\"^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$\", \"i\");\n\n  function gen(count) {\n    var out = \"\";\n    for (var i=0; i<count; i++) {\n      out += (((1+Math.random())*0x10000)|0).toString(16).substring(1);\n    }\n    return out;\n  }\n\n  function Guid(guid) {\n    if (!guid) throw new TypeError(\"Invalid argument; `value` has no value.\");\n      \n    this.value = Guid.EMPTY;\n    \n    if (guid && guid instanceof Guid) {\n      this.value = guid.toString();\n\n    } else if (guid && Object.prototype.toString.call(guid) === \"[object String]\" && Guid.isGuid(guid)) {\n      this.value = guid;\n    }\n    \n    this.equals = function(other) {\n      // Comparing string `value` against provided `guid` will auto-call\n      // toString on `guid` for comparison\n      return Guid.isGuid(other) && this.value == other;\n    };\n\n    this.isEmpty = function() {\n      return this.value === Guid.EMPTY;\n    };\n    \n    this.toString = function() {\n      return this.value;\n    };\n    \n    this.toJSON = function() {\n      return this.value;\n    };\n  };\n\n  Guid.EMPTY = \"00000000-0000-0000-0000-000000000000\";\n\n  Guid.isGuid = function(value) {\n    return value && (value instanceof Guid || validator.test(value.toString()));\n  };\n\n  Guid.create = function() {\n    return new Guid([gen(2), gen(1), gen(1), gen(1), gen(3)].join(\"-\"));\n  };\n\n  Guid.raw = function() {\n    return [gen(2), gen(1), gen(1), gen(1), gen(3)].join(\"-\");\n  };\n\n  if( true && module.exports) {\n    module.exports = Guid;\n  }\n  else if (typeof window != 'undefined') {\n    window.Guid = Guid;\n  }\n})();\n\n\n//# sourceURL=webpack://webez-example/./node_modules/guid/guid.js?");
+(function () {
+  var validator = new RegExp("^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$", "i");
+
+  function gen(count) {
+    var out = "";
+    for (var i=0; i<count; i++) {
+      out += (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+    return out;
+  }
+
+  function Guid(guid) {
+    if (!guid) throw new TypeError("Invalid argument; `value` has no value.");
+      
+    this.value = Guid.EMPTY;
+    
+    if (guid && guid instanceof Guid) {
+      this.value = guid.toString();
+
+    } else if (guid && Object.prototype.toString.call(guid) === "[object String]" && Guid.isGuid(guid)) {
+      this.value = guid;
+    }
+    
+    this.equals = function(other) {
+      // Comparing string `value` against provided `guid` will auto-call
+      // toString on `guid` for comparison
+      return Guid.isGuid(other) && this.value == other;
+    };
+
+    this.isEmpty = function() {
+      return this.value === Guid.EMPTY;
+    };
+    
+    this.toString = function() {
+      return this.value;
+    };
+    
+    this.toJSON = function() {
+      return this.value;
+    };
+  };
+
+  Guid.EMPTY = "00000000-0000-0000-0000-000000000000";
+
+  Guid.isGuid = function(value) {
+    return value && (value instanceof Guid || validator.test(value.toString()));
+  };
+
+  Guid.create = function() {
+    return new Guid([gen(2), gen(1), gen(1), gen(1), gen(3)].join("-"));
+  };
+
+  Guid.raw = function() {
+    return [gen(2), gen(1), gen(1), gen(1), gen(3)].join("-");
+  };
+
+  if( true && module.exports) {
+    module.exports = Guid;
+  }
+  else if (typeof window != 'undefined') {
+    window.Guid = Guid;
+  }
+})();
+
 
 /***/ }),
 
@@ -190,7 +1553,7 @@ eval("(function () {\n  var validator = new RegExp(\"^[a-z0-9]{8}-[a-z0-9]{4}-[a
   \*****************************************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"<div class=\\\"editor-line\\\">\\n    <div class=\\\"editor-input\\\">\\n        <div class=\\\"form-group\\\">\\n            <input\\n                class=\\\"form-control\\\"\\n                type=\\\"text\\\"\\n                id=\\\"tasktext\\\"\\n                placeholder=\\\"Enter your Task\\\"\\n            />\\n        </div>\\n    </div>\\n    <div class=\\\"editor-buttons\\\">\\n        <button id=\\\"save\\\" class=\\\"btn btn-primary\\\">Save</button>\\n        <button id=\\\"cancel\\\" class=\\\"btn btn-primary\\\">Cancel</button>\\n    </div>\\n</div>\\n\";\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskeditor/taskeditor.component.html?");
+module.exports = "<div class=\"editor-line\">\n    <div class=\"editor-input\">\n        <div class=\"form-group\">\n            <input\n                class=\"form-control\"\n                type=\"text\"\n                id=\"tasktext\"\n                placeholder=\"Enter your Task\"\n            />\n        </div>\n    </div>\n    <div class=\"editor-buttons\">\n        <button id=\"save\" class=\"btn btn-primary\">Save</button>\n        <button id=\"cancel\" class=\"btn btn-primary\">Cancel</button>\n    </div>\n</div>\n";
 
 /***/ }),
 
@@ -200,7 +1563,7 @@ eval("module.exports = \"<div class=\\\"editor-line\\\">\\n    <div class=\\\"ed
   \*************************************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"<div id=\\\"line\\\">\\n    <div id=\\\"editor\\\" class=\\\"hidden\\\"></div>\\n    <div id=\\\"viewer\\\" class=\\\"hidden\\\"></div>\\n</div>\\n\";\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskline/taskline.component.html?");
+module.exports = "<div id=\"line\">\n    <div id=\"editor\" class=\"hidden\"></div>\n    <div id=\"viewer\" class=\"hidden\"></div>\n</div>\n";
 
 /***/ }),
 
@@ -210,7 +1573,7 @@ eval("module.exports = \"<div id=\\\"line\\\">\\n    <div id=\\\"editor\\\" clas
   \*******************************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"<div class=\\\"main-window\\\">\\n    <div class=\\\"header\\\">\\n        <div class=\\\"title\\\">Tasks</div>\\n        <div class=\\\"control\\\">\\n            <div class=\\\"form-group\\\">\\n                <button class=\\\"btn btn-primary\\\" id=\\\"add-task\\\">Add Task</button>\\n                <button class=\\\"btn btn-danger\\\" id=\\\"clear-tasks\\\">\\n                    Clear all\\n                </button>\\n            </div>\\n        </div>\\n    </div>\\n    <div class=\\\"list-body\\\">\\n        <div class=\\\"row\\\">\\n            <div class=\\\"col-12\\\">\\n                <ul class=\\\"list-group\\\" id=\\\"task-list\\\"></ul>\\n            </div>\\n        </div>\\n    </div>\\n</div>\\n<div id=\\\"alert-target\\\"></div>\\n\";\n\n//# sourceURL=webpack://webez-example/./src/app/components/tasks/tasks.component.html?");
+module.exports = "<div class=\"main-window\">\n    <div class=\"header\">\n        <div class=\"title\">Tasks</div>\n        <div class=\"control\">\n            <div class=\"form-group\">\n                <button class=\"btn btn-primary\" id=\"add-task\">Add Task</button>\n                <button class=\"btn btn-danger\" id=\"clear-tasks\">\n                    Clear all\n                </button>\n            </div>\n        </div>\n    </div>\n    <div class=\"list-body\">\n        <div class=\"row\">\n            <div class=\"col-12\">\n                <ul class=\"list-group\" id=\"task-list\"></ul>\n            </div>\n        </div>\n    </div>\n</div>\n<div id=\"alert-target\"></div>\n";
 
 /***/ }),
 
@@ -220,7 +1583,7 @@ eval("module.exports = \"<div class=\\\"main-window\\\">\\n    <div class=\\\"he
   \*****************************************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"<div class=\\\"view-line\\\">\\n    <div id=\\\"taskview\\\" class=\\\"task-view\\\"></div>\\n    <div class=\\\"task-buttons\\\">\\n        <button id=\\\"edit\\\" class=\\\"btn btn-primary\\\">Edit</button>\\n        <button id=\\\"delete\\\" class=\\\"btn btn-primary\\\">Delete</button>\\n    </div>\\n</div>\\n\";\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskviewer/taskviewer.component.html?");
+module.exports = "<div class=\"view-line\">\n    <div id=\"taskview\" class=\"task-view\"></div>\n    <div class=\"task-buttons\">\n        <button id=\"edit\" class=\"btn btn-primary\">Edit</button>\n        <button id=\"delete\" class=\"btn btn-primary\">Delete</button>\n    </div>\n</div>\n";
 
 /***/ }),
 
@@ -230,7 +1593,7 @@ eval("module.exports = \"<div class=\\\"view-line\\\">\\n    <div id=\\\"taskvie
   \*************************************/
 /***/ ((module) => {
 
-eval("module.exports = \"<div class=\\\"flow-container fill-vertical\\\">\\n    <div class=\\\"header\\\">\\n        <div class=\\\"title\\\">WebEZ Example</div>\\n        <div class=\\\"subtitle\\\">Task List</div>\\n    </div>\\n    <div class=\\\"working-area\\\" id=\\\"task-target\\\"></div>\\n</div>\\n\";\n\n//# sourceURL=webpack://webez-example/./src/app/main.component.html?");
+module.exports = "<div class=\"flow-container fill-vertical\">\n    <div class=\"header\">\n        <div class=\"title\">WebEZ Example</div>\n        <div class=\"subtitle\">Task List</div>\n    </div>\n    <div class=\"working-area\" id=\"task-target\"></div>\n</div>\n";
 
 /***/ }),
 
@@ -241,7 +1604,51 @@ eval("module.exports = \"<div class=\\\"flow-container fill-vertical\\\">\\n    
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ \"./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js\");\n/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/styleDomAPI.js */ \"./node_modules/style-loader/dist/runtime/styleDomAPI.js\");\n/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/insertBySelector.js */ \"./node_modules/style-loader/dist/runtime/insertBySelector.js\");\n/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ \"./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js\");\n/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);\n/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/insertStyleElement.js */ \"./node_modules/style-loader/dist/runtime/insertStyleElement.js\");\n/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);\n/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/styleTagTransform.js */ \"./node_modules/style-loader/dist/runtime/styleTagTransform.js\");\n/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);\n/* harmony import */ var _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!./node_modules/css-loader/dist/cjs.js!./styles.css */ \"./node_modules/css-loader/dist/cjs.js!./styles.css\");\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n\nvar options = {};\n\noptions.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());\noptions.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());\n\n      options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, \"head\");\n    \noptions.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());\noptions.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());\n\nvar update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__[\"default\"], options);\n\n\n\n\n       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__[\"default\"] && _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__[\"default\"].locals ? _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__[\"default\"].locals : undefined);\n\n\n//# sourceURL=webpack://webez-example/./styles.css?");
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !./node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!./node_modules/css-loader/dist/cjs.js!./styles.css */ "./node_modules/css-loader/dist/cjs.js!./styles.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+
+      options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+    
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
 
 /***/ }),
 
@@ -252,7 +1659,90 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module) => {
 
 "use strict";
-eval("\n\nvar stylesInDOM = [];\nfunction getIndexByIdentifier(identifier) {\n  var result = -1;\n  for (var i = 0; i < stylesInDOM.length; i++) {\n    if (stylesInDOM[i].identifier === identifier) {\n      result = i;\n      break;\n    }\n  }\n  return result;\n}\nfunction modulesToDom(list, options) {\n  var idCountMap = {};\n  var identifiers = [];\n  for (var i = 0; i < list.length; i++) {\n    var item = list[i];\n    var id = options.base ? item[0] + options.base : item[0];\n    var count = idCountMap[id] || 0;\n    var identifier = \"\".concat(id, \" \").concat(count);\n    idCountMap[id] = count + 1;\n    var indexByIdentifier = getIndexByIdentifier(identifier);\n    var obj = {\n      css: item[1],\n      media: item[2],\n      sourceMap: item[3],\n      supports: item[4],\n      layer: item[5]\n    };\n    if (indexByIdentifier !== -1) {\n      stylesInDOM[indexByIdentifier].references++;\n      stylesInDOM[indexByIdentifier].updater(obj);\n    } else {\n      var updater = addElementStyle(obj, options);\n      options.byIndex = i;\n      stylesInDOM.splice(i, 0, {\n        identifier: identifier,\n        updater: updater,\n        references: 1\n      });\n    }\n    identifiers.push(identifier);\n  }\n  return identifiers;\n}\nfunction addElementStyle(obj, options) {\n  var api = options.domAPI(options);\n  api.update(obj);\n  var updater = function updater(newObj) {\n    if (newObj) {\n      if (newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap && newObj.supports === obj.supports && newObj.layer === obj.layer) {\n        return;\n      }\n      api.update(obj = newObj);\n    } else {\n      api.remove();\n    }\n  };\n  return updater;\n}\nmodule.exports = function (list, options) {\n  options = options || {};\n  list = list || [];\n  var lastIdentifiers = modulesToDom(list, options);\n  return function update(newList) {\n    newList = newList || [];\n    for (var i = 0; i < lastIdentifiers.length; i++) {\n      var identifier = lastIdentifiers[i];\n      var index = getIndexByIdentifier(identifier);\n      stylesInDOM[index].references--;\n    }\n    var newLastIdentifiers = modulesToDom(newList, options);\n    for (var _i = 0; _i < lastIdentifiers.length; _i++) {\n      var _identifier = lastIdentifiers[_i];\n      var _index = getIndexByIdentifier(_identifier);\n      if (stylesInDOM[_index].references === 0) {\n        stylesInDOM[_index].updater();\n        stylesInDOM.splice(_index, 1);\n      }\n    }\n    lastIdentifiers = newLastIdentifiers;\n  };\n};\n\n//# sourceURL=webpack://webez-example/./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js?");
+
+
+var stylesInDOM = [];
+function getIndexByIdentifier(identifier) {
+  var result = -1;
+  for (var i = 0; i < stylesInDOM.length; i++) {
+    if (stylesInDOM[i].identifier === identifier) {
+      result = i;
+      break;
+    }
+  }
+  return result;
+}
+function modulesToDom(list, options) {
+  var idCountMap = {};
+  var identifiers = [];
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    var id = options.base ? item[0] + options.base : item[0];
+    var count = idCountMap[id] || 0;
+    var identifier = "".concat(id, " ").concat(count);
+    idCountMap[id] = count + 1;
+    var indexByIdentifier = getIndexByIdentifier(identifier);
+    var obj = {
+      css: item[1],
+      media: item[2],
+      sourceMap: item[3],
+      supports: item[4],
+      layer: item[5]
+    };
+    if (indexByIdentifier !== -1) {
+      stylesInDOM[indexByIdentifier].references++;
+      stylesInDOM[indexByIdentifier].updater(obj);
+    } else {
+      var updater = addElementStyle(obj, options);
+      options.byIndex = i;
+      stylesInDOM.splice(i, 0, {
+        identifier: identifier,
+        updater: updater,
+        references: 1
+      });
+    }
+    identifiers.push(identifier);
+  }
+  return identifiers;
+}
+function addElementStyle(obj, options) {
+  var api = options.domAPI(options);
+  api.update(obj);
+  var updater = function updater(newObj) {
+    if (newObj) {
+      if (newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap && newObj.supports === obj.supports && newObj.layer === obj.layer) {
+        return;
+      }
+      api.update(obj = newObj);
+    } else {
+      api.remove();
+    }
+  };
+  return updater;
+}
+module.exports = function (list, options) {
+  options = options || {};
+  list = list || [];
+  var lastIdentifiers = modulesToDom(list, options);
+  return function update(newList) {
+    newList = newList || [];
+    for (var i = 0; i < lastIdentifiers.length; i++) {
+      var identifier = lastIdentifiers[i];
+      var index = getIndexByIdentifier(identifier);
+      stylesInDOM[index].references--;
+    }
+    var newLastIdentifiers = modulesToDom(newList, options);
+    for (var _i = 0; _i < lastIdentifiers.length; _i++) {
+      var _identifier = lastIdentifiers[_i];
+      var _index = getIndexByIdentifier(_identifier);
+      if (stylesInDOM[_index].references === 0) {
+        stylesInDOM[_index].updater();
+        stylesInDOM.splice(_index, 1);
+      }
+    }
+    lastIdentifiers = newLastIdentifiers;
+  };
+};
 
 /***/ }),
 
@@ -263,7 +1753,40 @@ eval("\n\nvar stylesInDOM = [];\nfunction getIndexByIdentifier(identifier) {\n  
 /***/ ((module) => {
 
 "use strict";
-eval("\n\nvar memo = {};\n\n/* istanbul ignore next  */\nfunction getTarget(target) {\n  if (typeof memo[target] === \"undefined\") {\n    var styleTarget = document.querySelector(target);\n\n    // Special case to return head of iframe instead of iframe itself\n    if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {\n      try {\n        // This will throw an exception if access to iframe is blocked\n        // due to cross-origin restrictions\n        styleTarget = styleTarget.contentDocument.head;\n      } catch (e) {\n        // istanbul ignore next\n        styleTarget = null;\n      }\n    }\n    memo[target] = styleTarget;\n  }\n  return memo[target];\n}\n\n/* istanbul ignore next  */\nfunction insertBySelector(insert, style) {\n  var target = getTarget(insert);\n  if (!target) {\n    throw new Error(\"Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.\");\n  }\n  target.appendChild(style);\n}\nmodule.exports = insertBySelector;\n\n//# sourceURL=webpack://webez-example/./node_modules/style-loader/dist/runtime/insertBySelector.js?");
+
+
+var memo = {};
+
+/* istanbul ignore next  */
+function getTarget(target) {
+  if (typeof memo[target] === "undefined") {
+    var styleTarget = document.querySelector(target);
+
+    // Special case to return head of iframe instead of iframe itself
+    if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+      try {
+        // This will throw an exception if access to iframe is blocked
+        // due to cross-origin restrictions
+        styleTarget = styleTarget.contentDocument.head;
+      } catch (e) {
+        // istanbul ignore next
+        styleTarget = null;
+      }
+    }
+    memo[target] = styleTarget;
+  }
+  return memo[target];
+}
+
+/* istanbul ignore next  */
+function insertBySelector(insert, style) {
+  var target = getTarget(insert);
+  if (!target) {
+    throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");
+  }
+  target.appendChild(style);
+}
+module.exports = insertBySelector;
 
 /***/ }),
 
@@ -274,7 +1797,16 @@ eval("\n\nvar memo = {};\n\n/* istanbul ignore next  */\nfunction getTarget(targ
 /***/ ((module) => {
 
 "use strict";
-eval("\n\n/* istanbul ignore next  */\nfunction insertStyleElement(options) {\n  var element = document.createElement(\"style\");\n  options.setAttributes(element, options.attributes);\n  options.insert(element, options.options);\n  return element;\n}\nmodule.exports = insertStyleElement;\n\n//# sourceURL=webpack://webez-example/./node_modules/style-loader/dist/runtime/insertStyleElement.js?");
+
+
+/* istanbul ignore next  */
+function insertStyleElement(options) {
+  var element = document.createElement("style");
+  options.setAttributes(element, options.attributes);
+  options.insert(element, options.options);
+  return element;
+}
+module.exports = insertStyleElement;
 
 /***/ }),
 
@@ -285,7 +1817,16 @@ eval("\n\n/* istanbul ignore next  */\nfunction insertStyleElement(options) {\n 
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-eval("\n\n/* istanbul ignore next  */\nfunction setAttributesWithoutAttributes(styleElement) {\n  var nonce =  true ? __webpack_require__.nc : 0;\n  if (nonce) {\n    styleElement.setAttribute(\"nonce\", nonce);\n  }\n}\nmodule.exports = setAttributesWithoutAttributes;\n\n//# sourceURL=webpack://webez-example/./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js?");
+
+
+/* istanbul ignore next  */
+function setAttributesWithoutAttributes(styleElement) {
+  var nonce =  true ? __webpack_require__.nc : 0;
+  if (nonce) {
+    styleElement.setAttribute("nonce", nonce);
+  }
+}
+module.exports = setAttributesWithoutAttributes;
 
 /***/ }),
 
@@ -296,7 +1837,67 @@ eval("\n\n/* istanbul ignore next  */\nfunction setAttributesWithoutAttributes(s
 /***/ ((module) => {
 
 "use strict";
-eval("\n\n/* istanbul ignore next  */\nfunction apply(styleElement, options, obj) {\n  var css = \"\";\n  if (obj.supports) {\n    css += \"@supports (\".concat(obj.supports, \") {\");\n  }\n  if (obj.media) {\n    css += \"@media \".concat(obj.media, \" {\");\n  }\n  var needLayer = typeof obj.layer !== \"undefined\";\n  if (needLayer) {\n    css += \"@layer\".concat(obj.layer.length > 0 ? \" \".concat(obj.layer) : \"\", \" {\");\n  }\n  css += obj.css;\n  if (needLayer) {\n    css += \"}\";\n  }\n  if (obj.media) {\n    css += \"}\";\n  }\n  if (obj.supports) {\n    css += \"}\";\n  }\n  var sourceMap = obj.sourceMap;\n  if (sourceMap && typeof btoa !== \"undefined\") {\n    css += \"\\n/*# sourceMappingURL=data:application/json;base64,\".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), \" */\");\n  }\n\n  // For old IE\n  /* istanbul ignore if  */\n  options.styleTagTransform(css, styleElement, options.options);\n}\nfunction removeStyleElement(styleElement) {\n  // istanbul ignore if\n  if (styleElement.parentNode === null) {\n    return false;\n  }\n  styleElement.parentNode.removeChild(styleElement);\n}\n\n/* istanbul ignore next  */\nfunction domAPI(options) {\n  if (typeof document === \"undefined\") {\n    return {\n      update: function update() {},\n      remove: function remove() {}\n    };\n  }\n  var styleElement = options.insertStyleElement(options);\n  return {\n    update: function update(obj) {\n      apply(styleElement, options, obj);\n    },\n    remove: function remove() {\n      removeStyleElement(styleElement);\n    }\n  };\n}\nmodule.exports = domAPI;\n\n//# sourceURL=webpack://webez-example/./node_modules/style-loader/dist/runtime/styleDomAPI.js?");
+
+
+/* istanbul ignore next  */
+function apply(styleElement, options, obj) {
+  var css = "";
+  if (obj.supports) {
+    css += "@supports (".concat(obj.supports, ") {");
+  }
+  if (obj.media) {
+    css += "@media ".concat(obj.media, " {");
+  }
+  var needLayer = typeof obj.layer !== "undefined";
+  if (needLayer) {
+    css += "@layer".concat(obj.layer.length > 0 ? " ".concat(obj.layer) : "", " {");
+  }
+  css += obj.css;
+  if (needLayer) {
+    css += "}";
+  }
+  if (obj.media) {
+    css += "}";
+  }
+  if (obj.supports) {
+    css += "}";
+  }
+  var sourceMap = obj.sourceMap;
+  if (sourceMap && typeof btoa !== "undefined") {
+    css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
+  }
+
+  // For old IE
+  /* istanbul ignore if  */
+  options.styleTagTransform(css, styleElement, options.options);
+}
+function removeStyleElement(styleElement) {
+  // istanbul ignore if
+  if (styleElement.parentNode === null) {
+    return false;
+  }
+  styleElement.parentNode.removeChild(styleElement);
+}
+
+/* istanbul ignore next  */
+function domAPI(options) {
+  if (typeof document === "undefined") {
+    return {
+      update: function update() {},
+      remove: function remove() {}
+    };
+  }
+  var styleElement = options.insertStyleElement(options);
+  return {
+    update: function update(obj) {
+      apply(styleElement, options, obj);
+    },
+    remove: function remove() {
+      removeStyleElement(styleElement);
+    }
+  };
+}
+module.exports = domAPI;
 
 /***/ }),
 
@@ -307,7 +1908,20 @@ eval("\n\n/* istanbul ignore next  */\nfunction apply(styleElement, options, obj
 /***/ ((module) => {
 
 "use strict";
-eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElement) {\n  if (styleElement.styleSheet) {\n    styleElement.styleSheet.cssText = css;\n  } else {\n    while (styleElement.firstChild) {\n      styleElement.removeChild(styleElement.firstChild);\n    }\n    styleElement.appendChild(document.createTextNode(css));\n  }\n}\nmodule.exports = styleTagTransform;\n\n//# sourceURL=webpack://webez-example/./node_modules/style-loader/dist/runtime/styleTagTransform.js?");
+
+
+/* istanbul ignore next  */
+function styleTagTransform(css, styleElement) {
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css;
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild);
+    }
+    styleElement.appendChild(document.createTextNode(css));
+  }
+}
+module.exports = styleTagTransform;
 
 /***/ }),
 
@@ -318,7 +1932,121 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {\n    var useValue = arguments.length > 2;\n    for (var i = 0; i < initializers.length; i++) {\n        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);\n    }\n    return useValue ? value : void 0;\n};\nvar __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {\n    function accept(f) { if (f !== void 0 && typeof f !== \"function\") throw new TypeError(\"Function expected\"); return f; }\n    var kind = contextIn.kind, key = kind === \"getter\" ? \"get\" : kind === \"setter\" ? \"set\" : \"value\";\n    var target = !descriptorIn && ctor ? contextIn[\"static\"] ? ctor : ctor.prototype : null;\n    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});\n    var _, done = false;\n    for (var i = decorators.length - 1; i >= 0; i--) {\n        var context = {};\n        for (var p in contextIn) context[p] = p === \"access\" ? {} : contextIn[p];\n        for (var p in contextIn.access) context.access[p] = contextIn.access[p];\n        context.addInitializer = function (f) { if (done) throw new TypeError(\"Cannot add initializers after decoration has completed\"); extraInitializers.push(accept(f || null)); };\n        var result = (0, decorators[i])(kind === \"accessor\" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);\n        if (kind === \"accessor\") {\n            if (result === void 0) continue;\n            if (result === null || typeof result !== \"object\") throw new TypeError(\"Object expected\");\n            if (_ = accept(result.get)) descriptor.get = _;\n            if (_ = accept(result.set)) descriptor.set = _;\n            if (_ = accept(result.init)) initializers.unshift(_);\n        }\n        else if (_ = accept(result)) {\n            if (kind === \"field\") initializers.unshift(_);\n            else descriptor[key] = _;\n        }\n    }\n    if (target) Object.defineProperty(target, contextIn.name, descriptor);\n    done = true;\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.TaskeditorComponent = void 0;\nconst webez_1 = __webpack_require__(/*! @gsilber/webez */ \"./node_modules/@gsilber/webez/index.js\");\nconst taskeditor_component_html_1 = __importDefault(__webpack_require__(/*! ./taskeditor.component.html */ \"./src/app/components/taskeditor/taskeditor.component.html\"));\nconst taskeditor_component_css_1 = __importDefault(__webpack_require__(/*! ./taskeditor.component.css */ \"./src/app/components/taskeditor/taskeditor.component.css\"));\n/**\n * @description Component for editing a task.\n * @class TaskEditorComponent\n * @extends {EzComponent}\n * @property {EventSubject<boolean>} editClose - event subject for the close event.  true if the save button was clicked, false if the cancel button was clicked.\n * @memberof TaskEditorComponent\n */\nlet TaskeditorComponent = (() => {\n    var _a;\n    let _classSuper = webez_1.EzComponent;\n    let _instanceExtraInitializers = [];\n    let _tasktext_decorators;\n    let _tasktext_initializers = [];\n    let _tasktext_extraInitializers = [];\n    let _saveDisabled_decorators;\n    let _saveDisabled_initializers = [];\n    let _saveDisabled_extraInitializers = [];\n    let _onTaskTextChange_decorators;\n    let _onSave_decorators;\n    let _onCancel_decorators;\n    return _a = class TaskeditorComponent extends _classSuper {\n            onTaskTextChange(event) {\n                console.info(event);\n                this.saveDisabled = this.tasktext === \"\" ? \"disabled\" : \"\";\n            }\n            /**\n             * @description Creates an instance of TaskEditorComponent.\n             * @param tasks - the task data to edit.  If no task data is provided, the task text will be empty and uniqueID will be undefined.\n             * @memberof TaskEditorComponent\n             */\n            constructor(tasks = { taskText: \"\" }) {\n                super(taskeditor_component_html_1.default, taskeditor_component_css_1.default);\n                this.tasks = (__runInitializers(this, _instanceExtraInitializers), tasks);\n                this.tasktext = __runInitializers(this, _tasktext_initializers, \"\");\n                this.saveDisabled = (__runInitializers(this, _tasktext_extraInitializers), __runInitializers(this, _saveDisabled_initializers, \"disabled\"));\n                this.editClose = (__runInitializers(this, _saveDisabled_extraInitializers), new webez_1.EventSubject());\n                this.tasktext = tasks.taskText;\n            }\n            /**\n             * @description event handler for the save button.  sets the task text and emits the editClose event with true.\n             */\n            onSave() {\n                this.tasks.taskText = this.tasktext;\n                this.editClose.next(true);\n            }\n            /**\n             * @description event handler for the cancel button.  emits the editClose event with false.\n             * @memberof TaskEditorComponent\n             */\n            onCancel() {\n                this.tasktext = this.tasks.taskText;\n                this.editClose.next(false);\n            }\n        },\n        (() => {\n            var _b;\n            const _metadata = typeof Symbol === \"function\" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;\n            _tasktext_decorators = [(0, webez_1.BindValue)(\"tasktext\")];\n            _saveDisabled_decorators = [(0, webez_1.BindCSSClass)(\"save\")];\n            _onTaskTextChange_decorators = [(0, webez_1.Input)(\"tasktext\")];\n            _onSave_decorators = [(0, webez_1.Click)(\"save\")];\n            _onCancel_decorators = [(0, webez_1.Click)(\"cancel\")];\n            __esDecorate(_a, null, _onTaskTextChange_decorators, { kind: \"method\", name: \"onTaskTextChange\", static: false, private: false, access: { has: obj => \"onTaskTextChange\" in obj, get: obj => obj.onTaskTextChange }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(_a, null, _onSave_decorators, { kind: \"method\", name: \"onSave\", static: false, private: false, access: { has: obj => \"onSave\" in obj, get: obj => obj.onSave }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(_a, null, _onCancel_decorators, { kind: \"method\", name: \"onCancel\", static: false, private: false, access: { has: obj => \"onCancel\" in obj, get: obj => obj.onCancel }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(null, null, _tasktext_decorators, { kind: \"field\", name: \"tasktext\", static: false, private: false, access: { has: obj => \"tasktext\" in obj, get: obj => obj.tasktext, set: (obj, value) => { obj.tasktext = value; } }, metadata: _metadata }, _tasktext_initializers, _tasktext_extraInitializers);\n            __esDecorate(null, null, _saveDisabled_decorators, { kind: \"field\", name: \"saveDisabled\", static: false, private: false, access: { has: obj => \"saveDisabled\" in obj, get: obj => obj.saveDisabled, set: (obj, value) => { obj.saveDisabled = value; } }, metadata: _metadata }, _saveDisabled_initializers, _saveDisabled_extraInitializers);\n            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });\n        })(),\n        _a;\n})();\nexports.TaskeditorComponent = TaskeditorComponent;\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskeditor/taskeditor.component.ts?");
+
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TaskeditorComponent = void 0;
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const taskeditor_component_html_1 = __importDefault(__webpack_require__(/*! ./taskeditor.component.html */ "./src/app/components/taskeditor/taskeditor.component.html"));
+const taskeditor_component_css_1 = __importDefault(__webpack_require__(/*! ./taskeditor.component.css */ "./src/app/components/taskeditor/taskeditor.component.css"));
+/**
+ * @description Component for editing a task.
+ * @class TaskEditorComponent
+ * @extends {EzComponent}
+ * @property {EventSubject<boolean>} editClose - event subject for the close event.  true if the save button was clicked, false if the cancel button was clicked.
+ * @memberof TaskEditorComponent
+ */
+let TaskeditorComponent = (() => {
+    var _a;
+    let _classSuper = webez_1.EzComponent;
+    let _instanceExtraInitializers = [];
+    let _tasktext_decorators;
+    let _tasktext_initializers = [];
+    let _tasktext_extraInitializers = [];
+    let _saveDisabled_decorators;
+    let _saveDisabled_initializers = [];
+    let _saveDisabled_extraInitializers = [];
+    let _onTaskTextChange_decorators;
+    let _onSave_decorators;
+    let _onCancel_decorators;
+    return _a = class TaskeditorComponent extends _classSuper {
+            onTaskTextChange() {
+                this.saveDisabled = this.tasktext === "" ? "disabled" : "";
+            }
+            /**
+             * @description Creates an instance of TaskEditorComponent.
+             * @param tasks - the task data to edit.  If no task data is provided, the task text will be empty and uniqueID will be undefined.
+             * @memberof TaskEditorComponent
+             */
+            constructor(tasks = { taskText: "" }) {
+                super(taskeditor_component_html_1.default, taskeditor_component_css_1.default);
+                this.tasks = (__runInitializers(this, _instanceExtraInitializers), tasks);
+                this.tasktext = __runInitializers(this, _tasktext_initializers, "");
+                this.saveDisabled = (__runInitializers(this, _tasktext_extraInitializers), __runInitializers(this, _saveDisabled_initializers, "disabled"));
+                this.editClose = (__runInitializers(this, _saveDisabled_extraInitializers), new webez_1.EventSubject());
+                this.tasktext = tasks.taskText;
+            }
+            /**
+             * @description event handler for the save button.  sets the task text and emits the editClose event with true.
+             */
+            onSave() {
+                this.tasks.taskText = this.tasktext;
+                this.editClose.next(true);
+            }
+            /**
+             * @description event handler for the cancel button.  emits the editClose event with false.
+             * @memberof TaskEditorComponent
+             */
+            onCancel() {
+                this.tasktext = this.tasks.taskText;
+                this.editClose.next(false);
+            }
+        },
+        (() => {
+            var _b;
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
+            _tasktext_decorators = [(0, webez_1.BindValue)("tasktext")];
+            _saveDisabled_decorators = [(0, webez_1.BindCSSClass)("save")];
+            _onTaskTextChange_decorators = [(0, webez_1.Input)("tasktext")];
+            _onSave_decorators = [(0, webez_1.Click)("save")];
+            _onCancel_decorators = [(0, webez_1.Click)("cancel")];
+            __esDecorate(_a, null, _onTaskTextChange_decorators, { kind: "method", name: "onTaskTextChange", static: false, private: false, access: { has: obj => "onTaskTextChange" in obj, get: obj => obj.onTaskTextChange }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(_a, null, _onSave_decorators, { kind: "method", name: "onSave", static: false, private: false, access: { has: obj => "onSave" in obj, get: obj => obj.onSave }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(_a, null, _onCancel_decorators, { kind: "method", name: "onCancel", static: false, private: false, access: { has: obj => "onCancel" in obj, get: obj => obj.onCancel }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(null, null, _tasktext_decorators, { kind: "field", name: "tasktext", static: false, private: false, access: { has: obj => "tasktext" in obj, get: obj => obj.tasktext, set: (obj, value) => { obj.tasktext = value; } }, metadata: _metadata }, _tasktext_initializers, _tasktext_extraInitializers);
+            __esDecorate(null, null, _saveDisabled_decorators, { kind: "field", name: "saveDisabled", static: false, private: false, access: { has: obj => "saveDisabled" in obj, get: obj => obj.saveDisabled, set: (obj, value) => { obj.saveDisabled = value; } }, metadata: _metadata }, _saveDisabled_initializers, _saveDisabled_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+})();
+exports.TaskeditorComponent = TaskeditorComponent;
+
 
 /***/ }),
 
@@ -329,7 +2057,145 @@ eval("\nvar __runInitializers = (this && this.__runInitializers) || function (th
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {\n    function accept(f) { if (f !== void 0 && typeof f !== \"function\") throw new TypeError(\"Function expected\"); return f; }\n    var kind = contextIn.kind, key = kind === \"getter\" ? \"get\" : kind === \"setter\" ? \"set\" : \"value\";\n    var target = !descriptorIn && ctor ? contextIn[\"static\"] ? ctor : ctor.prototype : null;\n    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});\n    var _, done = false;\n    for (var i = decorators.length - 1; i >= 0; i--) {\n        var context = {};\n        for (var p in contextIn) context[p] = p === \"access\" ? {} : contextIn[p];\n        for (var p in contextIn.access) context.access[p] = contextIn.access[p];\n        context.addInitializer = function (f) { if (done) throw new TypeError(\"Cannot add initializers after decoration has completed\"); extraInitializers.push(accept(f || null)); };\n        var result = (0, decorators[i])(kind === \"accessor\" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);\n        if (kind === \"accessor\") {\n            if (result === void 0) continue;\n            if (result === null || typeof result !== \"object\") throw new TypeError(\"Object expected\");\n            if (_ = accept(result.get)) descriptor.get = _;\n            if (_ = accept(result.set)) descriptor.set = _;\n            if (_ = accept(result.init)) initializers.unshift(_);\n        }\n        else if (_ = accept(result)) {\n            if (kind === \"field\") initializers.unshift(_);\n            else descriptor[key] = _;\n        }\n    }\n    if (target) Object.defineProperty(target, contextIn.name, descriptor);\n    done = true;\n};\nvar __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {\n    var useValue = arguments.length > 2;\n    for (var i = 0; i < initializers.length; i++) {\n        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);\n    }\n    return useValue ? value : void 0;\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.TasklineComponent = void 0;\nconst webez_1 = __webpack_require__(/*! @gsilber/webez */ \"./node_modules/@gsilber/webez/index.js\");\nconst taskline_component_html_1 = __importDefault(__webpack_require__(/*! ./taskline.component.html */ \"./src/app/components/taskline/taskline.component.html\"));\nconst taskline_component_css_1 = __importDefault(__webpack_require__(/*! ./taskline.component.css */ \"./src/app/components/taskline/taskline.component.css\"));\nconst taskeditor_component_1 = __webpack_require__(/*! ../taskeditor/taskeditor.component */ \"./src/app/components/taskeditor/taskeditor.component.ts\");\nconst taskviewer_component_1 = __webpack_require__(/*! ../taskviewer/taskviewer.component */ \"./src/app/components/taskviewer/taskviewer.component.ts\");\n/**\n * @description Component for a single task line.\n * @class TaskLineComponent\n * @extends {EzComponent}\n * @property {EventSubject<void>} lineEdit - event subject for the edit event.\n * @property {EventSubject<boolean>} lineEditClose - event subject for the close event.  true if the save button was clicked, false if the cancel button was clicked.\n * @property {EventSubject<TaskData>} lineDelete - event subject for the delete event.\n * @property {TaskData} data - the task data for the line.\n * @method {disableViewButtons} - disables the view buttons.\n * @method {disableEditing} - disables editing.\n * @method {startEditing} - starts editing.\n * @memberof TaskLineComponent\n */\nlet TasklineComponent = (() => {\n    var _a;\n    let _classSuper = webez_1.EzComponent;\n    let _editorVisible_decorators;\n    let _editorVisible_initializers = [];\n    let _editorVisible_extraInitializers = [];\n    let _viewerVisible_decorators;\n    let _viewerVisible_initializers = [];\n    let _viewerVisible_extraInitializers = [];\n    return _a = class TasklineComponent extends _classSuper {\n            set editing(value) {\n                this._editing = value;\n                this.editorVisible = value ? \"visible\" : \"\";\n                this.viewerVisible = value ? \"\" : \"visible\";\n                this.lineEdit.next();\n            }\n            get editing() {\n                return this._editing;\n            }\n            get data() {\n                return this.taskData;\n            }\n            constructor(taskData = { taskText: \"\" }) {\n                super(taskline_component_html_1.default, taskline_component_css_1.default);\n                this.taskData = taskData;\n                this.editorVisible = __runInitializers(this, _editorVisible_initializers, \"hidden\");\n                this.viewerVisible = (__runInitializers(this, _editorVisible_extraInitializers), __runInitializers(this, _viewerVisible_initializers, \"hidden\"));\n                //event sources\n                this.lineEdit = (__runInitializers(this, _viewerVisible_extraInitializers), new webez_1.EventSubject());\n                this.lineEditClose = new webez_1.EventSubject();\n                this.lineDelete = new webez_1.EventSubject();\n                this._editing = false;\n                this.editor = new taskeditor_component_1.TaskeditorComponent(taskData);\n                this.viewer = new taskviewer_component_1.TaskviewerComponent(taskData);\n                this.addComponent(this.editor, \"editor\", true);\n                this.addComponent(this.viewer, \"viewer\", true);\n                this.wireUpEditor();\n                this.wireUpViewer();\n                this.editing = true;\n            }\n            wireUpEditor() {\n                this.editor.editClose.subscribe((save) => {\n                    this.editing = false;\n                    this.viewer.setData(this.taskData);\n                    this.lineEditClose.next(save);\n                });\n            }\n            wireUpViewer() {\n                //if delete is clicked bubble event up.\n                //if edit is clicked, then disable all other buttons and enable the editor\n                this.viewer.deleting.subscribe(() => {\n                    this.lineDelete.next(this.taskData);\n                });\n                this.viewer.editing.subscribe(() => {\n                    this.lineEdit.next();\n                    this.editing = true;\n                });\n            }\n            disableViewButtons(disable = true) {\n                this.viewer.disableButtons(disable);\n            }\n            disableEditing() {\n                this.editing = false;\n            }\n            startEditing() {\n                this.editing = true;\n            }\n        },\n        (() => {\n            var _b;\n            const _metadata = typeof Symbol === \"function\" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;\n            _editorVisible_decorators = [(0, webez_1.BindCSSClass)(\"editor\")];\n            _viewerVisible_decorators = [(0, webez_1.BindCSSClass)(\"viewer\")];\n            __esDecorate(null, null, _editorVisible_decorators, { kind: \"field\", name: \"editorVisible\", static: false, private: false, access: { has: obj => \"editorVisible\" in obj, get: obj => obj.editorVisible, set: (obj, value) => { obj.editorVisible = value; } }, metadata: _metadata }, _editorVisible_initializers, _editorVisible_extraInitializers);\n            __esDecorate(null, null, _viewerVisible_decorators, { kind: \"field\", name: \"viewerVisible\", static: false, private: false, access: { has: obj => \"viewerVisible\" in obj, get: obj => obj.viewerVisible, set: (obj, value) => { obj.viewerVisible = value; } }, metadata: _metadata }, _viewerVisible_initializers, _viewerVisible_extraInitializers);\n            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });\n        })(),\n        _a;\n})();\nexports.TasklineComponent = TasklineComponent;\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskline/taskline.component.ts?");
+
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TasklineComponent = void 0;
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const taskline_component_html_1 = __importDefault(__webpack_require__(/*! ./taskline.component.html */ "./src/app/components/taskline/taskline.component.html"));
+const taskline_component_css_1 = __importDefault(__webpack_require__(/*! ./taskline.component.css */ "./src/app/components/taskline/taskline.component.css"));
+const taskeditor_component_1 = __webpack_require__(/*! ../taskeditor/taskeditor.component */ "./src/app/components/taskeditor/taskeditor.component.ts");
+const taskviewer_component_1 = __webpack_require__(/*! ../taskviewer/taskviewer.component */ "./src/app/components/taskviewer/taskviewer.component.ts");
+/**
+ * @description Component for a single task line.
+ * @class TaskLineComponent
+ * @extends {EzComponent}
+ * @property {EventSubject<void>} lineEdit - event subject for the edit event.
+ * @property {EventSubject<boolean>} lineEditClose - event subject for the close event.  true if the save button was clicked, false if the cancel button was clicked.
+ * @property {EventSubject<TaskData>} lineDelete - event subject for the delete event.
+ * @property {TaskData} data - the task data for the line.
+ * @method {disableViewButtons} - disables the view buttons.
+ * @method {disableEditing} - disables editing.
+ * @method {startEditing} - starts editing.
+ * @memberof TaskLineComponent
+ */
+let TasklineComponent = (() => {
+    var _a;
+    let _classSuper = webez_1.EzComponent;
+    let _editorVisible_decorators;
+    let _editorVisible_initializers = [];
+    let _editorVisible_extraInitializers = [];
+    let _viewerVisible_decorators;
+    let _viewerVisible_initializers = [];
+    let _viewerVisible_extraInitializers = [];
+    return _a = class TasklineComponent extends _classSuper {
+            set editing(value) {
+                this._editing = value;
+                this.editorVisible = value ? "visible" : "";
+                this.viewerVisible = value ? "" : "visible";
+                this.lineEdit.next();
+            }
+            get editing() {
+                return this._editing;
+            }
+            get data() {
+                return this.taskData;
+            }
+            constructor(taskData = { taskText: "" }) {
+                super(taskline_component_html_1.default, taskline_component_css_1.default);
+                this.taskData = taskData;
+                this.editorVisible = __runInitializers(this, _editorVisible_initializers, "hidden");
+                this.viewerVisible = (__runInitializers(this, _editorVisible_extraInitializers), __runInitializers(this, _viewerVisible_initializers, "hidden"));
+                //event sources
+                this.lineEdit = (__runInitializers(this, _viewerVisible_extraInitializers), new webez_1.EventSubject());
+                this.lineEditClose = new webez_1.EventSubject();
+                this.lineDelete = new webez_1.EventSubject();
+                this._editing = false;
+                this.editor = new taskeditor_component_1.TaskeditorComponent(taskData);
+                this.viewer = new taskviewer_component_1.TaskviewerComponent(taskData);
+                this.addComponent(this.editor, "editor", true);
+                this.addComponent(this.viewer, "viewer", true);
+                this.wireUpEditor();
+                this.wireUpViewer();
+                this.editing = true;
+            }
+            wireUpEditor() {
+                this.editor.editClose.subscribe((save) => {
+                    this.editing = false;
+                    this.viewer.setData(this.taskData);
+                    this.lineEditClose.next(save);
+                });
+            }
+            wireUpViewer() {
+                //if delete is clicked bubble event up.
+                //if edit is clicked, then disable all other buttons and enable the editor
+                this.viewer.deleting.subscribe(() => {
+                    this.lineDelete.next(this.taskData);
+                });
+                this.viewer.editing.subscribe(() => {
+                    this.lineEdit.next();
+                    this.editing = true;
+                });
+            }
+            disableViewButtons(disable = true) {
+                this.viewer.disableButtons(disable);
+            }
+            disableEditing() {
+                this.editing = false;
+            }
+            startEditing() {
+                this.editing = true;
+            }
+        },
+        (() => {
+            var _b;
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
+            _editorVisible_decorators = [(0, webez_1.BindCSSClass)("editor")];
+            _viewerVisible_decorators = [(0, webez_1.BindCSSClass)("viewer")];
+            __esDecorate(null, null, _editorVisible_decorators, { kind: "field", name: "editorVisible", static: false, private: false, access: { has: obj => "editorVisible" in obj, get: obj => obj.editorVisible, set: (obj, value) => { obj.editorVisible = value; } }, metadata: _metadata }, _editorVisible_initializers, _editorVisible_extraInitializers);
+            __esDecorate(null, null, _viewerVisible_decorators, { kind: "field", name: "viewerVisible", static: false, private: false, access: { has: obj => "viewerVisible" in obj, get: obj => obj.viewerVisible, set: (obj, value) => { obj.viewerVisible = value; } }, metadata: _metadata }, _viewerVisible_initializers, _viewerVisible_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+})();
+exports.TasklineComponent = TasklineComponent;
+
 
 /***/ }),
 
@@ -340,7 +2206,178 @@ eval("\nvar __esDecorate = (this && this.__esDecorate) || function (ctor, descri
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {\n    var useValue = arguments.length > 2;\n    for (var i = 0; i < initializers.length; i++) {\n        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);\n    }\n    return useValue ? value : void 0;\n};\nvar __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {\n    function accept(f) { if (f !== void 0 && typeof f !== \"function\") throw new TypeError(\"Function expected\"); return f; }\n    var kind = contextIn.kind, key = kind === \"getter\" ? \"get\" : kind === \"setter\" ? \"set\" : \"value\";\n    var target = !descriptorIn && ctor ? contextIn[\"static\"] ? ctor : ctor.prototype : null;\n    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});\n    var _, done = false;\n    for (var i = decorators.length - 1; i >= 0; i--) {\n        var context = {};\n        for (var p in contextIn) context[p] = p === \"access\" ? {} : contextIn[p];\n        for (var p in contextIn.access) context.access[p] = contextIn.access[p];\n        context.addInitializer = function (f) { if (done) throw new TypeError(\"Cannot add initializers after decoration has completed\"); extraInitializers.push(accept(f || null)); };\n        var result = (0, decorators[i])(kind === \"accessor\" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);\n        if (kind === \"accessor\") {\n            if (result === void 0) continue;\n            if (result === null || typeof result !== \"object\") throw new TypeError(\"Object expected\");\n            if (_ = accept(result.get)) descriptor.get = _;\n            if (_ = accept(result.set)) descriptor.set = _;\n            if (_ = accept(result.init)) initializers.unshift(_);\n        }\n        else if (_ = accept(result)) {\n            if (kind === \"field\") initializers.unshift(_);\n            else descriptor[key] = _;\n        }\n    }\n    if (target) Object.defineProperty(target, contextIn.name, descriptor);\n    done = true;\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.TasksComponent = void 0;\nconst webez_1 = __webpack_require__(/*! @gsilber/webez */ \"./node_modules/@gsilber/webez/index.js\");\nconst tasks_component_html_1 = __importDefault(__webpack_require__(/*! ./tasks.component.html */ \"./src/app/components/tasks/tasks.component.html\"));\nconst tasks_component_css_1 = __importDefault(__webpack_require__(/*! ./tasks.component.css */ \"./src/app/components/tasks/tasks.component.css\"));\nconst taskline_component_1 = __webpack_require__(/*! ../taskline/taskline.component */ \"./src/app/components/taskline/taskline.component.ts\");\nconst guid_1 = __importDefault(__webpack_require__(/*! guid */ \"./node_modules/guid/guid.js\"));\n/**\n * @description Top level component of the task list.\n * @class TasksComponent\n * @extends {EzComponent}\n * @property {EventSubject<TaskData[]>} saveData - event subject for the save event.  emits the task data when the save event is triggered.\n * @memberof TasksComponent\n */\nlet TasksComponent = (() => {\n    var _a;\n    let _classSuper = webez_1.EzComponent;\n    let _instanceExtraInitializers = [];\n    let _addDisabled_decorators;\n    let _addDisabled_initializers = [];\n    let _addDisabled_extraInitializers = [];\n    let _onAddTask_decorators;\n    let _onClearTasks_decorators;\n    let _counterfn_decorators;\n    return _a = class TasksComponent extends _classSuper {\n            get taskData() {\n                return this.taskLines.map((task) => task.data);\n            }\n            set taskData(data) {\n                this.taskLines.forEach((line) => {\n                    this.removeComponent(line);\n                });\n                this.taskLines = [];\n                data.forEach((task) => {\n                    let line = new taskline_component_1.TasklineComponent(task);\n                    this.addComponent(line, \"task-list\");\n                    this.taskLines.push(line);\n                    this.wireUpTaskLine(line);\n                    line.disableEditing();\n                });\n                this.taskLines.forEach((task) => {\n                    task.disableViewButtons(false);\n                });\n                this.addDisabled = \"\";\n            }\n            constructor(data = []) {\n                super(tasks_component_html_1.default, tasks_component_css_1.default);\n                this.addDisabled = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _addDisabled_initializers, \"\"));\n                this.taskLines = (__runInitializers(this, _addDisabled_extraInitializers), []);\n                this.counter = 0;\n                this.saveData = new webez_1.EventSubject();\n                this.taskData = data;\n            }\n            onAddTask() {\n                let taskLine = new taskline_component_1.TasklineComponent();\n                this.addComponent(taskLine, \"task-list\", true);\n                this.taskLines.unshift(taskLine);\n                this.wireUpTaskLine(taskLine);\n                taskLine.startEditing();\n            }\n            onClearTasks() {\n                if (this.taskLines.length === 0) {\n                    webez_1.EzDialog.popup(this, \"There are no tasks to clear.\", \"Notice\", [\"Ok\"], \"btn btn-primary\");\n                }\n                else {\n                    webez_1.EzDialog.popup(this, \"Are you sure you want to clear all tasks?\", \"Warning\", [\"Yes\", \"No\", \"Cancel\"], \"btn btn-primary\").subscribe((result) => {\n                        if (result === \"Yes\") {\n                            this.taskLines.forEach((task) => {\n                                this.removeComponent(task);\n                            });\n                            this.taskLines = [];\n                            this.saveData.next(this.taskData);\n                        }\n                    });\n                }\n            }\n            wireUpTaskLine(line) {\n                //if we start editing, then we want to disable the add button and all child edit/cancel buttons\n                line.lineEdit.subscribe(() => {\n                    this.addDisabled = \"disabled\";\n                    this.taskLines.forEach((task) => {\n                        task.disableViewButtons();\n                    });\n                });\n                //if we are deleting, then we want to remove the line from the list and remove the component\n                line.lineDelete.subscribe(() => {\n                    this.removeComponent(line);\n                    this.taskLines.splice(this.taskLines.indexOf(line), 1);\n                    this.saveData.next(this.taskData);\n                });\n                //if we are closing editor, then we want to enable the add button and all child edit/cancel buttons\n                line.lineEditClose.subscribe((save) => {\n                    this.addDisabled = \"\";\n                    this.taskLines.forEach((task) => {\n                        task.disableViewButtons(false);\n                    });\n                    if (save) {\n                        if (line.data.uniqueID === undefined) {\n                            line.data.uniqueID = guid_1.default.create();\n                        }\n                        //save the data to a datasource\n                        this.saveData.next(this.taskData);\n                    }\n                    else if (line.data.uniqueID === undefined) {\n                        this.removeComponent(line);\n                        this.taskLines.splice(this.taskLines.indexOf(line), 1);\n                    }\n                });\n            }\n            counterfn(cancel) {\n                this.counter++;\n                console.log(this.counter);\n                if (this.counter >= 15) {\n                    cancel();\n                }\n            }\n        },\n        (() => {\n            var _b;\n            const _metadata = typeof Symbol === \"function\" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;\n            _addDisabled_decorators = [(0, webez_1.BindCSSClass)(\"add-task\")];\n            _onAddTask_decorators = [(0, webez_1.Click)(\"add-task\")];\n            _onClearTasks_decorators = [(0, webez_1.Click)(\"clear-tasks\")];\n            _counterfn_decorators = [(0, webez_1.Timer)(1000)];\n            __esDecorate(_a, null, _onAddTask_decorators, { kind: \"method\", name: \"onAddTask\", static: false, private: false, access: { has: obj => \"onAddTask\" in obj, get: obj => obj.onAddTask }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(_a, null, _onClearTasks_decorators, { kind: \"method\", name: \"onClearTasks\", static: false, private: false, access: { has: obj => \"onClearTasks\" in obj, get: obj => obj.onClearTasks }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(_a, null, _counterfn_decorators, { kind: \"method\", name: \"counterfn\", static: false, private: false, access: { has: obj => \"counterfn\" in obj, get: obj => obj.counterfn }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(null, null, _addDisabled_decorators, { kind: \"field\", name: \"addDisabled\", static: false, private: false, access: { has: obj => \"addDisabled\" in obj, get: obj => obj.addDisabled, set: (obj, value) => { obj.addDisabled = value; } }, metadata: _metadata }, _addDisabled_initializers, _addDisabled_extraInitializers);\n            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });\n        })(),\n        _a;\n})();\nexports.TasksComponent = TasksComponent;\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/tasks/tasks.component.ts?");
+
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TasksComponent = void 0;
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const tasks_component_html_1 = __importDefault(__webpack_require__(/*! ./tasks.component.html */ "./src/app/components/tasks/tasks.component.html"));
+const tasks_component_css_1 = __importDefault(__webpack_require__(/*! ./tasks.component.css */ "./src/app/components/tasks/tasks.component.css"));
+const taskline_component_1 = __webpack_require__(/*! ../taskline/taskline.component */ "./src/app/components/taskline/taskline.component.ts");
+const guid_1 = __importDefault(__webpack_require__(/*! guid */ "./node_modules/guid/guid.js"));
+/**
+ * @description Top level component of the task list.
+ * @class TasksComponent
+ * @extends {EzComponent}
+ * @property {EventSubject<TaskData[]>} saveData - event subject for the save event.  emits the task data when the save event is triggered.
+ * @memberof TasksComponent
+ */
+let TasksComponent = (() => {
+    var _a;
+    let _classSuper = webez_1.EzComponent;
+    let _instanceExtraInitializers = [];
+    let _addDisabled_decorators;
+    let _addDisabled_initializers = [];
+    let _addDisabled_extraInitializers = [];
+    let _onAddTask_decorators;
+    let _onClearTasks_decorators;
+    let _counterfn_decorators;
+    return _a = class TasksComponent extends _classSuper {
+            get taskData() {
+                return this.taskLines.map((task) => task.data);
+            }
+            set taskData(data) {
+                this.taskLines.forEach((line) => {
+                    this.removeComponent(line);
+                });
+                this.taskLines = [];
+                data.forEach((task) => {
+                    let line = new taskline_component_1.TasklineComponent(task);
+                    this.addComponent(line, "task-list");
+                    this.taskLines.push(line);
+                    this.wireUpTaskLine(line);
+                    line.disableEditing();
+                });
+                this.taskLines.forEach((task) => {
+                    task.disableViewButtons(false);
+                });
+                this.addDisabled = "";
+            }
+            constructor(data = []) {
+                super(tasks_component_html_1.default, tasks_component_css_1.default);
+                this.addDisabled = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _addDisabled_initializers, ""));
+                this.taskLines = (__runInitializers(this, _addDisabled_extraInitializers), []);
+                this.counter = 0;
+                this.saveData = new webez_1.EventSubject();
+                this.taskData = data;
+            }
+            onAddTask() {
+                let taskLine = new taskline_component_1.TasklineComponent();
+                this.addComponent(taskLine, "task-list", true);
+                this.taskLines.unshift(taskLine);
+                this.wireUpTaskLine(taskLine);
+                taskLine.startEditing();
+            }
+            onClearTasks() {
+                if (this.taskLines.length === 0) {
+                    webez_1.EzDialog.popup(this, "There are no tasks to clear.", "Notice", ["Ok"], "btn btn-primary");
+                }
+                else {
+                    webez_1.EzDialog.popup(this, "Are you sure you want to clear all tasks?", "Warning", ["Yes", "No", "Cancel"], "btn btn-primary").subscribe((result) => {
+                        if (result === "Yes") {
+                            this.taskLines.forEach((task) => {
+                                this.removeComponent(task);
+                            });
+                            this.taskLines = [];
+                            this.saveData.next(this.taskData);
+                        }
+                    });
+                }
+            }
+            wireUpTaskLine(line) {
+                //if we start editing, then we want to disable the add button and all child edit/cancel buttons
+                line.lineEdit.subscribe(() => {
+                    this.addDisabled = "disabled";
+                    this.taskLines.forEach((task) => {
+                        task.disableViewButtons();
+                    });
+                });
+                //if we are deleting, then we want to remove the line from the list and remove the component
+                line.lineDelete.subscribe(() => {
+                    this.removeComponent(line);
+                    this.taskLines.splice(this.taskLines.indexOf(line), 1);
+                    this.saveData.next(this.taskData);
+                });
+                //if we are closing editor, then we want to enable the add button and all child edit/cancel buttons
+                line.lineEditClose.subscribe((save) => {
+                    this.addDisabled = "";
+                    this.taskLines.forEach((task) => {
+                        task.disableViewButtons(false);
+                    });
+                    if (save) {
+                        if (line.data.uniqueID === undefined) {
+                            line.data.uniqueID = guid_1.default.create();
+                        }
+                        //save the data to a datasource
+                        this.saveData.next(this.taskData);
+                    }
+                    else if (line.data.uniqueID === undefined) {
+                        this.removeComponent(line);
+                        this.taskLines.splice(this.taskLines.indexOf(line), 1);
+                    }
+                });
+            }
+            counterfn(cancel) {
+                this.counter++;
+                console.log(this.counter);
+                if (this.counter >= 15) {
+                    cancel();
+                }
+            }
+        },
+        (() => {
+            var _b;
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
+            _addDisabled_decorators = [(0, webez_1.BindCSSClass)("add-task")];
+            _onAddTask_decorators = [(0, webez_1.Click)("add-task")];
+            _onClearTasks_decorators = [(0, webez_1.Click)("clear-tasks")];
+            _counterfn_decorators = [(0, webez_1.Timer)(1000)];
+            __esDecorate(_a, null, _onAddTask_decorators, { kind: "method", name: "onAddTask", static: false, private: false, access: { has: obj => "onAddTask" in obj, get: obj => obj.onAddTask }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(_a, null, _onClearTasks_decorators, { kind: "method", name: "onClearTasks", static: false, private: false, access: { has: obj => "onClearTasks" in obj, get: obj => obj.onClearTasks }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(_a, null, _counterfn_decorators, { kind: "method", name: "counterfn", static: false, private: false, access: { has: obj => "counterfn" in obj, get: obj => obj.counterfn }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(null, null, _addDisabled_decorators, { kind: "field", name: "addDisabled", static: false, private: false, access: { has: obj => "addDisabled" in obj, get: obj => obj.addDisabled, set: (obj, value) => { obj.addDisabled = value; } }, metadata: _metadata }, _addDisabled_initializers, _addDisabled_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+})();
+exports.TasksComponent = TasksComponent;
+
 
 /***/ }),
 
@@ -351,7 +2388,149 @@ eval("\nvar __runInitializers = (this && this.__runInitializers) || function (th
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {\n    var useValue = arguments.length > 2;\n    for (var i = 0; i < initializers.length; i++) {\n        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);\n    }\n    return useValue ? value : void 0;\n};\nvar __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {\n    function accept(f) { if (f !== void 0 && typeof f !== \"function\") throw new TypeError(\"Function expected\"); return f; }\n    var kind = contextIn.kind, key = kind === \"getter\" ? \"get\" : kind === \"setter\" ? \"set\" : \"value\";\n    var target = !descriptorIn && ctor ? contextIn[\"static\"] ? ctor : ctor.prototype : null;\n    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});\n    var _, done = false;\n    for (var i = decorators.length - 1; i >= 0; i--) {\n        var context = {};\n        for (var p in contextIn) context[p] = p === \"access\" ? {} : contextIn[p];\n        for (var p in contextIn.access) context.access[p] = contextIn.access[p];\n        context.addInitializer = function (f) { if (done) throw new TypeError(\"Cannot add initializers after decoration has completed\"); extraInitializers.push(accept(f || null)); };\n        var result = (0, decorators[i])(kind === \"accessor\" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);\n        if (kind === \"accessor\") {\n            if (result === void 0) continue;\n            if (result === null || typeof result !== \"object\") throw new TypeError(\"Object expected\");\n            if (_ = accept(result.get)) descriptor.get = _;\n            if (_ = accept(result.set)) descriptor.set = _;\n            if (_ = accept(result.init)) initializers.unshift(_);\n        }\n        else if (_ = accept(result)) {\n            if (kind === \"field\") initializers.unshift(_);\n            else descriptor[key] = _;\n        }\n    }\n    if (target) Object.defineProperty(target, contextIn.name, descriptor);\n    done = true;\n};\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.TaskviewerComponent = void 0;\nconst webez_1 = __webpack_require__(/*! @gsilber/webez */ \"./node_modules/@gsilber/webez/index.js\");\nconst taskviewer_component_html_1 = __importDefault(__webpack_require__(/*! ./taskviewer.component.html */ \"./src/app/components/taskviewer/taskviewer.component.html\"));\nconst taskviewer_component_css_1 = __importDefault(__webpack_require__(/*! ./taskviewer.component.css */ \"./src/app/components/taskviewer/taskviewer.component.css\"));\n/**\n * @description Component for viewing a task.\n * @class TaskViewerComponent\n * @extends {EzComponent}\n * @property {EventSubject<void>} editing - event subject for the edit event.\n * @property {EventSubject<void>} deleting - event subject for the delete event.\n * @property {TaskData} data - the task data for the viewer.\n * @method {setData} - sets the task data for the viewer.\n * @method {disableButtons} - disables the buttons.\n * @memberof TaskViewerComponent\n */\nlet TaskviewerComponent = (() => {\n    var _a;\n    let _classSuper = webez_1.EzComponent;\n    let _instanceExtraInitializers = [];\n    let _taskview_decorators;\n    let _taskview_initializers = [];\n    let _taskview_extraInitializers = [];\n    let _editDisabled_decorators;\n    let _editDisabled_initializers = [];\n    let _editDisabled_extraInitializers = [];\n    let _deleteDisabled_decorators;\n    let _deleteDisabled_initializers = [];\n    let _deleteDisabled_extraInitializers = [];\n    let _onEdit_decorators;\n    let _onDelete_decorators;\n    return _a = class TaskviewerComponent extends _classSuper {\n            /**\n             * @description Creates an instance of TaskViewerComponent.\n             * @param {TaskData} [data={ taskText: \"\" }] - the task data to view.  If no task data is provided, the task text will be empty.\n             * @memberof TaskViewerComponent\n             */\n            constructor(data = { taskText: \"\" }) {\n                super(taskviewer_component_html_1.default, taskviewer_component_css_1.default);\n                this.data = (__runInitializers(this, _instanceExtraInitializers), data);\n                //event sources\n                this.editing = new webez_1.EventSubject();\n                this.deleting = new webez_1.EventSubject();\n                this.taskview = __runInitializers(this, _taskview_initializers, \"\");\n                this.editDisabled = (__runInitializers(this, _taskview_extraInitializers), __runInitializers(this, _editDisabled_initializers, \"\"));\n                this.deleteDisabled = (__runInitializers(this, _editDisabled_extraInitializers), __runInitializers(this, _deleteDisabled_initializers, \"\"));\n                __runInitializers(this, _deleteDisabled_extraInitializers);\n                this.data = data;\n                this.taskview = data.taskText;\n            }\n            /**\n             * @description event handler for the edit button.  emits the editing event.\n             * @memberof TaskViewerComponent\n             */\n            onEdit() {\n                this.editing.next();\n            }\n            /**\n             * @description event handler for the delete button.  emits the deleting event.\n             * @memberof TaskViewerComponent\n             */\n            onDelete() {\n                webez_1.EzDialog.popup(this, \"Are you sure you want to delete this task?\", \"Confirm Delete\", [\"Yes\", \"No\", \"Cancel\"], \"btn btn-primary\").subscribe((result) => {\n                    if (result === \"Ok\")\n                        this.deleting.next();\n                });\n            }\n            /**\n             * @description sets the task data for the viewer.\n             * @param {TaskData} data - the task data to view.\n             * @memberof TaskViewerComponent\n             */\n            setData(data) {\n                this.data = data;\n                this.taskview = data.taskText;\n            }\n            /**\n             * @description disables the buttons.\n             * @param {boolean} [disable=true] - true to disable the buttons, false to enable them.\n             * @memberof TaskViewerComponent\n             */\n            disableButtons(disable = true) {\n                this.editDisabled = disable ? \"disabled\" : \"\";\n                this.deleteDisabled = disable ? \"disabled\" : \"\";\n            }\n        },\n        (() => {\n            var _b;\n            const _metadata = typeof Symbol === \"function\" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;\n            _taskview_decorators = [(0, webez_1.BindInnerHTML)(\"taskview\")];\n            _editDisabled_decorators = [(0, webez_1.BindCSSClass)(\"edit\")];\n            _deleteDisabled_decorators = [(0, webez_1.BindCSSClass)(\"delete\")];\n            _onEdit_decorators = [(0, webez_1.Click)(\"edit\")];\n            _onDelete_decorators = [(0, webez_1.Click)(\"delete\")];\n            __esDecorate(_a, null, _onEdit_decorators, { kind: \"method\", name: \"onEdit\", static: false, private: false, access: { has: obj => \"onEdit\" in obj, get: obj => obj.onEdit }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(_a, null, _onDelete_decorators, { kind: \"method\", name: \"onDelete\", static: false, private: false, access: { has: obj => \"onDelete\" in obj, get: obj => obj.onDelete }, metadata: _metadata }, null, _instanceExtraInitializers);\n            __esDecorate(null, null, _taskview_decorators, { kind: \"field\", name: \"taskview\", static: false, private: false, access: { has: obj => \"taskview\" in obj, get: obj => obj.taskview, set: (obj, value) => { obj.taskview = value; } }, metadata: _metadata }, _taskview_initializers, _taskview_extraInitializers);\n            __esDecorate(null, null, _editDisabled_decorators, { kind: \"field\", name: \"editDisabled\", static: false, private: false, access: { has: obj => \"editDisabled\" in obj, get: obj => obj.editDisabled, set: (obj, value) => { obj.editDisabled = value; } }, metadata: _metadata }, _editDisabled_initializers, _editDisabled_extraInitializers);\n            __esDecorate(null, null, _deleteDisabled_decorators, { kind: \"field\", name: \"deleteDisabled\", static: false, private: false, access: { has: obj => \"deleteDisabled\" in obj, get: obj => obj.deleteDisabled, set: (obj, value) => { obj.deleteDisabled = value; } }, metadata: _metadata }, _deleteDisabled_initializers, _deleteDisabled_extraInitializers);\n            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });\n        })(),\n        _a;\n})();\nexports.TaskviewerComponent = TaskviewerComponent;\n\n\n//# sourceURL=webpack://webez-example/./src/app/components/taskviewer/taskviewer.component.ts?");
+
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TaskviewerComponent = void 0;
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const taskviewer_component_html_1 = __importDefault(__webpack_require__(/*! ./taskviewer.component.html */ "./src/app/components/taskviewer/taskviewer.component.html"));
+const taskviewer_component_css_1 = __importDefault(__webpack_require__(/*! ./taskviewer.component.css */ "./src/app/components/taskviewer/taskviewer.component.css"));
+/**
+ * @description Component for viewing a task.
+ * @class TaskViewerComponent
+ * @extends {EzComponent}
+ * @property {EventSubject<void>} editing - event subject for the edit event.
+ * @property {EventSubject<void>} deleting - event subject for the delete event.
+ * @property {TaskData} data - the task data for the viewer.
+ * @method {setData} - sets the task data for the viewer.
+ * @method {disableButtons} - disables the buttons.
+ * @memberof TaskViewerComponent
+ */
+let TaskviewerComponent = (() => {
+    var _a;
+    let _classSuper = webez_1.EzComponent;
+    let _instanceExtraInitializers = [];
+    let _taskview_decorators;
+    let _taskview_initializers = [];
+    let _taskview_extraInitializers = [];
+    let _editDisabled_decorators;
+    let _editDisabled_initializers = [];
+    let _editDisabled_extraInitializers = [];
+    let _deleteDisabled_decorators;
+    let _deleteDisabled_initializers = [];
+    let _deleteDisabled_extraInitializers = [];
+    let _onEdit_decorators;
+    let _onDelete_decorators;
+    return _a = class TaskviewerComponent extends _classSuper {
+            /**
+             * @description Creates an instance of TaskViewerComponent.
+             * @param {TaskData} [data={ taskText: "" }] - the task data to view.  If no task data is provided, the task text will be empty.
+             * @memberof TaskViewerComponent
+             */
+            constructor(data = { taskText: "" }) {
+                super(taskviewer_component_html_1.default, taskviewer_component_css_1.default);
+                this.data = (__runInitializers(this, _instanceExtraInitializers), data);
+                //event sources
+                this.editing = new webez_1.EventSubject();
+                this.deleting = new webez_1.EventSubject();
+                this.taskview = __runInitializers(this, _taskview_initializers, "");
+                this.editDisabled = (__runInitializers(this, _taskview_extraInitializers), __runInitializers(this, _editDisabled_initializers, ""));
+                this.deleteDisabled = (__runInitializers(this, _editDisabled_extraInitializers), __runInitializers(this, _deleteDisabled_initializers, ""));
+                __runInitializers(this, _deleteDisabled_extraInitializers);
+                this.data = data;
+                this.taskview = data.taskText;
+            }
+            /**
+             * @description event handler for the edit button.  emits the editing event.
+             * @memberof TaskViewerComponent
+             */
+            onEdit() {
+                this.editing.next();
+            }
+            /**
+             * @description event handler for the delete button.  emits the deleting event.
+             * @memberof TaskViewerComponent
+             */
+            onDelete() {
+                webez_1.EzDialog.popup(this, "Are you sure you want to delete this task?", "Confirm Delete", ["Yes", "No", "Cancel"], "btn btn-primary").subscribe((result) => {
+                    if (result === "Yes")
+                        this.deleting.next();
+                });
+            }
+            /**
+             * @description sets the task data for the viewer.
+             * @param {TaskData} data - the task data to view.
+             * @memberof TaskViewerComponent
+             */
+            setData(data) {
+                this.data = data;
+                this.taskview = data.taskText;
+            }
+            /**
+             * @description disables the buttons.
+             * @param {boolean} [disable=true] - true to disable the buttons, false to enable them.
+             * @memberof TaskViewerComponent
+             */
+            disableButtons(disable = true) {
+                this.editDisabled = disable ? "disabled" : "";
+                this.deleteDisabled = disable ? "disabled" : "";
+            }
+        },
+        (() => {
+            var _b;
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
+            _taskview_decorators = [(0, webez_1.BindInnerHTML)("taskview")];
+            _editDisabled_decorators = [(0, webez_1.BindCSSClass)("edit")];
+            _deleteDisabled_decorators = [(0, webez_1.BindCSSClass)("delete")];
+            _onEdit_decorators = [(0, webez_1.Click)("edit")];
+            _onDelete_decorators = [(0, webez_1.Click)("delete")];
+            __esDecorate(_a, null, _onEdit_decorators, { kind: "method", name: "onEdit", static: false, private: false, access: { has: obj => "onEdit" in obj, get: obj => obj.onEdit }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(_a, null, _onDelete_decorators, { kind: "method", name: "onDelete", static: false, private: false, access: { has: obj => "onDelete" in obj, get: obj => obj.onDelete }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(null, null, _taskview_decorators, { kind: "field", name: "taskview", static: false, private: false, access: { has: obj => "taskview" in obj, get: obj => obj.taskview, set: (obj, value) => { obj.taskview = value; } }, metadata: _metadata }, _taskview_initializers, _taskview_extraInitializers);
+            __esDecorate(null, null, _editDisabled_decorators, { kind: "field", name: "editDisabled", static: false, private: false, access: { has: obj => "editDisabled" in obj, get: obj => obj.editDisabled, set: (obj, value) => { obj.editDisabled = value; } }, metadata: _metadata }, _editDisabled_initializers, _editDisabled_extraInitializers);
+            __esDecorate(null, null, _deleteDisabled_decorators, { kind: "field", name: "deleteDisabled", static: false, private: false, access: { has: obj => "deleteDisabled" in obj, get: obj => obj.deleteDisabled, set: (obj, value) => { obj.deleteDisabled = value; } }, metadata: _metadata }, _deleteDisabled_initializers, _deleteDisabled_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+})();
+exports.TaskviewerComponent = TaskviewerComponent;
+
 
 /***/ }),
 
@@ -362,18 +2541,46 @@ eval("\nvar __runInitializers = (this && this.__runInitializers) || function (th
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.MainComponent = void 0;\nconst main_component_html_1 = __importDefault(__webpack_require__(/*! ./main.component.html */ \"./src/app/main.component.html\"));\nconst main_component_css_1 = __importDefault(__webpack_require__(/*! ./main.component.css */ \"./src/app/main.component.css\"));\nconst webez_1 = __webpack_require__(/*! @gsilber/webez */ \"./node_modules/@gsilber/webez/index.js\");\nconst tasks_component_1 = __webpack_require__(/*! ./components/tasks/tasks.component */ \"./src/app/components/tasks/tasks.component.ts\");\n/**\n * @description Top level component of the application.\n * @class MainComponent\n * @extends {EzComponent}\n * @memberof MainComponent\n */\nclass MainComponent extends webez_1.EzComponent {\n    /**\n     * @description Creates an instance of MainComponent.\n     * @memberof MainComponent\n     */\n    constructor() {\n        super(main_component_html_1.default, main_component_css_1.default);\n        //using cookies for persistence.  In a real application we would use a database or some other form of storage like an API\n        let savedData = window.localStorage.getItem(\"taskData\");\n        if (savedData) {\n            let data = JSON.parse(savedData);\n            this.taskComponent = new tasks_component_1.TasksComponent(data);\n        }\n        else {\n            this.taskComponent = new tasks_component_1.TasksComponent();\n        }\n        this.addComponent(this.taskComponent, \"task-target\");\n        this.taskComponent.saveData.subscribe((data) => {\n            window.localStorage.setItem(\"taskData\", JSON.stringify(data));\n        });\n    }\n}\nexports.MainComponent = MainComponent;\n\n\n//# sourceURL=webpack://webez-example/./src/app/main.component.ts?");
 
-/***/ }),
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MainComponent = void 0;
+const main_component_html_1 = __importDefault(__webpack_require__(/*! ./main.component.html */ "./src/app/main.component.html"));
+const main_component_css_1 = __importDefault(__webpack_require__(/*! ./main.component.css */ "./src/app/main.component.css"));
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const tasks_component_1 = __webpack_require__(/*! ./components/tasks/tasks.component */ "./src/app/components/tasks/tasks.component.ts");
+/**
+ * @description Top level component of the application.
+ * @class MainComponent
+ * @extends {EzComponent}
+ * @memberof MainComponent
+ */
+class MainComponent extends webez_1.EzComponent {
+    /**
+     * @description Creates an instance of MainComponent.
+     * @memberof MainComponent
+     */
+    constructor() {
+        super(main_component_html_1.default, main_component_css_1.default);
+        //using cookies for persistence.  In a real application we would use a database or some other form of storage like an API
+        let savedData = window.localStorage.getItem("taskData");
+        if (savedData) {
+            let data = JSON.parse(savedData);
+            this.taskComponent = new tasks_component_1.TasksComponent(data);
+        }
+        else {
+            this.taskComponent = new tasks_component_1.TasksComponent();
+        }
+        this.addComponent(this.taskComponent, "task-target");
+        this.taskComponent.saveData.subscribe((data) => {
+            window.localStorage.setItem("taskData", JSON.stringify(data));
+        });
+    }
+}
+exports.MainComponent = MainComponent;
 
-/***/ "./wbcore/start.ts":
-/*!*************************!*\
-  !*** ./wbcore/start.ts ***!
-  \*************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__webpack_require__(/*! ../styles.css */ \"./styles.css\");\nconst webez_1 = __webpack_require__(/*! @gsilber/webez */ \"./node_modules/@gsilber/webez/index.js\");\nconst main_component_1 = __webpack_require__(/*! ../src/app/main.component */ \"./src/app/main.component.ts\");\n(0, webez_1.bootstrap)(main_component_1.MainComponent);\n\n\n//# sourceURL=webpack://webez-example/./wbcore/start.ts?");
 
 /***/ })
 
@@ -450,11 +2657,23 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\n__we
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./wbcore/start.ts");
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+var exports = __webpack_exports__;
+/*!*************************!*\
+  !*** ./wbcore/start.ts ***!
+  \*************************/
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__webpack_require__(/*! ../styles.css */ "./styles.css");
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const main_component_1 = __webpack_require__(/*! ../src/app/main.component */ "./src/app/main.component.ts");
+(0, webez_1.bootstrap)(main_component_1.MainComponent);
+
+})();
+
 /******/ })()
 ;
+//# sourceMappingURL=main.bundle.js.map

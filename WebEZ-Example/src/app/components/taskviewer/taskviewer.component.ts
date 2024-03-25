@@ -61,7 +61,7 @@ export class TaskviewerComponent extends EzComponent {
             ["Yes", "No", "Cancel"],
             "btn btn-primary",
         ).subscribe((result) => {
-            if (result === "Ok") this.deleting.next();
+            if (result === "Yes") this.deleting.next();
         });
     }
 
