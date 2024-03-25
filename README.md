@@ -326,6 +326,11 @@ onMainWindowResize(sz:SizeInfo){
     console.log("The whole window is "+sz.windowWidth+" pixels wide.");
 }
 ```
+### focus(htmlElementId)
+Set the focus to an element on the current component by id
+```
+this.setfocus('input1');
+```
 ### ajax\<T>(url,method,headers,data):EventSubject\<T>
 This allows you to make an asyncronous call and will return an EventSubject<T> for you to subscribe.  The eventsource will fire the subscription when the request is complete.
 ```

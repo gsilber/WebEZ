@@ -223,4 +223,14 @@ export abstract class EzComponent {
             windowHeight: window.innerHeight,
         };
     }
+
+    /**
+     * @description Set focus to an element on this component
+     * @param {string} elementId The id of the element to focus
+     * @returns void
+     */
+    focus(elementId: string) {
+        let el = this.shadow.getElementById(elementId);
+        if (el) el.focus();
+    }
 }

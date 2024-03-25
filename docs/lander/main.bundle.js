@@ -198,6 +198,16 @@ class EzComponent {
             windowHeight: window.innerHeight,
         };
     }
+    /**
+     * @description Set focus to an element on this component
+     * @param {string} elementId The id of the element to focus
+     * @returns void
+     */
+    focus(elementId) {
+        let el = this.shadow.getElementById(elementId);
+        if (el)
+            el.focus();
+    }
 }
 exports.EzComponent = EzComponent;
 EzComponent.resizeEvent = new eventsubject_1.EventSubject();
@@ -997,17 +1007,17 @@ class EventSubject {
     }
     /**
      * Convert the event subject to a promise
+     * @description Convert the event subject to a promise.
+     * This is useful for the async/await style async pattern.
+     * @param none
      * @returns Promise<T>
      * @example
-     * const subject = new EventSubject<string>();
-     * const promise = subject.toPromise();
-     * subject.next("1");
-     * promise.then((value:string) => {
-     *  console.log(value);
-     * }).catch((error) => {
-     *  console.error(error);
-     * });
-     * subject.unsubscribe(id);
+     * async myFunction() {
+     *   const result=await EzDialog.popup(
+     *     "Hello World",
+     *     "Alert", ["Ok","Cancel"]).toPromise();
+     *   console.log(result);
+     * }
      */
     toPromise() {
         return new Promise((resolve, reject) => {

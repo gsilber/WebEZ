@@ -36,6 +36,7 @@ export class TasklineComponent extends EzComponent {
         this._editing = value;
         this.editorVisible = value ? "visible" : "";
         this.viewerVisible = value ? "" : "visible";
+        this.editor.focusInput();
         this.lineEdit.next();
     }
     private get editing(): boolean {

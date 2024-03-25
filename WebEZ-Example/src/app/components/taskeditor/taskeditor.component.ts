@@ -64,4 +64,8 @@ export class TaskeditorComponent extends EzComponent {
         this.tasktext = this.tasks.taskText;
         this.editClose.next(false);
     }
+
+    focusInput() {
+        this.focus("tasktext");
+    }
 }

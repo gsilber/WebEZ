@@ -198,6 +198,16 @@ class EzComponent {
             windowHeight: window.innerHeight,
         };
     }
+    /**
+     * @description Set focus to an element on this component
+     * @param {string} elementId The id of the element to focus
+     * @returns void
+     */
+    focus(elementId) {
+        let el = this.shadow.getElementById(elementId);
+        if (el)
+            el.focus();
+    }
 }
 exports.EzComponent = EzComponent;
 EzComponent.resizeEvent = new eventsubject_1.EventSubject();
@@ -2028,6 +2038,9 @@ let TaskeditorComponent = (() => {
                 this.tasktext = this.tasks.taskText;
                 this.editClose.next(false);
             }
+            focusInput() {
+                this.focus("tasktext");
+            }
         },
         (() => {
             var _b;
@@ -2130,6 +2143,7 @@ let TasklineComponent = (() => {
                 this._editing = value;
                 this.editorVisible = value ? "visible" : "";
                 this.viewerVisible = value ? "" : "visible";
+                this.editor.focusInput();
                 this.lineEdit.next();
             }
             get editing() {
