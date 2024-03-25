@@ -1926,6 +1926,24 @@ const hud_component_html_1 = __importDefault(__webpack_require__(/*! ./hud.compo
 const hud_component_css_1 = __importDefault(__webpack_require__(/*! ./hud.component.css */ "./src/app/objects/hud/hud.component.css"));
 const utils_1 = __webpack_require__(/*! ../utils */ "./src/app/objects/utils.ts");
 const globals_1 = __webpack_require__(/*! ../../globals */ "./src/app/globals.ts");
+/**
+ * @description The HUD component (Heads up display)
+ * @class
+ * @extends EzComponent
+ * @method resetFlags - Resets the flags
+ * @property {string} Velocity - The velocity of the lander
+ * @property {string} flagRotation - The flag for the rotation
+ * @property {string} flagDeltaV - The flag for the horizontal velocity
+ * @property {string} flagVVelocity - The flag for the vertical velocity
+ * @property {string} flagAltitude - The flag for the altitude
+ * @property {string} AltitudeMSL - The altitude above mean sea level
+ * @property {string} AltitudeTerrain - The altitude above terrain
+ * @property {string} Fuel - The fuel remaining
+ * @property {string} Time - The time remaining
+ * @property {string} Rotation - The rotation of the lander
+ * @property {string} status - The status of the lander
+ * @
+ */
 let HudComponent = (() => {
     var _a;
     let _classSuper = webez_1.EzComponent;
@@ -1969,28 +1987,76 @@ let HudComponent = (() => {
     let __status_initializers = [];
     let __status_extraInitializers = [];
     return _a = class HudComponent extends _classSuper {
+            /**
+             * @description The velocity of the lander as a vector
+             * @type {{x: number; y: number}}
+             * @default {x: 0, y: 0}
+             * @summary The velocity of the lander as a vector
+             */
             set Velocity(value) {
                 this._horizDeltaV = value.x.toFixed(0);
                 this._vertDeltaV = value.y.toFixed(0);
             }
+            /**
+             * @description The flag for the rotation
+             * @type {boolean}
+             * @default false
+             * @summary The flag for the rotation
+             * @summary Sets the color of the rotation display text
+             */
             set flagRotation(value) {
                 this._flagRotation = value ? "red" : "white";
             }
+            /**
+             * @description The flag for the horizontal velocity
+             * @type {boolean}
+             * @default false
+             * @summary The flag for the horizontal velocity
+             * @summary Sets the color of the horizontal velocity display text
+             */
             set flagHVelocity(value) {
                 this._flagDeltaV = value ? "red" : "white";
             }
+            /**
+             * @description The flag for the vertical velocity
+             * @type {boolean}
+             * @default false
+             * @summary The flag for the vertical velocity sets the color of the vertical velocity display text to red or white
+             */
             set flagVVelocity(value) {
                 this._flagVVelocity = value ? "red" : "white";
             }
+            /**
+             * @description The flag for the altitude
+             * @type {boolean}
+             * @default false
+             * @summary The flag for the altitude sets the color of the altitude display text to red or white
+             */
             set flagAltitude(value) {
                 this._flagAltitude = value ? "red" : "white";
             }
+            /**
+             * @description The altitude above msl
+             * @type {number}
+             * @summary The altitude above msl
+             */
             set AltitudeMSL(value) {
                 this._altMSL = value.toFixed(0);
             }
+            /**
+             * @description The altitude above terrain
+             * @type {number}
+             * @summary The altitude above terrain
+             */
             set AltitudeTerrain(value) {
                 this._altTerain = value.toFixed(0);
             }
+            /**
+             * @description The Fuel level
+             * @type {number}
+             * @summary The fuel level of the lander
+             * @summary Sets the fuel level of the lander and sets the fuel warning color
+             */
             set Fuel(value) {
                 if (value < 10) {
                     this._fuelWarning = "danger";
@@ -2002,15 +2068,30 @@ let HudComponent = (() => {
                     this._fuelWarning = "";
                 this._fuel = value.toFixed(0);
             }
+            /**
+             * @description The time elapsed
+             * @type {number}
+             * @summary The time elapsed
+             */
             set Time(value) {
                 this._time = value.toFixed(0);
             }
+            /**
+             * @description The rotation of the lander
+             * @type {number}
+             * @summary The rotation of the lander
+             */
             set Rotation(value) {
                 let val = value.toFixed(0);
                 if (value > 180)
                     val = (value - 360).toFixed(0);
                 this._rotation = val;
             }
+            /**
+             * @description The status of the lander
+             * @type {GameStatus}
+             * @summary The status of the lander
+             */
             set status(value) {
                 if (value === utils_1.GameStatus.Crash) {
                     this._status = "Crashed";
@@ -2028,23 +2109,126 @@ let HudComponent = (() => {
                     this._status = "Flying";
                 }
             }
+            /**
+             * @description The constructor of the HudComponent
+             * @summary Creates the HUD component
+             * @memberof HudComponent
+             * @constructor
+             */
             constructor() {
                 super(hud_component_html_1.default, hud_component_css_1.default);
+                /** @description The deltaX display value
+                 * @type {string}
+                 * @default "0"
+                 * @summary The deltaX display value
+                 * @summary Binds to the deltaX element innerHTML
+                 * @summary Appends " m/s" to the value
+                 */
                 this._horizDeltaV = __runInitializers(this, __horizDeltaV_initializers, "0");
+                /**
+                 * @description The deltaY display value
+                 * @type {string}
+                 * @default "0"
+                 * @summary The deltaY display value
+                 * @summary Binds to the deltaY element innerHTML
+                 * @summary Appends " m/s" to the value
+                 */
                 this._vertDeltaV = (__runInitializers(this, __horizDeltaV_extraInitializers), __runInitializers(this, __vertDeltaV_initializers, "0"));
+                /**
+                 * @description THe rotation display color
+                 * @type {string}
+                 * @default "white"
+                 */
                 this._flagRotation = (__runInitializers(this, __vertDeltaV_extraInitializers), __runInitializers(this, __flagRotation_initializers, "white"));
+                /**
+                 * @description The color of the horizontal velocity display text
+                 * @type {string}
+                 * @default "white"
+                 * @summary The color of the horizontal velocity display text
+                 * @summary Sets the color of the horizontal velocity display text
+                 */
                 this._flagDeltaV = (__runInitializers(this, __flagRotation_extraInitializers), __runInitializers(this, __flagDeltaV_initializers, "white"));
+                /**
+                 * @description The color of the vertical velocity display text
+                 * @type {string}
+                 * @default "white"
+                 * @summary The color of the vertical velocity display text
+                 * @summary Sets the color of the vertical velocity display text
+                 */
                 this._flagVVelocity = (__runInitializers(this, __flagDeltaV_extraInitializers), __runInitializers(this, __flagVVelocity_initializers, "white"));
+                /**
+                 * @description The color for the altitude above terrain
+                 * @type {string}
+                 * @default false
+                 */
                 this._flagAltitude = (__runInitializers(this, __flagVVelocity_extraInitializers), __runInitializers(this, __flagAltitude_initializers, "white"));
+                /**
+                 * @description The altitude above mean sea level
+                 * @type {string}
+                 * @default 0
+                 * @summary The altitude above mean sea level
+                 * @summary Binds to the altitude above mean sea level element innerHTML
+                 * @summary Appends " m" to the value
+                 */
                 this._altMSL = (__runInitializers(this, __flagAltitude_extraInitializers), __runInitializers(this, __altMSL_initializers, "0"));
+                /**
+                 * @description The altitude above terrain
+                 * @type {string}
+                 * @default 0
+                 * @summary The altitude above terrain
+                 * @summary Binds to the altitude above terrain element innerHTML
+                 * @summary Appends " m" to the value
+                 */
                 this._altTerain = (__runInitializers(this, __altMSL_extraInitializers), __runInitializers(this, __altTerain_initializers, "0"));
+                /**
+                 * @description The fuel remaining warning color
+                 * @type {string}
+                 * @memberof HudComponent
+                 * @summary Turns yellow or red on low fuel
+                 * @summary Binds to the fuel element className
+                 */
                 this._fuelWarning = (__runInitializers(this, __altTerain_extraInitializers), __runInitializers(this, __fuelWarning_initializers, ""));
+                /**
+                 * @description The fuel remaining
+                 * @type {string}
+                 * @default "0"
+                 * @summary The fuel remaining
+                 * @summary Binds to the fuel element innerHTML
+                 * @summary Appends " lbs" to the value
+                 */
                 this._fuel = (__runInitializers(this, __fuelWarning_extraInitializers), __runInitializers(this, __fuel_initializers, globals_1.Globals.LANDER_FUEL_CAPACITY.toString()));
+                /**
+                 * @description The time elapsed
+                 * @type {string}
+                 * @default "0"
+                 * @summary The time elapsed
+                 * @summary Binds to the time element innerHTML
+                 * @summary Appends " s" to the value
+                 */
                 this._time = (__runInitializers(this, __fuel_extraInitializers), __runInitializers(this, __time_initializers, "0"));
+                /**
+                 * @description The rotation of the lander
+                 * @type {string}
+                 * @default "0"
+                 * @summary The rotation of the lander
+                 * @summary Binds to the rotation element innerHTML
+                 */
                 this._rotation = (__runInitializers(this, __time_extraInitializers), __runInitializers(this, __rotation_initializers, "0"));
+                /**
+                 * @description The status of the lander
+                 * @type {string}
+                 * @default "Waiting..."
+                 * @summary The status of the lander
+                 * @summary Binds to the status element innerHTML
+                 */
                 this._status = (__runInitializers(this, __rotation_extraInitializers), __runInitializers(this, __status_initializers, "Waiting..."));
                 __runInitializers(this, __status_extraInitializers);
             }
+            /**
+             * @description Resets the flags
+             * @summary Resets the flags (background colors of all items)
+             * @memberof HudComponent
+             */
             resetFlags() {
                 this.flagAltitude = false;
                 this.flagHVelocity = false;
@@ -2634,10 +2818,28 @@ const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilb
 const terrain_component_html_1 = __importDefault(__webpack_require__(/*! ./terrain.component.html */ "./src/app/objects/terrain/terrain.component.html"));
 const terrain_component_css_1 = __importDefault(__webpack_require__(/*! ./terrain.component.css */ "./src/app/objects/terrain/terrain.component.css"));
 const globals_1 = __webpack_require__(/*! ../../globals */ "./src/app/globals.ts");
+/**
+ * @description A function to get a random integer between two numbers
+ * @param {number} min - The minimum number
+ * @param {number} max - The maximum number
+ * @returns {number} - A random number between min and max
+ * @function
+ */
 function getRandomInt(min, max) {
     return Math.floor(Math.floor(Math.random() * (max - min + 1)) + min);
 }
+/**
+ * @description A terrain item class
+ * @class
+ * @extends EzComponent
+ */
 class TerrainItem extends webez_1.EzComponent {
+    /**
+     * @description The constructor of the TerrainItem
+     * @summary Creates a terrain item
+     * @memberof TerrainItem
+     * @constructor
+     */
     constructor(x1, y1, x2, y2, height) {
         super(`<div id='holder'>
                <svg>
@@ -2657,8 +2859,14 @@ class TerrainItem extends webez_1.EzComponent {
                 height:${height}px;               
                 `);
         this.height = height;
+        /**
+         * @description the top left corner of the polygon
+         */
         this.x1 = 0;
         this.y1 = 0;
+        /**
+         * @description the bottom right corner of the polygon
+         */
         this.x2 = 0;
         this.y2 = 0;
         this.x1 = x1;
@@ -2666,22 +2874,66 @@ class TerrainItem extends webez_1.EzComponent {
         this.x2 = x2;
         this.y2 = y2;
     }
+    /**
+     * @description Gets the y value at a given x
+     * @param {number} x - The x value
+     * @returns {number} - The y value at x
+     * @method
+     * @memberof TerrainItem
+     */
     getYatX(x) {
         let slope = (this.y2 - this.y1) / (this.x2 - this.x1);
         return slope * (x - this.x1) + this.y1;
     }
+    /**
+     * @description Gets the height of the terrain at a given x
+     * @param {number} x - The x value
+     * @returns {number} - The height at x
+     * @method
+     * @memberof TerrainItem
+     */
     getHeightatX(x) {
         return this.height - this.getYatX(x);
     }
 }
 exports.TerrainItem = TerrainItem;
+/**
+ * @description The terrain component
+ * @class
+ * @extends EzComponent
+ * @property {TerrainItem[]} terrainItems - The terrain items
+ */
 class TerrainComponent extends webez_1.EzComponent {
+    /**
+     * @description The terrain items
+     * @type {TerrainItem[]}
+     * @summary this is the array of terrain item
+     * @public
+     */
     get terrainItems() {
         return this._polys;
     }
+    /**
+     * @description The constructor of the TerrainComponent
+     * @param {number} terrainHeight - The height of the terrain
+     * @summary Creates a terrain component
+     * @summary Randomly allocates terrain block polygons
+     * @memberof TerrainComponent
+     * @constructor
+     */
     constructor(terrainHeight = 100) {
         super(terrain_component_html_1.default, terrain_component_css_1.default);
+        /**
+         * @description The width of the terrain
+         * @type {number}
+         * @summary this is the number of pixels wide each terrain block is
+         */
         this._width = globals_1.Globals.TERRAIN_PART_WIDTH;
+        /**
+         * @description The terrain items
+         * @type {TerrainItem[]}
+         * @summary this is the array of terrain items
+         */
         this._polys = [];
         this._terrainHeight = terrainHeight;
         const numTerainBlocks = this.getWindowSize().windowWidth / this._width + 1;

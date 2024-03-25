@@ -2284,9 +2284,21 @@ let TasksComponent = (() => {
     let _onClearTasks_decorators;
     let _counterfn_decorators;
     return _a = class TasksComponent extends _classSuper {
+            /**
+             * @description Extracts the task data for the component from the task lines.
+             * @memberof TasksComponent
+             * @type {TaskData[]}
+             */
             get taskData() {
                 return this.taskLines.map((task) => task.data);
             }
+            /**
+             * @description Sets the task data for the component by creating new task lines for the data.
+             * @memberof TasksComponent
+             * @type {TaskData[]}
+             * @example
+             * this.taskData = [{taskText: "Task 1"}, {taskText: "Task 2"}];
+             */
             set taskData(data) {
                 this.taskLines.forEach((line) => {
                     this.removeComponent(line);
@@ -2304,14 +2316,44 @@ let TasksComponent = (() => {
                 });
                 this.addDisabled = "";
             }
+            /**
+             * @description Creates an instance of TasksComponent.
+             * @param {TaskData[]} [data=[]] - the task data to initialize the component with.
+             * @memberof TasksComponent
+             * @constructor
+             */
             constructor(data = []) {
                 super(tasks_component_html_1.default, tasks_component_css_1.default);
-                this.addDisabled = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _addDisabled_initializers, ""));
+                /**
+                 * @description CSS class for the add button when it is disabled.
+                 * @memberof TasksComponent
+                 * @type {string}
+                 * @default ""
+                 * @summary Binds the value to the className of add-task id in the html file.
+                 */
+                this.addDisabled = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _addDisabled_initializers, void 0));
                 this.taskLines = (__runInitializers(this, _addDisabled_extraInitializers), []);
                 this.counter = 0;
+                /**
+                 * @description Event subject for the save event.  emits the task data when the save event is triggered.
+                 * @memberof TasksComponent
+                 * @type {EventSubject<TaskData[]>}
+                 * @example
+                 * this.saveData.subscribe((data) => {
+                 *    console.log(data);
+                 * });
+                 */
                 this.saveData = new webez_1.EventSubject();
+                this.addDisabled = "";
                 this.taskData = data;
             }
+            /**
+             * @description Event handler for the add task button.  Adds a new task line to the list.
+             * @memberof TasksComponent
+             * @method onAddTask
+             * @summary Binds the method to the add-task id in the html file.
+             * @private
+             */
             onAddTask() {
                 let taskLine = new taskline_component_1.TasklineComponent();
                 this.addComponent(taskLine, "task-list", true);
@@ -2319,6 +2361,13 @@ let TasksComponent = (() => {
                 this.wireUpTaskLine(taskLine);
                 taskLine.startEditing();
             }
+            /**
+             * @description Event handler for the clear tasks button.  Clears all tasks from the list.
+             * @memberof TasksComponent
+             * @method onClearTasks
+             * @summary Binds the method to the clear-tasks id in the html file.
+             * @private
+             */
             onClearTasks() {
                 if (this.taskLines.length === 0) {
                     webez_1.EzDialog.popup(this, "There are no tasks to clear.", "Notice", ["Ok"], "btn btn-primary");
@@ -2335,6 +2384,18 @@ let TasksComponent = (() => {
                     });
                 }
             }
+            /**
+             * @description Connects the taskLine EventSubjects to the TasksComponent.
+             * @memberof TasksComponent
+             * @method onDeleteAllTasks
+             * @param {TasklineComponent} line - the task line to connect the events to.
+             * @returns {void}
+             * @summary Binds the lineEdit, lineEditClose, and lineDelete events to the line.
+             * On Line edit, the add button is disabled and all child edit/cancel buttons are disabled.
+             * On Line delete, the line is removed from the list and the component is removed.
+             * On Line edit close, the add button is enabled and all child edit/cancel buttons are enabled.
+             * @private
+             */
             wireUpTaskLine(line) {
                 //if we start editing, then we want to disable the add button and all child edit/cancel buttons
                 line.lineEdit.subscribe(() => {
@@ -2368,6 +2429,14 @@ let TasksComponent = (() => {
                     }
                 });
             }
+            /**
+             * @description Event handler for the counter function.  Increments the counter and cancels the function when the counter reaches 15.
+             * @memberof TasksComponent
+             * @method counterfn
+             * @param {CancelFunction} cancel - the function to call to cancel the timer.
+             * @summary Calls the cancel function once per second until the counter reaches 15, then uses the supplied cancel function to kill the timer.
+             * @private
+             */
             counterfn(cancel) {
                 this.counter++;
                 console.log(this.counter);
