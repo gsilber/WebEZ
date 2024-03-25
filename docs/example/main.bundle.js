@@ -208,6 +208,16 @@ class EzComponent {
         if (el)
             el.focus();
     }
+    /**
+     * @description Click an element on this component
+     * @param {string} elementId The id of the element to click
+     * @returns void
+     */
+    click(elementId) {
+        let el = this.shadow.getElementById(elementId);
+        if (el)
+            el.click();
+    }
 }
 exports.EzComponent = EzComponent;
 EzComponent.resizeEvent = new eventsubject_1.EventSubject();
@@ -350,6 +360,15 @@ class EzDialog extends EzComponent_1.EzComponent {
             this.background.style.display = "none";
         }
     }
+    static clickPopupButton(buttonNumber) {
+        if (exports.popupDialog) {
+            const button = this.popupButtons.length > buttonNumber ?
+                this.popupButtons[buttonNumber]
+                : undefined;
+            if (button)
+                button.click();
+        }
+    }
     /**
      * @description Show a popup dialog
      * @static
@@ -392,6 +411,7 @@ class EzDialog extends EzComponent_1.EzComponent {
                     dialog.show(false);
                     dialog.closeEvent.next(button.value);
                 });
+                this.popupButtons.push(button);
                 buttonDiv.appendChild(button);
             }
         }
@@ -404,6 +424,7 @@ class EzDialog extends EzComponent_1.EzComponent {
     }
 }
 exports.EzDialog = EzDialog;
+EzDialog.popupButtons = [];
 
 
 /***/ }),

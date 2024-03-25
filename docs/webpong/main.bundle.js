@@ -208,6 +208,16 @@ class EzComponent {
         if (el)
             el.focus();
     }
+    /**
+     * @description Click an element on this component
+     * @param {string} elementId The id of the element to click
+     * @returns void
+     */
+    click(elementId) {
+        let el = this.shadow.getElementById(elementId);
+        if (el)
+            el.click();
+    }
 }
 exports.EzComponent = EzComponent;
 EzComponent.resizeEvent = new eventsubject_1.EventSubject();

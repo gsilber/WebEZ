@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { TaskviewerComponent } from "./taskviewer.component";
-import { bootstrap } from "@gsilber/webez";
+import { EzDialog, bootstrap } from "@gsilber/webez";
 
 describe("TaskviewerComponent", () => {
     let component: any = undefined;
@@ -11,6 +11,46 @@ describe("TaskviewerComponent", () => {
     describe("Constructor", () => {
         test("Create Instance", () => {
             expect(component).toBeInstanceOf(TaskviewerComponent);
+        });
+    });
+    describe("Click Events", () => {
+        test("Edit click", () => {
+            component.editing.subscribe(
+                () => {
+                    expect(true).toBe(true);
+                },
+                (error: Error) => {
+                    expect(error).toBeUndefined();
+                },
+            );
+            component.click("edit");
+        });
+    });
+    describe("Delete Click", () => {
+        test("Delete click", () => {
+            component.deleting.subscribe(
+                () => {
+                    expect(true).toBe(true);
+                },
+                (error: Error) => {
+                    expect(error).toBeUndefined();
+                },
+            );
+            component.click("delete");
+            EzDialog.clickPopupButton(0);
+        });
+    });
+    describe("methods", () => {
+        test("setData", () => {
+            const data = { taskText: "Testing" };
+            component.setData(data);
+            expect(component.taskview).toBe("Testing");
+            expect(component.data).toBe(data);
+        });
+        test("disableButtons", () => {
+            component.disableButtons();
+            expect(component.editDisabled).toBe("disabled");
+            expect(component.deleteDisabled).toBe("disabled");
         });
     });
 });

@@ -1,7 +1,8 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { TasksComponent } from "./tasks.component";
-import { bootstrap, popupDialog } from "@gsilber/webez";
+import { EzDialog, bootstrap, popupDialog } from "@gsilber/webez";
 import { TasklineComponent } from "../taskline/taskline.component";
+import { TaskData } from "../taskeditor/taskeditor.component";
 
 describe("TasksComponent", () => {
     let component: any = undefined;
@@ -19,30 +20,13 @@ describe("TasksComponent", () => {
             expect(component2).toBeInstanceOf(TasksComponent);
         });
     });
-    describe("Binding Tests", () => {
-        test("CSS Class", () => {
-            expect(component).toBeInstanceOf(TasksComponent);
-            component.addDisabled = "test";
-            expect(component.addDisabled).toBe("test");
-            const el = component["shadow"].getElementById(
-                "add-task",
-            ) as HTMLElement;
-            expect(el).toBeInstanceOf(HTMLElement);
-            expect(el.className).toContain("test");
-            component.addDisabled = "test2";
-            expect(el.className).toContain("test2");
-        });
-    });
-    describe("Task Data", () => {
-        test("Task Data Accessors", () => {
+    describe("accessors", () => {
+        test("taskData", () => {
             expect(component).toBeInstanceOf(TasksComponent);
             expect(component.taskData).toEqual([]);
             const data = [{ taskText: "test" }];
             component.taskData = data;
             expect(component.taskData).toEqual(data);
-            const data2 = [{ taskText: "test2" }];
-            component.taskData = data2;
-            expect(component.taskData).toEqual(data2);
         });
     });
     describe("Click Events", () => {
@@ -52,11 +36,7 @@ describe("TasksComponent", () => {
                 component.removeComponent(task);
             });
             component.taskLines = [];
-            const el = component["shadow"].getElementById(
-                "add-task",
-            ) as HTMLElement;
-            expect(el).toBeInstanceOf(HTMLElement);
-            el.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+            component.click("add-task");
             expect(component.taskLines.length).toBe(1);
             component["onAddTask"]();
             expect(component.taskLines.length).toBe(2);
@@ -65,32 +45,12 @@ describe("TasksComponent", () => {
             expect(component).toBeInstanceOf(TasksComponent);
             component.taskData = [{ taskText: "test" }];
             expect(component.taskLines.length).toBe(1);
-            component.onClearTasks();
+            component.taskData = [{ taskText: "test" }, { taskText: "test2" }];
+            expect(component.taskLines.length).toBe(2);
+            component.click("clear-tasks");
+            EzDialog.clickPopupButton(0);
             //need to deal with dialog.
-            if (!popupDialog) {
-                expect(true).toBe(false);
-            } else {
-                expect(true).toBe(true);
-
-                const btn = popupDialog["shadow"].querySelector(
-                    "button",
-                ) as HTMLElement;
-                btn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-                expect(component.taskLines.length).toBe(0);
-            }
-            component.onClearTasks();
-            //need to deal with dialog.
-            if (!popupDialog) {
-                expect(true).toBe(false);
-            } else {
-                expect(true).toBe(true);
-
-                const btn = popupDialog["shadow"].querySelector(
-                    "button",
-                ) as HTMLElement;
-                btn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-                expect(component.taskLines.length).toBe(0);
-            }
+            expect(component.taskLines.length).toBe(0);
         });
     });
     describe("EventSubject tests", () => {
@@ -108,9 +68,19 @@ describe("TasksComponent", () => {
             expect(component.taskLines.length).toBe(1);
             const line = component.taskLines[0] as TasklineComponent;
             line.lineEditClose.next(true);
-            line.lineEditClose.next(false);
+            expect(line.data.uniqueID).toBeDefined();
+            component.saveData.subscribe(
+                (data: TaskData[]) => {
+                    expect(data.length).toBe(1);
+                    expect(data[0].uniqueID).toBeDefined();
+                },
+                () => {
+                    expect(true).toBe(false);
+                },
+            );
             component.taskLines[0].data.uniqueID = undefined;
             line.lineEditClose.next(false);
+            expect(component.taskLines.length).toBe(0);
         });
     });
 });

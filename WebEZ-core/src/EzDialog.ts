@@ -80,6 +80,8 @@ export class EzDialog extends EzComponent {
     private popup: HTMLDivElement;
     private background: HTMLDivElement;
     private closeEvent: EventSubject<string> = new EventSubject<string>();
+    private static popupButtons: HTMLButtonElement[] = [];
+
     /**
      * @description Creates an instance of EzComponent.
      * @param {string} [html=""] The html as a string to be used as the body of this component
@@ -129,6 +131,15 @@ export class EzDialog extends EzComponent {
         }
     }
 
+    static clickPopupButton(buttonNumber: number) {
+        if (popupDialog) {
+            const button =
+                this.popupButtons.length > buttonNumber ?
+                    this.popupButtons[buttonNumber]
+                :   undefined;
+            if (button) button.click();
+        }
+    }
     /**
      * @description Show a popup dialog
      * @static
@@ -177,6 +188,7 @@ export class EzDialog extends EzComponent {
                     dialog.show(false);
                     dialog.closeEvent.next(button.value);
                 });
+                this.popupButtons.push(button);
                 buttonDiv.appendChild(button);
             }
         }
