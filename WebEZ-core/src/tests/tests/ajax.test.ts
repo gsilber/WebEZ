@@ -1,6 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test } from "@jest/globals";
-import { bootstrap } from "../../bootstrap";
-import { TestComponent } from "../testing_components/test.component";
 import { EzComponent, HttpMethod } from "../../EzComponent";
 import mock from "xhr-mock";
 
@@ -15,13 +13,11 @@ describe("Ajax Testing", () => {
     });
     describe("Test bad target", () => {
         test("Create Instance", async () => {
-            mock.get("/api/good", (req: any, res: any): any => {
-                expect(req.header("Content-Type")).toEqual("application/json");
+            mock.get("/api/good", (req, res) => {
                 return res.status(200).body('{"data":{"id":"abc-123"}}');
             });
-            let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
             try {
-                await toplevel["ajax"]<any>("/api/bad", HttpMethod.GET, [
+                await EzComponent.ajax<any>("/api/bad", HttpMethod.GET, [
                     { "content-type": "application/json" },
                 ]).toPromise();
                 //make sure this doesn't happen
@@ -36,9 +32,8 @@ describe("Ajax Testing", () => {
             mock.get("/api/good", (req, res) => {
                 return res.status(200).body('{"data":{"id":"abc-123"}}');
             });
-            let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
             try {
-                await toplevel["ajax"]<any>(
+                await EzComponent.ajax<any>(
                     "/api/bad",
                     HttpMethod.GET,
                 ).toPromise();
@@ -54,9 +49,8 @@ describe("Ajax Testing", () => {
             mock.get("/api/good", (req, res) => {
                 return res.status(200).body('{"data":{"id":"abc-123"}}');
             });
-            let toplevel: EzComponent = bootstrap<TestComponent>(TestComponent);
             try {
-                let result: { data: any } = await toplevel["ajax"]<{
+                let result: { data: any } = await EzComponent.ajax<{
                     data: any;
                 }>("/api/good", HttpMethod.GET).toPromise();
                 expect(result.data.id).toEqual("abc-123");
@@ -71,10 +65,8 @@ describe("Ajax Testing", () => {
                 mock.get("/api/good", (req, res) => {
                     return res.status(400).body('{"data":{"id":"abc-123"}}');
                 });
-                let toplevel: EzComponent =
-                    bootstrap<TestComponent>(TestComponent);
                 try {
-                    await toplevel["ajax"]<{
+                    await EzComponent.ajax<{
                         data: any;
                     }>("/api/good", HttpMethod.GET).toPromise();
                     //make sure this doesn't happen

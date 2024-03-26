@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (v.0.3.8)
+# WebEZ - A simple web framework for Typescript (v.0.3.10)
 
 ## Getting Started
 
