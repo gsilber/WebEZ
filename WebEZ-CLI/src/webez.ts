@@ -24,7 +24,7 @@ function usage() {
  */
 function findWebezConfigFile(directoryPath: string): boolean {
     let currentPath = directoryPath;
-    while (currentPath !== "/") {
+    while (currentPath !== "/"&&!currentPath.endsWith(":\\")) {
         const configFile = path.join(currentPath, ".webez.json");
         if (fs.existsSync(configFile)) {
             return true;
