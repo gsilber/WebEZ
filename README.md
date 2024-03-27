@@ -173,7 +173,7 @@ TS File:
 @BindValue("inp1") inputValue:string="";
 ```
 ### @BindInnerHTML(id)
-Connects the innerHTML propoerty of an html element with id with a member variable of the class.  Updating the variable will update the html element, but not the other way around
+Connects the innerHTML property of an html element with id with a member variable of the class.  Updating the variable will update the html element, but not the other way around
 ```
 HTML FILE:
 <div id="div1"></div>
