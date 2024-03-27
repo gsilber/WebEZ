@@ -8,5 +8,6 @@ cd ../web-pong
 npm run build
 cd ../lander
 npm run build
-cd ..
+cd ../movies
+npm run build
 

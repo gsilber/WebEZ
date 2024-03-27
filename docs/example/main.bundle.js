@@ -154,6 +154,7 @@ class EzComponent {
      * @param {T} data The data to send in the request body (optional)
      * @returns {Promise<T>} A promise that resolves with the response data
      * @memberof EzComponent
+     * @static
      * @example myComponent.ajax("https://some.api.url.com/posts", HttpMethod.GET)
      *  .subscribe((data) => {
      *   console.log(data);
@@ -161,7 +162,7 @@ class EzComponent {
      *   console.error(error);
      * });
      */
-    ajax(url, method, headers = [], data) {
+    static ajax(url, method, headers = [], data) {
         const evt = new eventsubject_1.EventSubject();
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
@@ -171,7 +172,6 @@ class EzComponent {
                     xhr.setRequestHeader(key, header[key]);
             });
         }
-        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 evt.next(JSON.parse(xhr.responseText));

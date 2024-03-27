@@ -1245,21 +1245,6 @@ module.exports = function (item) {
 
 /***/ }),
 
-/***/ "./src/app/ball/ball.component.css":
-/*!*****************************************!*\
-  !*** ./src/app/ball/ball.component.css ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".ball-holder {\n    position: relative;\n    width: 100%;\n    flex: 1;\n}\n#ball {\n    position: absolute;\n    border-radius: 50%;\n}\n");
-
-/***/ }),
-
 /***/ "./src/app/main.component.css":
 /*!************************************!*\
   !*** ./src/app/main.component.css ***!
@@ -1271,14 +1256,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".full-page {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    overflow: hidden;\n}\n.header {\n    background-color: #333;\n    height: 100px;\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    padding: 10px;\n    box-shadow: 5px 5px 1px 1px #888888;\n}\n\n.header-left {\n    position: relative;\n    flex: 1;\n    font-size: 30px;\n    font-style: italic;\n    color: aliceblue;\n    background: #333;\n    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);\n}\n.header-middle {\n    font-size: 30px;\n    margin: 2px 50px 10px 10px;\n    padding: 0 10px;\n    color: aliceblue;\n    line-height: 30px;\n    overflow: hidden;\n    height: 35px;\n    background-color: black;\n}\n.header-right {\n    padding-right: 10px;\n}\n.content-body {\n    position: absolute;\n    top: 60px;\n    bottom: 0;\n    left: 0px;\n    background: rgb(2, 0, 36);\n    background: linear-gradient(\n        90deg,\n        rgba(2, 0, 36, 1) 0%,\n        rgba(9, 9, 121, 1) 7%,\n        rgba(0, 212, 255, 1) 26%\n    );\n    right: 0px;\n    overflow: auto;\n    display: flex;\n}\n#game-board {\n    position: realtive;\n    margin: auto;\n    background-image: url(\"assets/tennis.png\");\n    background-size: cover;\n    display: flex;\n    flex-direction: column;\n    border-radius: 10px;\n    overflow: hidden;\n}\n\n#timer {\n    color: yellow;\n}\n\n.instructions {\n    position: absolute;\n    padding: 20px;\n    width: 500px;\n    transform: translateX(-50%);\n    left: 50%;\n    top: 15px;\n    display: inline-block;\n    background: white;\n    border-radius: 10px;\n    box-shadow: 2px 2px 1px 1px #888888;\n}\n");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("#movie-imgs {\n    height: 100%;\n    display: block;\n    position: relative;\n    margin: auto;\n    width: 100%;\n}\n#content {\n    position: relative;\n    text-align: center;\n    display: inline-block;\n    width: 100%;\n    min-height: 200px;\n    padding: 0;\n}\n.page {\n    background: #333;\n    margin: 0;\n    padding: 0;\n    padding-top: 10px;\n    font-family: Arial, sans-serif;\n    position: absolute;\n    top: 0px;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    overflow-y: auto;\n    min-width: 600px;\n    text-align: center;\n    background-image: url(\"assets/space.jpg\");\n    background-repeat: no-repeat;\n    background-position: center;\n    background-size: conver;\n}\n.detail {\n    position: relative;\n    border-top: solid 1px gold;\n    overflow: hidden;\n}\n#movie-title {\n    text-align: center;\n    font-size: 40px;\n    color: gold;\n    border-bottom: 1px solid white;\n}\n.movie-info {\n    overflow-y: auto;\n    display: flex;\n    flex-direction: row;\n}\n.movie-info > div {\n    display: inline-block;\n    width: 50%;\n    color: gold;\n    text-align: left;\n    font-size: 20px;\n    font-weight: bold;\n    overflow: hidden;\n    position: relative;\n}\n.movie-info a {\n    color: #fafafa;\n    text-decoration: underline;\n}\n.movie-info a:hover {\n    color: black;\n    font-style: italic;\n}\n.left-info,\n.right-info {\n    vertical-align: top;\n    display: inline-block;\n}\n.movie-info-left {\n    box-sizing: border-box;\n}\n.line {\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n.left-info {\n    width: 150px;\n    font-weight: bold;\n}\n.right-info {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n}\n.movie-card {\n    flex: 1;\n    padding: 20px;\n    margin: 20px;\n    font-size: 18px;\n    background: gray;\n    color: #fafafa;\n    border-radius: 10px;\n    box-shadow: 5px 5px 5px rgba(128, 128, 128, 1);\n}\n");
 
 /***/ }),
 
-/***/ "./src/app/paddle/paddle.component.css":
-/*!*********************************************!*\
-  !*** ./src/app/paddle/paddle.component.css ***!
-  \*********************************************/
+/***/ "./src/app/ui-elements/carousel/carousel.component.css":
+/*!*************************************************************!*\
+  !*** ./src/app/ui-elements/carousel/carousel.component.css ***!
+  \*************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1286,17 +1271,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".paddle-holder {\n    position: relative;\n    width: 100%;\n    flex: 1;\n}\n#paddle {\n    position: absolute;\n}\n");
-
-/***/ }),
-
-/***/ "./src/app/ball/ball.component.html":
-/*!******************************************!*\
-  !*** ./src/app/ball/ball.component.html ***!
-  \******************************************/
-/***/ ((module) => {
-
-module.exports = "<div class=\"ball-holder\" id=\"parent\">\n    <div id=\"ball\"></div>\n</div>\n";
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("div {\n    box-sizing: border-box;\n}\n\n.outside {\n    position: absolute;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    display: flex;\n    flex-direction: row;\n}\n#carousel-container {\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    display: block;\n    position: absolute;\n    display: block;\n    overflow: hidden;\n}\n.arrow {\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    width: 30px;\n    opacity: 100%;\n    z-index: 1;\n}\n\n#left-arrow {\n    left: 0;\n}\n#right-arrow {\n    right: 0;\n}\n.nav-btn {\n    background: gray;\n    position: absolute;\n    top: 0;\n    left: 0;\n    bottom: 0;\n    right: 0;\n    text-align: center;\n    font-size: 30px;\n    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);\n    color: white;\n    opacity: 30%;\n    font-weight: blue;\n}\n.nav-btn > div {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%);\n}\n.nav-btn:hover {\n    opacity: 80%;\n    font-weight: bold;\n    color: white;\n    cursor: pointer;\n}\n#carousel {\n    position: absolute;\n    top: 0px;\n    bottom: 0px;\n    left: -33%;\n    width: 166%;\n    display: flex;\n    overflow: hidden;\n}\n\n.cardcol {\n    position: relative;\n    width: 20%;\n    height: 100%;\n    margin: 0;\n    padding: 0;\n}\n.carditem {\n    position: absolute;\n    top: 10px;\n    bottom: 10px;\n    left: 0px;\n    right: 0px;\n    border-radius: 10px;\n    box-shadow: 10px 10px 10px rgba(128, 128, 128, 1);\n}\n\n@keyframes left0 {\n    from {\n        transform: translateX(0) scale(0.6);\n    }\n    to {\n        transform: translateX(-100%) scale(0.4);\n    }\n}\n@keyframes right0 {\n    from {\n        transform: translateX(0) scale(0.6);\n    }\n    to {\n        transform: translateX(100%) scale(0.8);\n    }\n}\n@keyframes left1 {\n    from {\n        transform: translateX(0) scale(0.8);\n    }\n    to {\n        transform: translateX(-100%) scale(0.6);\n    }\n}\n@keyframes right1 {\n    from {\n        transform: translateX(0) scale(0.8);\n    }\n    to {\n        transform: translateX(100%) scale(1);\n    }\n}\n\n@keyframes left2 {\n    from {\n        transform: translateX(0) scale(1);\n    }\n    to {\n        transform: translateX(-100%) scale(0.8);\n    }\n}\n@keyframes right2 {\n    from {\n        transform: translateX(0) scale(1);\n    }\n    to {\n        transform: translateX(100%) scale(0.8);\n    }\n}\n\n@keyframes left3 {\n    from {\n        transform: translateX(0) scale(0.8);\n    }\n    to {\n        transform: translateX(-100%) scale(1);\n    }\n}\n@keyframes right3 {\n    from {\n        transform: translateX(0) scale(0.8);\n    }\n    to {\n        transform: translateX(100%) scale(0.6);\n    }\n}\n@keyframes left4 {\n    from {\n        transform: translateX(0) scale(0.6);\n    }\n    to {\n        transform: translateX(-100%) scale(0.8);\n    }\n}\n@keyframes right4 {\n    from {\n        transform: translateX(0) scale(0.6);\n    }\n    to {\n        transform: translateX(100%) scale(0.4);\n    }\n}\n#card1,\n#card3 {\n    transform: scale(0.8);\n}\n#card0,\n#card4 {\n    transform: scale(0.6);\n}\n.animate-0,\n.animate-1,\n.animate-2,\n.animate-3,\n.animate-4,\n.animate-0-back,\n.animate-1-back,\n.animate-2-back,\n.animate-3-back,\n.animate-4-back {\n    animation-duration: 0.25s;\n    animation-iteration-count: 1;\n    animation-fill-mode: forwards;\n}\n.animate-0 {\n    animation-name: left0;\n}\n.animate-0-back {\n    animation-name: right0;\n}\n\n.animate-1 {\n    animation-name: left1;\n}\n.animate-1-back {\n    animation-name: right1;\n}\n.animate-2 {\n    animation-name: left2;\n}\n.animate-2-back {\n    animation-name: right2;\n}\n.animate-3 {\n    animation-name: left3;\n}\n.animate-3-back {\n    animation-name: right3;\n}\n.animate-4 {\n    animation-name: left4;\n}\n.animate-4-back {\n    animation-name: right4;\n}\n");
 
 /***/ }),
 
@@ -1306,17 +1281,17 @@ module.exports = "<div class=\"ball-holder\" id=\"parent\">\n    <div id=\"ball\
   \*************************************/
 /***/ ((module) => {
 
-module.exports = "<div class=\"full-page\" id=\"parent\">\n    <div class=\"header\">\n        <div class=\"header-left\">Web Pong</div>\n        <div class=\"header-middle\">\n            <div class=\"score\">Time: <span id=\"timer\">0:00</span></div>\n        </div>\n        <div class=\"header-right\">\n            <button class=\"btn btn-primary\" id=\"go\">Start Game</button>\n        </div>\n    </div>\n    <div class=\"content-body\">\n        <div class=\"instructions\">\n            <h2>Instructions</h2>\n            <p>\n                Use the a and z keys to move the paddle up and down. Try to hit\n                the ball with the paddle to keep it in play.\n            </p>\n        </div>\n        <div id=\"game-board\"></div>\n    </div>\n</div>\n";
+module.exports = "<div class=\"page\">\n    <div id=\"content\">\n        <div id=\"movie-imgs\"></div>\n    </div>\n    <div class=\"detail\">\n        <div id=\"movie-title\">&nbsp;</div>\n        <div class=\"movie-info\">\n            <div class=\"movie-info-left\">\n                <div class=\"movie-card\">\n                <div class=\"line\"><div class=\"left-info\">Release Date: </div><div id=\"release-date\" class=\"right-info\"></div></div>\n                <div class=\"line\"><div class=\"left-info\">Genres: </div><div id=\"genres\" class=\"right-info\"></div></div> \n                <div class=\"line\"><div class=\"left-info\">Runtime: </div><div id=\"runtime\" class=\"right-info\"></div></div>\n                <div class=\"line\"><div id=\"home-link\"></div></div>\n                <div class=\"line\"><div id=\"imdb-link\"></div></div>\n                </div>\n                </div>\n                <div class=\"movie-info-right\">\n                    <div class=\"movie-card\">\n                    <div id=\"overview\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ }),
 
-/***/ "./src/app/paddle/paddle.component.html":
-/*!**********************************************!*\
-  !*** ./src/app/paddle/paddle.component.html ***!
-  \**********************************************/
+/***/ "./src/app/ui-elements/carousel/carousel.component.html":
+/*!**************************************************************!*\
+  !*** ./src/app/ui-elements/carousel/carousel.component.html ***!
+  \**************************************************************/
 /***/ ((module) => {
 
-module.exports = "<div class=\"paddle-holder\" id=\"parent\">\n    <div id=\"paddle\"></div>\n</div>\n";
+module.exports = "<div class=\"outside\">\n    <div class=\"arrow\" id=\"left-arrow\">\n        <div id=\"left\" class=\"nav-btn\"><div><</div></div>\n    </div>\n    <div id=\"carousel-container\">\n        <div id=\"carousel\">\n            <div id=\"card0\" class=\"cardcol\">\n                <div id=\"card0item\" class=\"carditem\"></div>\n            </div>\n            <div class=\"cardcol\" id=\"card1\">\n                <div id=\"card1item\" class=\"carditem\"></div>\n            </div>\n            <div id=\"card2\" class=\"cardcol\">\n                <div id=\"card2item\" class=\"carditem\"></div>\n            </div>\n            <div id=\"card3\" class=\"cardcol\">\n                <div id=\"card3item\" class=\"carditem\"></div>\n            </div>\n            <div id=\"card4\" class=\"cardcol\">\n                <div id=\"card4item\" class=\"carditem\"></div>\n            </div>\n        </div>\n    </div>\n    <div class=\"arrow\" id=\"right-arrow\">\n        <div id=\"right\" class=\"nav-btn\"><div>></div></div>\n    </div>\n</div>\n";
 
 /***/ }),
 
@@ -1648,333 +1623,6 @@ module.exports = styleTagTransform;
 
 /***/ }),
 
-/***/ "./src/app/ball/ball.component.ts":
-/*!****************************************!*\
-  !*** ./src/app/ball/ball.component.ts ***!
-  \****************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
-};
-var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _, done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-        var context = {};
-        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-        if (kind === "accessor") {
-            if (result === void 0) continue;
-            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-            if (_ = accept(result.get)) descriptor.get = _;
-            if (_ = accept(result.set)) descriptor.set = _;
-            if (_ = accept(result.init)) initializers.unshift(_);
-        }
-        else if (_ = accept(result)) {
-            if (kind === "field") initializers.unshift(_);
-            else descriptor[key] = _;
-        }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BallComponent = void 0;
-const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
-const ball_component_html_1 = __importDefault(__webpack_require__(/*! ./ball.component.html */ "./src/app/ball/ball.component.html"));
-const ball_component_css_1 = __importDefault(__webpack_require__(/*! ./ball.component.css */ "./src/app/ball/ball.component.css"));
-const globals_1 = __webpack_require__(/*! ../globals */ "./src/app/globals.ts");
-const paddle_component_1 = __webpack_require__(/*! ../paddle/paddle.component */ "./src/app/paddle/paddle.component.ts");
-/**
- * @description The ball component
- * @export
- * @class BallComponent
- * @extends {EzComponent}
- * @method restart : Restart the ball
- * @method increaseSpeed : Increase the speed of the ball
- * @method moveBall : Move the ball
- */
-let BallComponent = (() => {
-    var _a;
-    let _classSuper = webez_1.EzComponent;
-    let _instanceExtraInitializers = [];
-    let __ball_width_decorators;
-    let __ball_width_initializers = [];
-    let __ball_width_extraInitializers = [];
-    let __ball_height_decorators;
-    let __ball_height_initializers = [];
-    let __ball_height_extraInitializers = [];
-    let __ball_x_decorators;
-    let __ball_x_initializers = [];
-    let __ball_x_extraInitializers = [];
-    let __ball_y_decorators;
-    let __ball_y_initializers = [];
-    let __ball_y_extraInitializers = [];
-    let _ball_color_decorators;
-    let _ball_color_initializers = [];
-    let _ball_color_extraInitializers = [];
-    let _increaseSpeed_decorators;
-    let _moveBall_decorators;
-    return _a = class BallComponent extends _classSuper {
-            get ball_width() {
-                return parseInt(this._ball_width);
-            }
-            set ball_width(value) {
-                this._ball_width = value.toString();
-            }
-            get ball_height() {
-                return parseInt(this._ball_height);
-            }
-            set ball_height(value) {
-                this._ball_height = value.toString();
-            }
-            get ball_x() {
-                return parseInt(this._ball_x);
-            }
-            set ball_x(value) {
-                this._ball_x = value.toString();
-            }
-            get ball_y() {
-                return parseInt(this._ball_y);
-            }
-            set ball_y(value) {
-                this._ball_y = value.toString();
-            }
-            /**
-             * @description The constructor for the ball component
-             * @param {PaddleComponent} [paddle=new PaddleComponent()] - The paddle component
-             * @memberof BallComponent
-             * @summary Creates an instance of BallComponent.
-             */
-            constructor(paddle = new paddle_component_1.PaddleComponent()) {
-                super(ball_component_html_1.default, ball_component_css_1.default);
-                this.paddle = (__runInitializers(this, _instanceExtraInitializers), paddle);
-                /**
-                 * @description The width of the ball
-                 * @private
-                 * @type {string}
-                 * @memberof BallComponent
-                 * @summary Binds to ball style.width
-                 * @summary Appends px to the value
-                 */
-                this._ball_width = __runInitializers(this, __ball_width_initializers, globals_1.Globals.BALL_DIMENSION.toString());
-                /**
-                 * @description The height of the ball
-                 * @private
-                 * @type {string}
-                 * @memberof BallComponent
-                 * @summary Binds to ball style.height
-                 * @summary Appends px to the value
-                 */
-                this._ball_height = (__runInitializers(this, __ball_width_extraInitializers), __runInitializers(this, __ball_height_initializers, globals_1.Globals.BALL_DIMENSION.toString()));
-                /**
-                 * @description The x coordinate of the ball
-                 * @private
-                 * @type {string}
-                 * @memberof BallComponent
-                 * @summary Binds to ball style.left
-                 * @summary Appends px to the value
-                 */
-                this._ball_x = (__runInitializers(this, __ball_height_extraInitializers), __runInitializers(this, __ball_x_initializers, ((globals_1.Globals.BOARD_WIDTH - this.ball_width) /
-                    2).toString()));
-                /**
-                 * @description The y coordinate of the ball
-                 * @private
-                 * @type {string}
-                 * @memberof BallComponent
-                 * @summary Binds to ball style.top
-                 * @summary Appends px to the value
-                 */
-                this._ball_y = (__runInitializers(this, __ball_x_extraInitializers), __runInitializers(this, __ball_y_initializers, ((globals_1.Globals.BOARD_HEIGHT - this.ball_height) /
-                    2).toString()));
-                /**
-                 * @description Whether the ball is currently running
-                 * @private
-                 * @type {boolean}
-                 */
-                this.running = (__runInitializers(this, __ball_y_extraInitializers), false);
-                /**
-                 * @description holds the current timer kill function
-                 */
-                this.killTimer = () => { };
-                /**
-                 * @description The color of the ball
-                 * @private
-                 * @type {string}
-                 * @memberof BallComponent
-                 * @summary Binds to ball style.backgroundColor
-                 */
-                this.ball_color = __runInitializers(this, _ball_color_initializers, globals_1.Globals.BALL_COLOR);
-                /**
-                 * @description The speed of the ball
-                 * @private
-                 * @type {number}
-                 * @memberof BallComponent
-                 */
-                this.ball_speed = (__runInitializers(this, _ball_color_extraInitializers), globals_1.Globals.BALL_SPEED);
-                /**
-                 * @description The direction vector of the ball
-                 * @private
-                 * @type {number[]}
-                 * @memberof BallComponent
-                 */
-                this.ball_direction = [-1, -1];
-                /**
-                 * @description The maximum x coordinate of the ball
-                 * @private
-                 * @type {number}
-                 * @memberof BallComponent
-                 */
-                this.maxX = globals_1.Globals.BOARD_WIDTH - this.ball_width;
-                /**
-                 * @description The maximum y coordinate of the ball
-                 * @private
-                 * @type {number}
-                 * @memberof BallComponent
-                 */
-                this.maxY = globals_1.Globals.BOARD_HEIGHT - this.ball_height;
-                /**
-                 * @description The event subject for game over
-                 * @public
-                 * @type {EventSubject<void>}
-                 * @memberof BallComponent
-                 */
-                this.gameOver = new webez_1.EventSubject();
-            }
-            /**
-             * @description Restarts the ball
-             * @public
-             * @memberof BallComponent
-             */
-            restart() {
-                this.ball_x = (globals_1.Globals.BOARD_WIDTH - this.ball_width) / 2;
-                this.ball_y = (globals_1.Globals.BOARD_HEIGHT - this.ball_height) / 2;
-                this.ball_direction = [-1, -1];
-                this.ball_speed = globals_1.Globals.BALL_SPEED;
-                this.running = true;
-            }
-            /**
-             * @description Increases the speed of the ball every 10 seconds
-             * @private
-             * @memberof BallComponent
-             * @summary Increases the speed of the ball
-             * @summary Binds to the timer event
-             */
-            increaseSpeed() {
-                if (this.running)
-                    this.ball_speed += globals_1.Globals.BALL_SPEED_INCREMENT;
-            }
-            /**
-             * @description Checks if two rectangles are colliding
-             * @private
-             * @param {Rectangle} r1 - The first rectangle
-             * @param {Rectangle} r2 - The second rectangle
-             * @returns {boolean} - Whether the rectangles are colliding
-             * @memberof BallComponent
-             */
-            hitTest(r1, r2) {
-                return (r1.x < r2.x + r2.width &&
-                    r1.x + r1.width > r2.x &&
-                    r1.y < r2.y + r2.height &&
-                    r1.y + r1.height > r2.y);
-            }
-            /**
-             * @description Main game loop for the ball
-             * @private
-             * @param {() => void} kill - The kill function for the timer
-             * @memberof BallComponent
-             * @summary Moves the ball
-             * @summary Binds to the timer event every 50 milliseconds
-             */
-            moveBall(kill) {
-                this.killTimer = kill;
-                if (this.running) {
-                    let newX = this.ball_x + this.ball_speed * this.ball_direction[0];
-                    let newY = this.ball_y + this.ball_speed * this.ball_direction[1];
-                    if (this.hitTest(this.getBallRect(), this.paddle.getPaddleRect())) {
-                        this.ball_direction[0] = 1;
-                        newX = this.paddle.getPaddleRect().x + globals_1.Globals.PADDLE_WIDTH;
-                        this.ball_x = newX;
-                        this.ball_y = newY;
-                        return;
-                    }
-                    if (newX < 0) {
-                        this.ball_direction[0] = 1;
-                        this.ball_x = -50;
-                        this.gameOver.next();
-                        this.running = false;
-                    }
-                    if (newX > this.maxX) {
-                        this.ball_direction[0] = -1;
-                        newX = this.maxX;
-                    }
-                    if (newY < 0) {
-                        this.ball_direction[1] = 1;
-                        newY = 0;
-                    }
-                    if (newY > this.maxY) {
-                        this.ball_direction[1] = -1;
-                        newY = this.maxY;
-                    }
-                    this.ball_x = newX;
-                    this.ball_y = newY;
-                }
-            }
-            /**
-             * @description Stops the ball
-             * @public
-             * @memberof BallComponent
-             */
-            getBallRect() {
-                return {
-                    x: this.ball_x,
-                    y: this.ball_y,
-                    width: this.ball_width,
-                    height: this.ball_height,
-                };
-            }
-        },
-        (() => {
-            var _b;
-            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            __ball_width_decorators = [(0, webez_1.BindStyle)("ball", "width"), (0, webez_1.AppendPipe)("px")];
-            __ball_height_decorators = [(0, webez_1.BindStyle)("ball", "height"), (0, webez_1.AppendPipe)("px")];
-            __ball_x_decorators = [(0, webez_1.BindStyle)("ball", "left"), (0, webez_1.AppendPipe)("px")];
-            __ball_y_decorators = [(0, webez_1.BindStyle)("ball", "top"), (0, webez_1.AppendPipe)("px")];
-            _ball_color_decorators = [(0, webez_1.BindStyle)("ball", "backgroundColor")];
-            _increaseSpeed_decorators = [(0, webez_1.Timer)(10000)];
-            _moveBall_decorators = [(0, webez_1.Timer)(50)];
-            __esDecorate(_a, null, _increaseSpeed_decorators, { kind: "method", name: "increaseSpeed", static: false, private: false, access: { has: obj => "increaseSpeed" in obj, get: obj => obj.increaseSpeed }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(_a, null, _moveBall_decorators, { kind: "method", name: "moveBall", static: false, private: false, access: { has: obj => "moveBall" in obj, get: obj => obj.moveBall }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(null, null, __ball_width_decorators, { kind: "field", name: "_ball_width", static: false, private: false, access: { has: obj => "_ball_width" in obj, get: obj => obj._ball_width, set: (obj, value) => { obj._ball_width = value; } }, metadata: _metadata }, __ball_width_initializers, __ball_width_extraInitializers);
-            __esDecorate(null, null, __ball_height_decorators, { kind: "field", name: "_ball_height", static: false, private: false, access: { has: obj => "_ball_height" in obj, get: obj => obj._ball_height, set: (obj, value) => { obj._ball_height = value; } }, metadata: _metadata }, __ball_height_initializers, __ball_height_extraInitializers);
-            __esDecorate(null, null, __ball_x_decorators, { kind: "field", name: "_ball_x", static: false, private: false, access: { has: obj => "_ball_x" in obj, get: obj => obj._ball_x, set: (obj, value) => { obj._ball_x = value; } }, metadata: _metadata }, __ball_x_initializers, __ball_x_extraInitializers);
-            __esDecorate(null, null, __ball_y_decorators, { kind: "field", name: "_ball_y", static: false, private: false, access: { has: obj => "_ball_y" in obj, get: obj => obj._ball_y, set: (obj, value) => { obj._ball_y = value; } }, metadata: _metadata }, __ball_y_initializers, __ball_y_extraInitializers);
-            __esDecorate(null, null, _ball_color_decorators, { kind: "field", name: "ball_color", static: false, private: false, access: { has: obj => "ball_color" in obj, get: obj => obj.ball_color, set: (obj, value) => { obj.ball_color = value; } }, metadata: _metadata }, _ball_color_initializers, _ball_color_extraInitializers);
-            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
-        })(),
-        _a;
-})();
-exports.BallComponent = BallComponent;
-
-
-/***/ }),
-
 /***/ "./src/app/globals.ts":
 /*!****************************!*\
   !*** ./src/app/globals.ts ***!
@@ -1985,22 +1633,15 @@ exports.BallComponent = BallComponent;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Globals = void 0;
-/** @description Global values to set up game
- * @summary These values are used to set up the game board, paddle, and ball
+/**
+ * Varies global values used in the application
  */
 exports.Globals = {
-    BOARD_WIDTH: 600,
-    BOARD_HEIGHT: 400,
-    PADDLE_WIDTH: 15,
-    PADDLE_HEIGHT: 75,
-    PADDLE_COLOR: "blue",
-    PADDLE_SPEED: 10,
-    PADDLE_INDENT: 10,
-    BALL_DIMENSION: 15,
-    BALL_COLOR: "yellow",
-    BALL_SPEED: 5,
-    BALL_MAXSPEED: 40,
-    BALL_SPEED_INCREMENT: 5,
+    //movieApiKey: "ab433506",
+    movieApiKey: "1e8c7c168c4a76f2d5ffc2711c57749a",
+    movieApiUrl: "https://api.themoviedb.org/3/",
+    imdbLink: "https://www.imdb.com/title/",
+    animationTime: 250,
 };
 
 
@@ -2014,13 +1655,6 @@ exports.Globals = {
 
 "use strict";
 
-var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
-};
 var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
     function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
     var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
@@ -2048,6 +1682,22 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -2056,161 +1706,169 @@ exports.MainComponent = void 0;
 const main_component_html_1 = __importDefault(__webpack_require__(/*! ./main.component.html */ "./src/app/main.component.html"));
 const main_component_css_1 = __importDefault(__webpack_require__(/*! ./main.component.css */ "./src/app/main.component.css"));
 const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
-const paddle_component_1 = __webpack_require__(/*! ./paddle/paddle.component */ "./src/app/paddle/paddle.component.ts");
+const moviedb_service_1 = __webpack_require__(/*! ./themoviedb/moviedb.service */ "./src/app/themoviedb/moviedb.service.ts");
+const carousel_component_1 = __webpack_require__(/*! ./ui-elements/carousel/carousel.component */ "./src/app/ui-elements/carousel/carousel.component.ts");
 const globals_1 = __webpack_require__(/*! ./globals */ "./src/app/globals.ts");
-const ball_component_1 = __webpack_require__(/*! ./ball/ball.component */ "./src/app/ball/ball.component.ts");
 /**
- * @description The main component of the game
- * @export
- * @class MainComponent
- * @extends {EzComponent}
- * @method startGame : event handler for start button
- * @method updateTimer : Main game loop timer
- * @method start : Reset and start a new game
- * @method stop : Stop the game
+ * @description MainComponent is the main component of the app
+ * @extends EzComponent
+ *
  */
 let MainComponent = (() => {
     var _a;
     let _classSuper = webez_1.EzComponent;
-    let _instanceExtraInitializers = [];
-    let _boardWidth_decorators;
-    let _boardWidth_initializers = [];
-    let _boardWidth_extraInitializers = [];
-    let _boardHeight_decorators;
-    let _boardHeight_initializers = [];
-    let _boardHeight_extraInitializers = [];
-    let _time_decorators;
-    let _time_initializers = [];
-    let _time_extraInitializers = [];
-    let _startGame_decorators;
-    let _updateTimer_decorators;
+    let _movieTitle_decorators;
+    let _movieTitle_initializers = [];
+    let _movieTitle_extraInitializers = [];
+    let _releaseDate_decorators;
+    let _releaseDate_initializers = [];
+    let _releaseDate_extraInitializers = [];
+    let _genres_decorators;
+    let _genres_initializers = [];
+    let _genres_extraInitializers = [];
+    let _runtime_decorators;
+    let _runtime_initializers = [];
+    let _runtime_extraInitializers = [];
+    let _homePage_decorators;
+    let _homePage_initializers = [];
+    let _homePage_extraInitializers = [];
+    let _overview_decorators;
+    let _overview_initializers = [];
+    let _overview_extraInitializers = [];
+    let _imdbLink_decorators;
+    let _imdbLink_initializers = [];
+    let _imdbLink_extraInitializers = [];
+    let __carouselWidth_decorators;
+    let __carouselWidth_initializers = [];
+    let __carouselWidth_extraInitializers = [];
+    let __carouselHeight_decorators;
+    let __carouselHeight_initializers = [];
+    let __carouselHeight_extraInitializers = [];
     return _a = class MainComponent extends _classSuper {
+            get carouselWidth() {
+                return parseInt(this._carouselWidth);
+            }
+            set carouselWidth(value) {
+                this._carouselWidth = value.toString();
+            }
+            get carouselHeight() {
+                return parseInt(this._carouselHeight);
+            }
+            set carouselHeight(value) {
+                this._carouselHeight = value.toString();
+            }
             /**
-             * @description Creates an instance of MainComponent.
-             * @memberof MainComponent
-             * @summary Initializes the game board and components
-             * @summary Subscribes to the ball's gameOver event to handle game over
+             * @description This is the constructor
+             * @constructor
+             * @summary Creates an instance of MainComponent and loads configruation data from the MovieDB API service.
+             * @sideeffects Loads configuration from the api service, then continues setup.
              */
             constructor() {
                 super(main_component_html_1.default, main_component_css_1.default);
-                /**
-                 * @description The width of the game board
-                 * @private
-                 * @type {string}
-                 * @memberof MainComponent
-                 * @summary Binds to game-board style.width
-                 */
-                this.boardWidth = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _boardWidth_initializers, globals_1.Globals.BOARD_WIDTH.toString()));
-                /**
-                 * @description The height of the game board
-                 * @private
-                 * @type {string}
-                 * @memberof MainComponent
-                 * @summary Binds to game-board style.height
-                 */
-                this.boardHeight = (__runInitializers(this, _boardWidth_extraInitializers), __runInitializers(this, _boardHeight_initializers, globals_1.Globals.BOARD_HEIGHT.toString()));
-                /**
-                 * @description The paddle component
-                 * @private
-                 * @type {PaddleComponent}
-                 * @memberof MainComponent
-                 */
-                this.paddle = (__runInitializers(this, _boardHeight_extraInitializers), new paddle_component_1.PaddleComponent());
-                /**
-                 * @description The start time of the game
-                 * @private
-                 * @type {Date}
-                 * @memberof MainComponent
-                 * @summary Used to calculate the elapsed time
-                 */
-                this.startTime = new Date();
-                /**
-                 * @description Whether the game is currently playing
-                 * @private
-                 * @type {boolean}
-                 * @memberof MainComponent
-                 */
-                this.playing = false;
-                /**
-                 * @description The time elapsed in the game
-                 * @private
-                 * @type {string}
-                 * @memberof MainComponent
-                 * @summary Binds to timer innerHTML
-                 */
-                this.time = __runInitializers(this, _time_initializers, "00:00");
-                __runInitializers(this, _time_extraInitializers);
-                this.ball = new ball_component_1.BallComponent(this.paddle);
-                this.addComponent(this.paddle, "game-board");
-                this.addComponent(this.ball, "game-board");
-                this.ball.gameOver.subscribe(() => {
-                    this.stop();
-                    webez_1.EzDialog.popup(this, "Would you like to play again?", "Game Over", ["Yes", "No"], "btn btn-primary").subscribe((result) => {
-                        if (result === "Yes") {
-                            this.start();
+                this.service = new moviedb_service_1.MovieDBService();
+                this.movies = [];
+                /** Bindings for details */
+                this.movieTitle = __runInitializers(this, _movieTitle_initializers, "");
+                this.releaseDate = (__runInitializers(this, _movieTitle_extraInitializers), __runInitializers(this, _releaseDate_initializers, ""));
+                this.genres = (__runInitializers(this, _releaseDate_extraInitializers), __runInitializers(this, _genres_initializers, ""));
+                this.runtime = (__runInitializers(this, _genres_extraInitializers), __runInitializers(this, _runtime_initializers, ""));
+                this.homePage = (__runInitializers(this, _runtime_extraInitializers), __runInitializers(this, _homePage_initializers, ""));
+                this.overview = (__runInitializers(this, _homePage_extraInitializers), __runInitializers(this, _overview_initializers, ""));
+                this.imdbLink = (__runInitializers(this, _overview_extraInitializers), __runInitializers(this, _imdbLink_initializers, ""));
+                /**End bindings for details */
+                this._carouselWidth = (__runInitializers(this, _imdbLink_extraInitializers), __runInitializers(this, __carouselWidth_initializers, "100%"));
+                this._carouselHeight = (__runInitializers(this, __carouselWidth_extraInitializers), __runInitializers(this, __carouselHeight_initializers, "300"));
+                __runInitializers(this, __carouselHeight_extraInitializers);
+                this.service.dbReady.subscribe(() => {
+                    this.setup();
+                });
+            }
+            /**
+             * @description This method sets up the component
+             * @method
+             * @summary Sets up the component by getting the records and setting up the carousel
+             * @private
+             * @sideeffects Sets up the carousel and loads the first set of movies
+             */
+            setup() {
+                this.service.getRecordsInRange(1, 4).then((results) => {
+                    this.movies = results;
+                    this.carousel = new carousel_component_1.CarouselComponent(this.service.totalResults, results.map(this.buildHtml.bind(this)), (itemNumber) => __awaiter(this, void 0, void 0, function* () {
+                        let result = yield this.service.getRecordsInRange(itemNumber, itemNumber);
+                        if (this.movies.indexOf(result[0]) === -1) {
+                            this.movies.push(result[0]);
                         }
+                        return result.map(this.buildHtml.bind(this));
+                    }));
+                    this.carousel.positionChanged.subscribe((pos) => __awaiter(this, void 0, void 0, function* () {
+                        this.movieTitle = "&nbsp;";
+                        const details = yield this.service.getMovieDetails(this.movies[pos].id);
+                        this.setMovieDetails(details);
+                    }));
+                    this.carousel.position = 1;
+                    this.addComponent(this.carousel, "movie-imgs");
+                    let width = this.getWindowSize().windowWidth;
+                    if (width > 1300)
+                        width = 1300;
+                    this.carouselHeight = (width - 20) / 2;
+                    this.carouselWidth = width - 20;
+                    this.onResizeEvent.subscribe(() => {
+                        let width = this.getWindowSize().windowWidth;
+                        if (width > 1300)
+                            width = 1300;
+                        this.carouselHeight = (width - 20) / 2;
+                        this.carouselWidth = width - 20;
                     });
                 });
             }
             /**
-             * @description Start a new game
-             * @memberof MainComponent
-             * @summary Resets the game timer and ball
-             * @summary Starts the game loop
+             * @description This method builds the HTML for a record as an image
+             * @method
+             * @param {SearchResult} record The record to build the HTML for
+             * @returns {string} The HTML for the record
+             * @private
              */
-            start() {
-                this.time = "00:00";
-                this.startTime = new Date();
-                this.playing = true;
-                this.ball.restart();
+            buildHtml(record) {
+                return `<div "><img src="${record.poster_path}" alt="${record.title}" style="height:100%;width:100%" /></div>`;
             }
             /**
-             * @description Stop the game
-             * @memberof MainComponent
-             * @summary Stops the game loop
+             * @description This method sets the movie details in the bound properties to update the screen
+             * @method
+             * @param {MovieDetail} details The details to set the properties from
+             * @returns {void}
+             * @private
              */
-            stop() {
-                this.playing = false;
-            }
-            /**
-             * @description Event handler for the start button
-             * @memberof MainComponent
-             * @summary Starts the game
-             * @summary Binds to the go button click event
-             */
-            startGame() {
-                this.start();
-            }
-            /**
-             * @description Main game loop timer
-             * @memberof MainComponent
-             * @summary Updates the game timer every second
-             */
-            updateTimer() {
-                if (this.playing) {
-                    const elapsed = (new Date().valueOf() - this.startTime.valueOf()) / 1000;
-                    let minutes = Math.floor(elapsed / 60);
-                    let seconds = Math.floor(elapsed % 60);
-                    this.time =
-                        minutes.toString().padStart(2, "0") +
-                            ":" +
-                            seconds.toString().padStart(2, "0");
-                }
+            setMovieDetails(details) {
+                this.movieTitle = details.title;
+                this.releaseDate = new Date(details.release_date).toLocaleDateString();
+                this.genres = details.genres.map((genre) => genre.name).join(", ");
+                this.runtime = details.runtime.toString();
+                this.homePage = details.homepage;
+                this.overview = details.overview;
+                this.imdbLink = globals_1.Globals.imdbLink + details.imdb_id;
             }
         },
         (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            _boardWidth_decorators = [(0, webez_1.BindStyle)("game-board", "width"), (0, webez_1.AppendPipe)("px")];
-            _boardHeight_decorators = [(0, webez_1.BindStyle)("game-board", "height"), (0, webez_1.AppendPipe)("px")];
-            _time_decorators = [(0, webez_1.BindInnerHTML)("timer")];
-            _startGame_decorators = [(0, webez_1.Click)("go")];
-            _updateTimer_decorators = [(0, webez_1.Timer)(1000)];
-            __esDecorate(_a, null, _startGame_decorators, { kind: "method", name: "startGame", static: false, private: false, access: { has: obj => "startGame" in obj, get: obj => obj.startGame }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(_a, null, _updateTimer_decorators, { kind: "method", name: "updateTimer", static: false, private: false, access: { has: obj => "updateTimer" in obj, get: obj => obj.updateTimer }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(null, null, _boardWidth_decorators, { kind: "field", name: "boardWidth", static: false, private: false, access: { has: obj => "boardWidth" in obj, get: obj => obj.boardWidth, set: (obj, value) => { obj.boardWidth = value; } }, metadata: _metadata }, _boardWidth_initializers, _boardWidth_extraInitializers);
-            __esDecorate(null, null, _boardHeight_decorators, { kind: "field", name: "boardHeight", static: false, private: false, access: { has: obj => "boardHeight" in obj, get: obj => obj.boardHeight, set: (obj, value) => { obj.boardHeight = value; } }, metadata: _metadata }, _boardHeight_initializers, _boardHeight_extraInitializers);
-            __esDecorate(null, null, _time_decorators, { kind: "field", name: "time", static: false, private: false, access: { has: obj => "time" in obj, get: obj => obj.time, set: (obj, value) => { obj.time = value; } }, metadata: _metadata }, _time_initializers, _time_extraInitializers);
+            _movieTitle_decorators = [(0, webez_1.BindInnerHTML)("movie-title")];
+            _releaseDate_decorators = [(0, webez_1.BindInnerHTML)("release-date")];
+            _genres_decorators = [(0, webez_1.BindInnerHTML)("genres")];
+            _runtime_decorators = [(0, webez_1.AppendPipe)(" minutes"), (0, webez_1.BindInnerHTML)("runtime")];
+            _homePage_decorators = [(0, webez_1.AppendPipe)("'>Home Page</a>"), (0, webez_1.PrependPipe)("<a href='"), (0, webez_1.BindInnerHTML)("home-link")];
+            _overview_decorators = [(0, webez_1.PrependPipe)("<b>Overview:</b><br/> "), (0, webez_1.BindInnerHTML)("overview")];
+            _imdbLink_decorators = [(0, webez_1.AppendPipe)("'>IMDB Page</a>"), (0, webez_1.PrependPipe)("<a href='"), (0, webez_1.BindInnerHTML)("imdb-link")];
+            __carouselWidth_decorators = [(0, webez_1.BindStyle)("content", "width"), (0, webez_1.AppendPipe)("px")];
+            __carouselHeight_decorators = [(0, webez_1.BindStyle)("content", "height"), (0, webez_1.AppendPipe)("px")];
+            __esDecorate(null, null, _movieTitle_decorators, { kind: "field", name: "movieTitle", static: false, private: false, access: { has: obj => "movieTitle" in obj, get: obj => obj.movieTitle, set: (obj, value) => { obj.movieTitle = value; } }, metadata: _metadata }, _movieTitle_initializers, _movieTitle_extraInitializers);
+            __esDecorate(null, null, _releaseDate_decorators, { kind: "field", name: "releaseDate", static: false, private: false, access: { has: obj => "releaseDate" in obj, get: obj => obj.releaseDate, set: (obj, value) => { obj.releaseDate = value; } }, metadata: _metadata }, _releaseDate_initializers, _releaseDate_extraInitializers);
+            __esDecorate(null, null, _genres_decorators, { kind: "field", name: "genres", static: false, private: false, access: { has: obj => "genres" in obj, get: obj => obj.genres, set: (obj, value) => { obj.genres = value; } }, metadata: _metadata }, _genres_initializers, _genres_extraInitializers);
+            __esDecorate(null, null, _runtime_decorators, { kind: "field", name: "runtime", static: false, private: false, access: { has: obj => "runtime" in obj, get: obj => obj.runtime, set: (obj, value) => { obj.runtime = value; } }, metadata: _metadata }, _runtime_initializers, _runtime_extraInitializers);
+            __esDecorate(null, null, _homePage_decorators, { kind: "field", name: "homePage", static: false, private: false, access: { has: obj => "homePage" in obj, get: obj => obj.homePage, set: (obj, value) => { obj.homePage = value; } }, metadata: _metadata }, _homePage_initializers, _homePage_extraInitializers);
+            __esDecorate(null, null, _overview_decorators, { kind: "field", name: "overview", static: false, private: false, access: { has: obj => "overview" in obj, get: obj => obj.overview, set: (obj, value) => { obj.overview = value; } }, metadata: _metadata }, _overview_initializers, _overview_extraInitializers);
+            __esDecorate(null, null, _imdbLink_decorators, { kind: "field", name: "imdbLink", static: false, private: false, access: { has: obj => "imdbLink" in obj, get: obj => obj.imdbLink, set: (obj, value) => { obj.imdbLink = value; } }, metadata: _metadata }, _imdbLink_initializers, _imdbLink_extraInitializers);
+            __esDecorate(null, null, __carouselWidth_decorators, { kind: "field", name: "_carouselWidth", static: false, private: false, access: { has: obj => "_carouselWidth" in obj, get: obj => obj._carouselWidth, set: (obj, value) => { obj._carouselWidth = value; } }, metadata: _metadata }, __carouselWidth_initializers, __carouselWidth_extraInitializers);
+            __esDecorate(null, null, __carouselHeight_decorators, { kind: "field", name: "_carouselHeight", static: false, private: false, access: { has: obj => "_carouselHeight" in obj, get: obj => obj._carouselHeight, set: (obj, value) => { obj._carouselHeight = value; } }, metadata: _metadata }, __carouselHeight_initializers, __carouselHeight_extraInitializers);
             if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         })(),
         _a;
@@ -2220,10 +1878,247 @@ exports.MainComponent = MainComponent;
 
 /***/ }),
 
-/***/ "./src/app/paddle/paddle.component.ts":
-/*!********************************************!*\
-  !*** ./src/app/paddle/paddle.component.ts ***!
-  \********************************************/
+/***/ "./src/app/themoviedb/moviedb.service.ts":
+/*!***********************************************!*\
+  !*** ./src/app/themoviedb/moviedb.service.ts ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MovieDBService = void 0;
+const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
+const globals_1 = __webpack_require__(/*! ../globals */ "./src/app/globals.ts");
+/**
+ * @description MovieDBService is a service for the MovieDB API
+ * @export
+ * @class MovieDBService
+ * @property {number} totalPages The total pages
+ * @property {EventSubject<void>} dbReady The event subject for when the database is ready
+ * @method {Promise<void>} nextPage() Get the next page of data
+ * @method {Promise<void>} previousPage() Get the previous page of data
+ * @method {Promise<MovieDetail>} getMovieDetails(id: number) Get details for a specific movie
+ * @method {Promise<SearchResult[]>} getPage(page: number) Get a page of data
+ * @method {Promise<SearchResult[]>} getRecordsInRange(start: number, end: number) Get the records in range
+ */
+class MovieDBService {
+    /**
+     * Get the total pages
+     * @description This property gets the total pages
+     * @returns {number} The total pages
+     * @readonly
+     */
+    get totalPages() {
+        return this._totalPages;
+    }
+    /**
+     * Get the total results
+     * @description This property gets the total results
+     * @returns {number} The total results
+     * @readonly
+     */
+    get totalResults() {
+        return this._totalResults;
+    }
+    /**
+     * @description This is the constructor
+     * @constructor
+     */
+    constructor() {
+        this._totalPages = 0;
+        this._totalResults = 0;
+        this._currentPage = 0;
+        this._results = [];
+        this.dbReady = new webez_1.EventSubject();
+        this._config = {};
+        this.loadConfiguration().then((result) => {
+            this._config = result;
+            this.dbReady.next();
+        });
+    }
+    /**
+     * Get the configuration object
+     * @description This method sets the configuration object
+     * @returns {MovieDBConfiguration} The configuration object
+     * @throws {Error} If the configuration object is not set
+     * @async
+     */
+    loadConfiguration() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result = webez_1.EzComponent.ajax(`${globals_1.Globals.movieApiUrl}configuration?api_key=${globals_1.Globals.movieApiKey}`, webez_1.HttpMethod.GET).toPromise();
+                return yield result;
+            }
+            catch (e) {
+                throw new Error("Configuration object not set");
+            }
+        });
+    }
+    /**
+     * Get popular movies
+     * @description This method gets popular movies
+     * @param {number} page The page number
+     * @returns {SearchResults} The search results
+     * @throws {Error} If there is an error getting popular movies
+     * @async
+     */
+    getPopularMovies(page) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this._results[page - 1])
+                return this._results[page - 1];
+            try {
+                let result = webez_1.EzComponent.ajax(`${globals_1.Globals.movieApiUrl}movie/popular?api_key=${globals_1.Globals.movieApiKey}&${MovieDBService.addOnOptions}&page=${page}&sort_by=popularity.desc`, webez_1.HttpMethod.GET).toPromise();
+                const movies = yield result;
+                this._totalPages = movies.total_pages;
+                this._totalResults = movies.total_results;
+                return this.updateImageUrls(movies.results);
+            }
+            catch (e) {
+                throw new Error("Error getting popular movies");
+            }
+        });
+    }
+    /**
+     * Update image URLs
+     * @description This method updates image URLs
+     * @param {SearchResult[]} results The search results
+     * @returns {SearchResult[]} The search results
+     */
+    updateImageUrls(results) {
+        results.forEach((result) => {
+            if (result.poster_path && this._config.images) {
+                result.poster_path = `${this._config.images.base_url}${this._config.images.poster_sizes[2]}${result.poster_path}`;
+            }
+            if (result.backdrop_path && this._config.images) {
+                result.backdrop_path = `${this._config.images.base_url}${this._config.images.backdrop_sizes[2]}${result.backdrop_path}`;
+            }
+        });
+        return results;
+    }
+    /**
+     * Get the next page of data
+     * @description This method gets the next page of data
+     * @returns {Promise<void>} A promise that resolves with the next page of data
+     * @async
+     */
+    nextPage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this._currentPage >= this._totalPages)
+                return;
+            this._currentPage++;
+            const page = yield this.getPopularMovies(this._currentPage);
+            this._results[this._currentPage - 1] = page;
+        });
+    }
+    /**
+     * Get the previous page of data
+     * @description This method gets the previous page of data
+     * @returns {Promise<void>} A promise that resolves with the previous page of data
+     * @async
+     */
+    previousPage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this._currentPage <= 1)
+                return;
+            this._currentPage--;
+            const page = yield this.getPopularMovies(this._currentPage);
+            this._results[this._currentPage - 1] = page;
+        });
+    }
+    /**
+     * Get details for a specific movie
+     * @description This method gets details for a specific movie
+     * @param {number} id The movie id
+     * @returns {MovieDetail} The search result
+     * @throws {Error} If there is an error getting movie details
+     */
+    getMovieDetails(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let result = webez_1.EzComponent.ajax(`${globals_1.Globals.movieApiUrl}movie/${id}?api_key=${globals_1.Globals.movieApiKey}&${MovieDBService.addOnOptions}`, webez_1.HttpMethod.GET).toPromise();
+                return yield result;
+            }
+            catch (e) {
+                throw new Error("Error getting movie details");
+            }
+        });
+    }
+    /**
+     * Get a page of data
+     * @description This method gets a page of data
+     * @param {number} page The page number
+     * @returns {SearchResult[]} The search result
+     * @throws {Error} If there is an error getting a page of data
+     * @async
+     */
+    getPage(page) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._results[page - 1]) {
+                this._results[page - 1] = yield this.getPopularMovies(page);
+            }
+            return this._results[page - 1];
+        });
+    }
+    /**
+     * @description Get the records in range
+     * @param {number} start The start index
+     * @param {number} end The end index
+     * @returns {SearchResult[]} The records in range
+     * @async
+     * @throws {Error} If there is an error getting the records in range
+     */
+    getRecordsInRange(start, end) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.totalResults === 0)
+                yield this.getPopularMovies(1);
+            if (start < 1 || end > this._totalResults) {
+                throw new Error("Invalid range");
+            }
+            let records = [];
+            let startPage = Math.floor((start - 1) / 20) + 1;
+            let endPage = Math.floor((end - 1) / 20) + 1;
+            let startOnFirstPage = (start - 1) % 20;
+            let endOnLastPage = (end - 1) % 20;
+            let p1records = yield this.getPage(startPage);
+            let p2records = yield this.getPage(endPage);
+            if (start == end)
+                return [p1records[startOnFirstPage]];
+            p1records = p1records.slice(startOnFirstPage);
+            if (startPage === endPage) {
+                p2records = p1records.slice(0, endOnLastPage + 1);
+                p1records = [];
+            }
+            else {
+                p2records = p2records.slice(0, endOnLastPage + 1);
+            }
+            for (let i = startPage + 1; i < endPage; i++) {
+                let page = yield this.getPage(i);
+                records = [...records, ...page];
+            }
+            return [...p1records, ...records, ...p2records];
+        });
+    }
+}
+exports.MovieDBService = MovieDBService;
+MovieDBService.addOnOptions = "include_adult=false&include_video=false&language=en-US";
+
+
+/***/ }),
+
+/***/ "./src/app/ui-elements/carousel/carousel.component.ts":
+/*!************************************************************!*\
+  !*** ./src/app/ui-elements/carousel/carousel.component.ts ***!
+  \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -2262,202 +2157,392 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PaddleComponent = void 0;
+exports.CarouselComponent = void 0;
 const webez_1 = __webpack_require__(/*! @gsilber/webez */ "./node_modules/@gsilber/webez/index.js");
-const paddle_component_html_1 = __importDefault(__webpack_require__(/*! ./paddle.component.html */ "./src/app/paddle/paddle.component.html"));
-const paddle_component_css_1 = __importDefault(__webpack_require__(/*! ./paddle.component.css */ "./src/app/paddle/paddle.component.css"));
-const globals_1 = __webpack_require__(/*! ../globals */ "./src/app/globals.ts");
+const carousel_component_html_1 = __importDefault(__webpack_require__(/*! ./carousel.component.html */ "./src/app/ui-elements/carousel/carousel.component.html"));
+const carousel_component_css_1 = __importDefault(__webpack_require__(/*! ./carousel.component.css */ "./src/app/ui-elements/carousel/carousel.component.css"));
+const globals_1 = __webpack_require__(/*! ../../globals */ "./src/app/globals.ts");
 /**
- * @description The paddle component
+ * @description CarouselComponent is a component for a carousel
  * @export
- * @class PaddleComponent
+ * @class CarouselComponent
  * @extends {EzComponent}
- * @method movePaddleUp : Move the paddle up
- * @method movePaddleDown : Move the paddle down
- * @method getPaddleRect : Get the paddle rectangle
- * @method onKeyPress : Event handler for key press
+ * @property {number} position The position of the carousel
+ * @property {EventSubject<number>} positionChanged The position changed event subject
+ * @property {EventSubject<SearchResult>} onNextCard The next card event subject
+ * @property {EventSubject<SearchResult>} onPrevCard The previous card event subject
  */
-let PaddleComponent = (() => {
+let CarouselComponent = (() => {
     var _a;
     let _classSuper = webez_1.EzComponent;
     let _instanceExtraInitializers = [];
-    let __paddle_width_decorators;
-    let __paddle_width_initializers = [];
-    let __paddle_width_extraInitializers = [];
-    let __paddle_height_decorators;
-    let __paddle_height_initializers = [];
-    let __paddle_height_extraInitializers = [];
-    let __paddle_x_decorators;
-    let __paddle_x_initializers = [];
-    let __paddle_x_extraInitializers = [];
-    let __paddle_y_decorators;
-    let __paddle_y_initializers = [];
-    let __paddle_y_extraInitializers = [];
-    let __paddle_color_decorators;
-    let __paddle_color_initializers = [];
-    let __paddle_color_extraInitializers = [];
-    let _onKeyPress_decorators;
-    return _a = class PaddleComponent extends _classSuper {
-            get paddle_width() {
-                return parseInt(this._paddle_width);
-            }
-            set paddle_width(value) {
-                this._paddle_width = value.toString();
-            }
-            get paddle_height() {
-                return parseInt(this._paddle_height);
-            }
-            set paddle_height(value) {
-                this._paddle_height = value.toString();
-            }
-            get paddle_x() {
-                return parseInt(this._paddle_x);
-            }
-            set paddle_x(value) {
-                this._paddle_x = value.toString();
-            }
-            get paddle_y() {
-                return parseInt(this._paddle_y);
-            }
-            set paddle_y(value) {
-                this._paddle_y = value.toString();
-            }
+    let __showBox0_decorators;
+    let __showBox0_initializers = [];
+    let __showBox0_extraInitializers = [];
+    let __showBox1_decorators;
+    let __showBox1_initializers = [];
+    let __showBox1_extraInitializers = [];
+    let __showBox3_decorators;
+    let __showBox3_initializers = [];
+    let __showBox3_extraInitializers = [];
+    let __showBox4_decorators;
+    let __showBox4_initializers = [];
+    let __showBox4_extraInitializers = [];
+    let __showLeftArrow_decorators;
+    let __showLeftArrow_initializers = [];
+    let __showLeftArrow_extraInitializers = [];
+    let __showRightArrow_decorators;
+    let __showRightArrow_initializers = [];
+    let __showRightArrow_extraInitializers = [];
+    let _card0Animate_decorators;
+    let _card0Animate_initializers = [];
+    let _card0Animate_extraInitializers = [];
+    let _card1Animate_decorators;
+    let _card1Animate_initializers = [];
+    let _card1Animate_extraInitializers = [];
+    let _card2Animate_decorators;
+    let _card2Animate_initializers = [];
+    let _card2Animate_extraInitializers = [];
+    let _card3Animate_decorators;
+    let _card3Animate_initializers = [];
+    let _card3Animate_extraInitializers = [];
+    let _card4Animate_decorators;
+    let _card4Animate_initializers = [];
+    let _card4Animate_extraInitializers = [];
+    let _card0_decorators;
+    let _card0_initializers = [];
+    let _card0_extraInitializers = [];
+    let _card1_decorators;
+    let _card1_initializers = [];
+    let _card1_extraInitializers = [];
+    let _card2_decorators;
+    let _card2_initializers = [];
+    let _card2_extraInitializers = [];
+    let _card3_decorators;
+    let _card3_initializers = [];
+    let _card3_extraInitializers = [];
+    let _card4_decorators;
+    let _card4_initializers = [];
+    let _card4_extraInitializers = [];
+    let _moveRight_decorators;
+    let _moveLeft_decorators;
+    return _a = class CarouselComponent extends _classSuper {
             /**
-             * @description The maximum y coordinate of the paddle
-             * @private
-             * @type {number}
-             * @memberof PaddleComponent
+             * @description This is the constructor
+             * @constructor
+             * @param {number} _numElements The number of elements in the carousel
+             * @param {string[]} _cardHtmls The html for the cards
+             * @param {(itemNumber: number) => Promise<string[]>} requestCallback The request callback when the carousel needs more data.  should return a single string in an array that is the html of the card
+             * @throws {Error} Carousel must have 4 cards
              */
-            get maxY() {
-                return globals_1.Globals.BOARD_HEIGHT - this.paddle_height;
-            }
-            /**
-             * @description The constructor for the paddle component
-             * @memberof PaddleComponent
-             * @summary Initializes the paddle component
-             */
-            constructor() {
-                super(paddle_component_html_1.default, paddle_component_css_1.default);
+            constructor(_numElements, _cardHtmls = [], requestCallback = () => __awaiter(this, void 0, void 0, function* () {
+                return [];
+            })) {
+                super(carousel_component_html_1.default, carousel_component_css_1.default);
+                this._numElements = (__runInitializers(this, _instanceExtraInitializers), _numElements);
+                this._cardHtmls = _cardHtmls;
+                this.requestCallback = requestCallback;
                 /**
-                 * @description The width of the paddle
-                 * @private
-                 * @type {string}
-                 * @memberof PaddleComponent
-                 * @summary Binds to paddle style.width
+                 * @description Event fires when the position of the carousel has changed
+                 * @type {EventSubject<number>}
+                 * @memberof CarouselComponent
+                 * @emits number The new position
                  */
-                this._paddle_width = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, __paddle_width_initializers, globals_1.Globals.PADDLE_WIDTH.toString()));
+                this.positionChanged = new webez_1.EventSubject();
+                this.animationTime = globals_1.Globals.animationTime;
+                this._rotating = false;
                 /**
-                 * @description The height of the paddle
-                 * @private
-                 * @type {string}
-                 * @memberof PaddleComponent
-                 * @summary Binds to paddle style.height
+                 * @description Event that fires when the next card moves to the middle
+                 * @type {EventSubject<SearchResult>}
+                 * @memberof CarouselComponent
+                 * @emits SearchResult The next card
                  */
-                this._paddle_height = (__runInitializers(this, __paddle_width_extraInitializers), __runInitializers(this, __paddle_height_initializers, globals_1.Globals.PADDLE_HEIGHT.toString()));
+                this.onNextCard = new webez_1.EventSubject();
                 /**
-                 * @description The x coordinate of the paddle
-                 * @private
-                 * @type {string}
-                 * @memberof PaddleComponent
-                 * @summary Binds to paddle style.left
-                 * @summary Appends px to the value
+                 * @description Event that fires when the previous card moves to the middle
+                 * @type {EventSubject<SearchResult>}
+                 * @memberof CarouselComponent
+                 * @emits SearchResult The previous card
                  */
-                this._paddle_x = (__runInitializers(this, __paddle_height_extraInitializers), __runInitializers(this, __paddle_x_initializers, globals_1.Globals.PADDLE_INDENT.toString()));
-                /**
-                 * @description The y coordinate of the paddle
-                 * @private
-                 * @type {string}
-                 * @memberof PaddleComponent
-                 * @summary Binds to paddle style.top
-                 * @summary Appends px to the value
-                 */
-                this._paddle_y = (__runInitializers(this, __paddle_x_extraInitializers), __runInitializers(this, __paddle_y_initializers, "0"));
-                /**
-                 * @description The color of the paddle
-                 * @private
-                 * @type {string}
-                 * @memberof PaddleComponent
-                 * @summary Binds to paddle style.backgroundColor
-                 */
-                this._paddle_color = (__runInitializers(this, __paddle_y_extraInitializers), __runInitializers(this, __paddle_color_initializers, globals_1.Globals.PADDLE_COLOR));
-                /**
-                 * @description The speed of the paddle
-                 * @private
-                 * @type {number}
-                 * @memberof PaddleComponent
-                 */
-                this.paddle_speed = (__runInitializers(this, __paddle_color_extraInitializers), globals_1.Globals.PADDLE_SPEED);
-                this.paddle_y = (globals_1.Globals.BOARD_HEIGHT - this.paddle_height) / 2;
-            }
-            /**
-             * @description Move the paddle up
-             * @memberof PaddleComponent
-             */
-            movePaddleUp() {
-                this.paddle_y = Math.max(0, this.paddle_y - this.paddle_speed);
-            }
-            /**
-             * @description Move the paddle down
-             * @memberof PaddleComponent
-             */
-            movePaddleDown() {
-                this.paddle_y = Math.min(this.maxY, this.paddle_y + this.paddle_speed);
-            }
-            /**
-             * @description Get the paddle rectangle
-             * @returns {Rectangle}
-             * @memberof PaddleComponent
-             */
-            getPaddleRect() {
-                return {
-                    x: this.paddle_x,
-                    y: this.paddle_y,
-                    width: this.paddle_width,
-                    height: this.paddle_height,
-                };
-            }
-            /**
-             * @description Event handler for key press
-             * @param {KeyboardEvent} event
-             * @memberof PaddleComponent
-             * @summary Binds to the window keydown event
-             * @summary Moves the paddle up or down based on the key pressed
-             * @summary Moves the paddle up when the "a" key is pressed
-             * @summary Moves the paddle down when the "z" key is pressed
-             */
-            onKeyPress(event) {
-                if (event.key === "a") {
-                    this.movePaddleUp();
+                this.onPrevCard = new webez_1.EventSubject();
+                this._position = 1;
+                /*Bindings*/
+                this._showBox0 = __runInitializers(this, __showBox0_initializers, "inline-block");
+                this._showBox1 = (__runInitializers(this, __showBox0_extraInitializers), __runInitializers(this, __showBox1_initializers, "inline-block"));
+                this._showBox3 = (__runInitializers(this, __showBox1_extraInitializers), __runInitializers(this, __showBox3_initializers, "inline-block"));
+                this._showBox4 = (__runInitializers(this, __showBox3_extraInitializers), __runInitializers(this, __showBox4_initializers, "inline-block"));
+                this._showLeftArrow = (__runInitializers(this, __showBox4_extraInitializers), __runInitializers(this, __showLeftArrow_initializers, "none"));
+                this._showRightArrow = (__runInitializers(this, __showLeftArrow_extraInitializers), __runInitializers(this, __showRightArrow_initializers, "none"));
+                this.card0Animate = (__runInitializers(this, __showRightArrow_extraInitializers), __runInitializers(this, _card0Animate_initializers, ""));
+                this.card1Animate = (__runInitializers(this, _card0Animate_extraInitializers), __runInitializers(this, _card1Animate_initializers, ""));
+                this.card2Animate = (__runInitializers(this, _card1Animate_extraInitializers), __runInitializers(this, _card2Animate_initializers, ""));
+                this.card3Animate = (__runInitializers(this, _card2Animate_extraInitializers), __runInitializers(this, _card3Animate_initializers, ""));
+                this.card4Animate = (__runInitializers(this, _card3Animate_extraInitializers), __runInitializers(this, _card4Animate_initializers, ""));
+                this.card0 = (__runInitializers(this, _card4Animate_extraInitializers), __runInitializers(this, _card0_initializers, ""));
+                this.card1 = (__runInitializers(this, _card0_extraInitializers), __runInitializers(this, _card1_initializers, ""));
+                this.card2 = (__runInitializers(this, _card1_extraInitializers), __runInitializers(this, _card2_initializers, ""));
+                this.card3 = (__runInitializers(this, _card2_extraInitializers), __runInitializers(this, _card3_initializers, ""));
+                this.card4 = (__runInitializers(this, _card3_extraInitializers), __runInitializers(this, _card4_initializers, ""));
+                __runInitializers(this, _card4_extraInitializers);
+                this._numElements = _numElements;
+                this._cardHtmls = _cardHtmls;
+                this.requestCallback = requestCallback;
+                this.position = 1;
+                if (_cardHtmls.length != 4) {
+                    throw new Error("Carousel must have 4 cards");
                 }
-                else if (event.key === "z") {
-                    this.movePaddleDown();
+                this.card1 = _cardHtmls[0];
+                this.card2 = _cardHtmls[1];
+                this.card3 = _cardHtmls[2];
+                this.card4 = _cardHtmls[3];
+            }
+            /**
+             * @description The position of the carousel
+             * @type {number}
+             * @memberof CarouselComponent
+             */
+            get position() {
+                return this._position;
+            }
+            set position(value) {
+                this._position = value;
+                if (this._position === 0) {
+                    //disable left button
+                    this.showLeftArrow = false;
+                    this.showBox0 = false;
+                    this.showBox1 = false;
+                }
+                else if (this._position === 1) {
+                    this.showLeftArrow = true;
+                    this.showBox0 = false;
+                    this.showBox1 = true;
+                }
+                else {
+                    this.showLeftArrow = true;
+                    this.showBox0 = true;
+                    this.showBox1 = true;
+                }
+                if (this._position === this._numElements - 2) {
+                    this.showRightArrow = true;
+                    this.showBox4 = false;
+                    this.showBox3 = true;
+                }
+                else if (this._position === this._numElements - 1) {
+                    this.showRightArrow = false;
+                    this.showBox4 = false;
+                    this.showBox3 = false;
+                    //disable right button
+                }
+                else {
+                    this.showRightArrow = true;
+                    this.showBox3 = true;
+                    this.showBox4 = true;
+                }
+                this.positionChanged.next(this._position);
+            }
+            get showBox0() {
+                return this._showBox0 === "inline-block";
+            }
+            set showBox0(value) {
+                this._showBox0 = value ? "inline-block" : "none";
+            }
+            get showBox1() {
+                return this._showBox1 === "inline-block";
+            }
+            set showBox1(value) {
+                this._showBox1 = value ? "inline-block" : "none";
+            }
+            get showBox3() {
+                return this._showBox3 === "inline-block";
+            }
+            set showBox3(value) {
+                this._showBox3 = value ? "inline-block" : "none";
+            }
+            get showBox4() {
+                return this._showBox4 === "inline-block";
+            }
+            set showBox4(value) {
+                this._showBox4 = value ? "inline-block" : "none";
+            }
+            get showLeftArrow() {
+                return this._showLeftArrow === "block";
+            }
+            set showLeftArrow(value) {
+                this._showLeftArrow = value ? "block" : "none";
+            }
+            get showRightArrow() {
+                return this._showRightArrow === "block";
+            }
+            set showRightArrow(value) {
+                this._showRightArrow = value ? "block" : "none";
+            }
+            /*End Bindings*/
+            /**
+             * @description Animate the carousel
+             * @param {boolean} [backward=false] If true, animate backward
+             * @memberof CarouselComponent
+             * @private
+             * @returns {void}
+             */
+            animate(backward = false) {
+                const addString = backward ? "-back" : "";
+                this._rotating = true;
+                this.card0Animate = "";
+                this.card1Animate = "";
+                this.card2Animate = "";
+                this.card3Animate = "";
+                this.card4Animate = "";
+                setTimeout(() => {
+                    this.card0Animate = "animate-0" + addString;
+                    this.card1Animate = "animate-1" + addString;
+                    this.card2Animate = "animate-2" + addString;
+                    this.card3Animate = "animate-3" + addString;
+                    this.card4Animate = "animate-4" + addString;
+                }, 1);
+            }
+            /**
+             * @description Clear animations on the caorusel
+             * @memberof CarouselComponent
+             * @private
+             * @returns {void}
+             */
+            clearAnimations() {
+                this.card0Animate = "";
+                this.card1Animate = "";
+                this.card2Animate = "";
+                this.card3Animate = "";
+                this.card4Animate = "";
+                this._rotating = false;
+            }
+            /**
+             * @description Update the cards in the carousel after a click on one of the nav buttons
+             * @param {boolean} [backward=false] If true, update the cards backward
+             * @memberof CarouselComponent
+             * @private
+             * @returns {void}
+             */
+            updateCards() {
+                return __awaiter(this, arguments, void 0, function* (backward = false) {
+                    if (backward) {
+                        //largest deleted
+                        //smallest fetched
+                        this.card4 = this.card3;
+                        this.card3 = this.card2;
+                        this.card2 = this.card1;
+                        this.card1 = this.card0;
+                        this.card0 = this._cardHtmls[this.position - 2];
+                        //should be in the array already.
+                    }
+                    else {
+                        //smallest deleted
+                        //largest fetched
+                        this.card0 = this.card1;
+                        this.card1 = this.card2;
+                        this.card2 = this.card3;
+                        this.card3 = this.card4;
+                        let newCards = yield this.requestCallback(this.position + 3);
+                        if (newCards.length != 1) {
+                            throw new Error("Request callback must return exactly one card");
+                        }
+                        this.card4 = newCards[0];
+                        this._cardHtmls.push(this.card4);
+                    }
+                });
+            }
+            /**
+             * @description Move the carousel to the right
+             * @memberof CarouselComponent
+             * @private
+             * @returns {void}
+             */
+            moveRight() {
+                if (!this._rotating) {
+                    this.showLeftArrow = false;
+                    this.showRightArrow = false;
+                    this.animate();
+                    setTimeout(() => {
+                        this.position++;
+                        this.clearAnimations();
+                        this.updateCards();
+                    }, this.animationTime);
+                }
+            }
+            /**
+             * @description Move the carousel to the left
+             * @memberof CarouselComponent
+             * @private
+             * @returns {void}
+             */
+            moveLeft() {
+                if (!this._rotating) {
+                    this.showLeftArrow = false;
+                    this.showRightArrow = false;
+                    this.animate(true);
+                    setTimeout(() => {
+                        this.position--;
+                        this.clearAnimations();
+                        this.updateCards(true);
+                    }, this.animationTime);
                 }
             }
         },
         (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            __paddle_width_decorators = [(0, webez_1.BindStyle)("paddle", "width"), (0, webez_1.AppendPipe)("px")];
-            __paddle_height_decorators = [(0, webez_1.BindStyle)("paddle", "height"), (0, webez_1.AppendPipe)("px")];
-            __paddle_x_decorators = [(0, webez_1.BindStyle)("paddle", "left"), (0, webez_1.AppendPipe)("px")];
-            __paddle_y_decorators = [(0, webez_1.BindStyle)("paddle", "top"), (0, webez_1.AppendPipe)("px")];
-            __paddle_color_decorators = [(0, webez_1.BindStyle)("paddle", "backgroundColor")];
-            _onKeyPress_decorators = [(0, webez_1.WindowEvent)("keydown")];
-            __esDecorate(_a, null, _onKeyPress_decorators, { kind: "method", name: "onKeyPress", static: false, private: false, access: { has: obj => "onKeyPress" in obj, get: obj => obj.onKeyPress }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(null, null, __paddle_width_decorators, { kind: "field", name: "_paddle_width", static: false, private: false, access: { has: obj => "_paddle_width" in obj, get: obj => obj._paddle_width, set: (obj, value) => { obj._paddle_width = value; } }, metadata: _metadata }, __paddle_width_initializers, __paddle_width_extraInitializers);
-            __esDecorate(null, null, __paddle_height_decorators, { kind: "field", name: "_paddle_height", static: false, private: false, access: { has: obj => "_paddle_height" in obj, get: obj => obj._paddle_height, set: (obj, value) => { obj._paddle_height = value; } }, metadata: _metadata }, __paddle_height_initializers, __paddle_height_extraInitializers);
-            __esDecorate(null, null, __paddle_x_decorators, { kind: "field", name: "_paddle_x", static: false, private: false, access: { has: obj => "_paddle_x" in obj, get: obj => obj._paddle_x, set: (obj, value) => { obj._paddle_x = value; } }, metadata: _metadata }, __paddle_x_initializers, __paddle_x_extraInitializers);
-            __esDecorate(null, null, __paddle_y_decorators, { kind: "field", name: "_paddle_y", static: false, private: false, access: { has: obj => "_paddle_y" in obj, get: obj => obj._paddle_y, set: (obj, value) => { obj._paddle_y = value; } }, metadata: _metadata }, __paddle_y_initializers, __paddle_y_extraInitializers);
-            __esDecorate(null, null, __paddle_color_decorators, { kind: "field", name: "_paddle_color", static: false, private: false, access: { has: obj => "_paddle_color" in obj, get: obj => obj._paddle_color, set: (obj, value) => { obj._paddle_color = value; } }, metadata: _metadata }, __paddle_color_initializers, __paddle_color_extraInitializers);
+            __showBox0_decorators = [(0, webez_1.BindStyle)("card0item", "display")];
+            __showBox1_decorators = [(0, webez_1.BindStyle)("card1item", "display")];
+            __showBox3_decorators = [(0, webez_1.BindStyle)("card3item", "display")];
+            __showBox4_decorators = [(0, webez_1.BindStyle)("card4item", "display")];
+            __showLeftArrow_decorators = [(0, webez_1.BindStyle)("left", "display")];
+            __showRightArrow_decorators = [(0, webez_1.BindStyle)("right", "display")];
+            _card0Animate_decorators = [(0, webez_1.BindCSSClass)("card0")];
+            _card1Animate_decorators = [(0, webez_1.BindCSSClass)("card1")];
+            _card2Animate_decorators = [(0, webez_1.BindCSSClass)("card2")];
+            _card3Animate_decorators = [(0, webez_1.BindCSSClass)("card3")];
+            _card4Animate_decorators = [(0, webez_1.BindCSSClass)("card4")];
+            _card0_decorators = [(0, webez_1.BindInnerHTML)("card0item")];
+            _card1_decorators = [(0, webez_1.BindInnerHTML)("card1item")];
+            _card2_decorators = [(0, webez_1.BindInnerHTML)("card2item")];
+            _card3_decorators = [(0, webez_1.BindInnerHTML)("card3item")];
+            _card4_decorators = [(0, webez_1.BindInnerHTML)("card4item")];
+            _moveRight_decorators = [(0, webez_1.Click)("right")];
+            _moveLeft_decorators = [(0, webez_1.Click)("left")];
+            __esDecorate(_a, null, _moveRight_decorators, { kind: "method", name: "moveRight", static: false, private: false, access: { has: obj => "moveRight" in obj, get: obj => obj.moveRight }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(_a, null, _moveLeft_decorators, { kind: "method", name: "moveLeft", static: false, private: false, access: { has: obj => "moveLeft" in obj, get: obj => obj.moveLeft }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(null, null, __showBox0_decorators, { kind: "field", name: "_showBox0", static: false, private: false, access: { has: obj => "_showBox0" in obj, get: obj => obj._showBox0, set: (obj, value) => { obj._showBox0 = value; } }, metadata: _metadata }, __showBox0_initializers, __showBox0_extraInitializers);
+            __esDecorate(null, null, __showBox1_decorators, { kind: "field", name: "_showBox1", static: false, private: false, access: { has: obj => "_showBox1" in obj, get: obj => obj._showBox1, set: (obj, value) => { obj._showBox1 = value; } }, metadata: _metadata }, __showBox1_initializers, __showBox1_extraInitializers);
+            __esDecorate(null, null, __showBox3_decorators, { kind: "field", name: "_showBox3", static: false, private: false, access: { has: obj => "_showBox3" in obj, get: obj => obj._showBox3, set: (obj, value) => { obj._showBox3 = value; } }, metadata: _metadata }, __showBox3_initializers, __showBox3_extraInitializers);
+            __esDecorate(null, null, __showBox4_decorators, { kind: "field", name: "_showBox4", static: false, private: false, access: { has: obj => "_showBox4" in obj, get: obj => obj._showBox4, set: (obj, value) => { obj._showBox4 = value; } }, metadata: _metadata }, __showBox4_initializers, __showBox4_extraInitializers);
+            __esDecorate(null, null, __showLeftArrow_decorators, { kind: "field", name: "_showLeftArrow", static: false, private: false, access: { has: obj => "_showLeftArrow" in obj, get: obj => obj._showLeftArrow, set: (obj, value) => { obj._showLeftArrow = value; } }, metadata: _metadata }, __showLeftArrow_initializers, __showLeftArrow_extraInitializers);
+            __esDecorate(null, null, __showRightArrow_decorators, { kind: "field", name: "_showRightArrow", static: false, private: false, access: { has: obj => "_showRightArrow" in obj, get: obj => obj._showRightArrow, set: (obj, value) => { obj._showRightArrow = value; } }, metadata: _metadata }, __showRightArrow_initializers, __showRightArrow_extraInitializers);
+            __esDecorate(null, null, _card0Animate_decorators, { kind: "field", name: "card0Animate", static: false, private: false, access: { has: obj => "card0Animate" in obj, get: obj => obj.card0Animate, set: (obj, value) => { obj.card0Animate = value; } }, metadata: _metadata }, _card0Animate_initializers, _card0Animate_extraInitializers);
+            __esDecorate(null, null, _card1Animate_decorators, { kind: "field", name: "card1Animate", static: false, private: false, access: { has: obj => "card1Animate" in obj, get: obj => obj.card1Animate, set: (obj, value) => { obj.card1Animate = value; } }, metadata: _metadata }, _card1Animate_initializers, _card1Animate_extraInitializers);
+            __esDecorate(null, null, _card2Animate_decorators, { kind: "field", name: "card2Animate", static: false, private: false, access: { has: obj => "card2Animate" in obj, get: obj => obj.card2Animate, set: (obj, value) => { obj.card2Animate = value; } }, metadata: _metadata }, _card2Animate_initializers, _card2Animate_extraInitializers);
+            __esDecorate(null, null, _card3Animate_decorators, { kind: "field", name: "card3Animate", static: false, private: false, access: { has: obj => "card3Animate" in obj, get: obj => obj.card3Animate, set: (obj, value) => { obj.card3Animate = value; } }, metadata: _metadata }, _card3Animate_initializers, _card3Animate_extraInitializers);
+            __esDecorate(null, null, _card4Animate_decorators, { kind: "field", name: "card4Animate", static: false, private: false, access: { has: obj => "card4Animate" in obj, get: obj => obj.card4Animate, set: (obj, value) => { obj.card4Animate = value; } }, metadata: _metadata }, _card4Animate_initializers, _card4Animate_extraInitializers);
+            __esDecorate(null, null, _card0_decorators, { kind: "field", name: "card0", static: false, private: false, access: { has: obj => "card0" in obj, get: obj => obj.card0, set: (obj, value) => { obj.card0 = value; } }, metadata: _metadata }, _card0_initializers, _card0_extraInitializers);
+            __esDecorate(null, null, _card1_decorators, { kind: "field", name: "card1", static: false, private: false, access: { has: obj => "card1" in obj, get: obj => obj.card1, set: (obj, value) => { obj.card1 = value; } }, metadata: _metadata }, _card1_initializers, _card1_extraInitializers);
+            __esDecorate(null, null, _card2_decorators, { kind: "field", name: "card2", static: false, private: false, access: { has: obj => "card2" in obj, get: obj => obj.card2, set: (obj, value) => { obj.card2 = value; } }, metadata: _metadata }, _card2_initializers, _card2_extraInitializers);
+            __esDecorate(null, null, _card3_decorators, { kind: "field", name: "card3", static: false, private: false, access: { has: obj => "card3" in obj, get: obj => obj.card3, set: (obj, value) => { obj.card3 = value; } }, metadata: _metadata }, _card3_initializers, _card3_extraInitializers);
+            __esDecorate(null, null, _card4_decorators, { kind: "field", name: "card4", static: false, private: false, access: { has: obj => "card4" in obj, get: obj => obj.card4, set: (obj, value) => { obj.card4 = value; } }, metadata: _metadata }, _card4_initializers, _card4_extraInitializers);
             if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         })(),
         _a;
 })();
-exports.PaddleComponent = PaddleComponent;
+exports.CarouselComponent = CarouselComponent;
 
 
 /***/ })
