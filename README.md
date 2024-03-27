@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.3.13)
+# WebEZ - A simple web framework for Typescript (0.3.14)
 
 ## Getting Started
 
@@ -200,6 +200,21 @@ HTML File:
 ```
 TS File:
 @BindStyle('div3','backgroundColor') div3BgColor:string="red";
+```
+### @BindAttribute(id,attributeName)
+Unlike the other binders, this can be bound to either a string or a boolean.  If you bind to a string, it will set the value of the attribute.  If you bind to a boolean it will add or remove the attribute (for attributes like disabled that are active if they exist on the object, even if their value is undefined).
+```
+HTML File:
+<btn id="btn1">
+<img id="img1">
+```
+```
+TS File:
+@BindAttribute("btn1","disabled")
+disableBtn:boolean=false;
+
+@BindAttribute("img1","src")
+imgSrc:string="http://my.imagesrc.com/img1";
 ```
 ### @GenericEvent(id,event)
 This will connect any html event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
