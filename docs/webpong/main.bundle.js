@@ -154,7 +154,6 @@ class EzComponent {
      * @param {T} data The data to send in the request body (optional)
      * @returns {Promise<T>} A promise that resolves with the response data
      * @memberof EzComponent
-     * @static
      * @example myComponent.ajax("https://some.api.url.com/posts", HttpMethod.GET)
      *  .subscribe((data) => {
      *   console.log(data);
@@ -162,7 +161,7 @@ class EzComponent {
      *   console.error(error);
      * });
      */
-    static ajax(url, method, headers = [], data) {
+    ajax(url, method, headers = [], data) {
         const evt = new eventsubject_1.EventSubject();
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
@@ -172,6 +171,7 @@ class EzComponent {
                     xhr.setRequestHeader(key, header[key]);
             });
         }
+        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 evt.next(JSON.parse(xhr.responseText));
@@ -360,15 +360,6 @@ class EzDialog extends EzComponent_1.EzComponent {
             this.background.style.display = "none";
         }
     }
-    static clickPopupButton(buttonNumber) {
-        if (exports.popupDialog) {
-            const button = this.popupButtons.length > buttonNumber ?
-                this.popupButtons[buttonNumber]
-                : undefined;
-            if (button)
-                button.click();
-        }
-    }
     /**
      * @description Show a popup dialog
      * @static
@@ -411,7 +402,6 @@ class EzDialog extends EzComponent_1.EzComponent {
                     dialog.show(false);
                     dialog.closeEvent.next(button.value);
                 });
-                this.popupButtons.push(button);
                 buttonDiv.appendChild(button);
             }
         }
@@ -424,7 +414,6 @@ class EzDialog extends EzComponent_1.EzComponent {
     }
 }
 exports.EzDialog = EzDialog;
-EzDialog.popupButtons = [];
 
 
 /***/ }),
