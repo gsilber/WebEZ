@@ -363,6 +363,82 @@ export function BindValue(id: string) {
 }
 
 /**
+ * @description Decorator to bind any attribute of an element to a property
+ * @param id the element to bind the property to
+ * @param attribute the attribute to bind
+ * @note can be bound to both a boolean or a string property.  For a boolean, the value adds or removes the attribute (for things like disabled, checked, etc.).  If a string,the attribute is set to that value.
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will set the disabled attribute of the button with id myButton to the value of the disabled property
+ * @BindAttribute("myButton", "disabled")
+ * public disabled: boolean = false;
+ * @example
+ * //This will set the src attribute of the img with id myImg to the value of the src property
+ * @BindAttribute("myImg", "src")
+ * public src: string = "https://via.placeholder.com/150";
+ */
+export function BindAttribute(id: string, attribute: string) {
+    return function <This extends EzComponent, Value extends string | boolean>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey: keyof This = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+
+            const value = context.access.get(this);
+            let setfn: (value?: string) => void;
+            if (typeof value === "boolean") {
+                setfn = (value?: string) => {
+                    if (value) {
+                        element.setAttribute(attribute, value);
+                    } else {
+                        element.removeAttribute(attribute);
+                    }
+                };
+                setfn(value ? "true" : undefined);
+            } else {
+                setfn = (value?: string) => {
+                    if (value) element.setAttribute(attribute, value);
+                };
+                setfn(value.toString());
+            }
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, setfn);
+            } else {
+                if (typeof value === "boolean") {
+                    const privateKey: keyof This = getPrivateKey(context.name);
+                    Object.defineProperty(this, privateKey, {
+                        value,
+                        writable: true,
+                        enumerable: false,
+                        configurable: true,
+                    });
+                    Object.defineProperty(this, publicKey, {
+                        get(): boolean {
+                            return this[privateKey] as boolean;
+                        },
+                        set(value: boolean) {
+                            this[privateKey] = value;
+                            setfn(value ? "true" : undefined);
+                        },
+                        enumerable: true,
+                        configurable: true,
+                    });
+                } else {
+                    hookProperty(this, context.name, value.toString(), setfn);
+                }
+            }
+        });
+    };
+}
+
+/**
  * @description Decorator to transform the value of a property before it is set on the html element.
  * @param fn {PipeFunction} the function to transform the value
  * @returns DecoratorCallback

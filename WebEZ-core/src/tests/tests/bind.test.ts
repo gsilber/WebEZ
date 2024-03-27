@@ -139,6 +139,36 @@ describe("WebEZ-Bind", () => {
             expect(el1.style.color).toBe("red");
             expect(el2.style.color).toBe("red");
         });
+        test("Single Binders with BindAttribute", () => {
+            let el = toplevel["shadow"].getElementById(
+                "attribBtn1",
+            ) as HTMLButtonElement;
+            expect(toplevel.testAttrib1).toBe(false);
+            expect(el.disabled).toBe(false);
+            toplevel.testAttrib1 = true;
+            expect(toplevel.testAttrib1).toBe(true);
+            expect(el.disabled).toBe(true);
+        });
+        test("Stacked Binders with BindAttribute", () => {
+            let el1 = toplevel["shadow"].getElementById(
+                "attribImg1",
+            ) as HTMLImageElement;
+            let el2 = toplevel["shadow"].getElementById(
+                "attribDiv1",
+            ) as HTMLElement;
+            toplevel.testAttrib2 = "testing";
+            expect(toplevel.testAttrib2).toBe("testing");
+            expect(el1.src).toBe("http://localhost/testing");
+            expect(el2.innerHTML).toBe("testing");
+            toplevel.testAttrib2 = "testing2";
+            expect(toplevel.testAttrib2).toBe("testing2");
+            expect(el1.src).toBe("http://localhost/testing2");
+            expect(el2.innerHTML).toBe("testing2");
+            toplevel.testAttrib5 = false;
+            expect(toplevel.testAttrib5).toBe(false);
+            toplevel.testAttrib5 = true;
+            expect(toplevel.testAttrib5).toBe(true);
+        });
     });
 
     describe("Bind:Grandhild", () => {

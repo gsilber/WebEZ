@@ -1,6 +1,7 @@
 import { EzComponent } from "../../EzComponent";
 import {
     AppendPipe,
+    BindAttribute,
     BindCSSClass,
     BindInnerHTML,
     BindStyle,
@@ -48,6 +49,14 @@ const html = `<div id="child1"></div>
 <div id="styleDiv1"></div>
 <div id="styleDiv2"></div>
 <div id="styleDiv3"></div>
+<button id="attribBtn1"></button>
+<button id="attribBtn2"></button>
+<button id="attribBtn3"></button>
+<button id="attribBtn4"></button>
+<img id="attribImg1" />
+<img id="attribImg2" />
+<div id="attribDiv1"></div>
+<div id="attribDiv2"></div>
 `;
 const css = "";
 
@@ -104,6 +113,24 @@ export class TestComponent extends EzComponent {
 
     @BindCSSClass("bindDiv13")
     testcss2: string = "btn";
+
+    @BindAttribute("attribBtn1", "disabled")
+    testAttrib1: boolean = false;
+
+    @BindAttribute("attribBtn2", "disabled")
+    testAttrib3: boolean = true;
+
+    @BindAttribute("attribBtn4", "disabled")
+    @BindAttribute("attribBtn3", "disabled")
+    testAttrib5: boolean = true;
+
+    @BindAttribute("attribImg1", "src")
+    @BindInnerHTML("attribDiv1")
+    testAttrib2: string = "https://www.google.com";
+
+    @BindInnerHTML("attribDiv1")
+    @BindAttribute("attribImg1", "src")
+    testAttrib6: string = "https://www.google.com";
 
     timerTest1: number = 0;
     constructor() {
