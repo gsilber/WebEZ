@@ -1,11 +1,11 @@
 import {
     BindCSSClass,
-    CancelFunction,
     Click,
     EventSubject,
     EzComponent,
     EzDialog,
     Timer,
+    TimerCancelFunction,
 } from "@gsilber/webez";
 import html from "./tasks.component.html";
 import css from "./tasks.component.css";
@@ -196,7 +196,7 @@ export class TasksComponent extends EzComponent {
      * @private
      */
     @Timer(1000)
-    private counterfn(cancel: CancelFunction) {
+    private counterfn(cancel: TimerCancelFunction) {
         this.counter++;
         console.log(this.counter);
         if (this.counter >= 15) {

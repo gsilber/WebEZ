@@ -1,6 +1,6 @@
 import {
     BindCSSClass,
-    BindInnerHTML,
+    BindValue,
     Click,
     EventSubject,
     EzComponent,
@@ -26,7 +26,7 @@ export class TaskviewerComponent extends EzComponent {
     editing: EventSubject<void> = new EventSubject<void>();
     deleting: EventSubject<void> = new EventSubject<void>();
 
-    @BindInnerHTML("taskview")
+    @BindValue("taskview")
     private taskview: string = "";
     @BindCSSClass("edit") private editDisabled: string = "";
     @BindCSSClass("delete") private deleteDisabled: string = "";
