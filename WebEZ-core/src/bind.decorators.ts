@@ -71,12 +71,14 @@ function computePipe<This extends EzComponent>(
  * @param name the property to replace the setter for
  * @param value the initial value of the property
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
+ * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
  */
-function hookProperty<This extends EzComponent>(
+function hookProperty<This extends EzComponent, T extends string | boolean>(
     target: This,
     name: string | symbol,
-    value: string,
-    setter: (value: string) => void,
+    value: T,
+    setter: (value: T) => void,
+    callSetterFirst: boolean = false,
 ) {
     const publicKey: keyof This = getPublicKey(name);
     const privateKey: keyof This = getPrivateKey(name);
@@ -87,12 +89,13 @@ function hookProperty<This extends EzComponent>(
         configurable: true,
     });
     Object.defineProperty(target, publicKey, {
-        get(): string {
-            return this[privateKey] as string;
+        get(): T {
+            return this[privateKey] as T;
         },
-        set(value: string) {
+        set(value: T) {
+            if (callSetterFirst) setter(value);
             this[privateKey] = value;
-            setter(value);
+            if (!callSetterFirst) setter(value);
         },
         enumerable: true,
         configurable: true,
@@ -105,21 +108,27 @@ function hookProperty<This extends EzComponent>(
  * @param name the property to replace the setter and getter for
  * @param origDescriptor the original property descriptor
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
+ * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
  */
-function hookPropertySetter<This extends EzComponent>(
+function hookPropertySetter<
+    This extends EzComponent,
+    T extends string | boolean,
+>(
     target: This,
     name: string | symbol,
     origDescriptor: PropertyDescriptor,
-    setter: (value: string) => void,
+    setter: (value: T) => void,
+    callSetterFirst: boolean = false,
 ) {
     const publicKey: keyof This = getPublicKey(name);
     Object.defineProperty(target, publicKey, {
         get: origDescriptor.get, // Leave the get accessor as it was
-        set(value: string): void {
+        set(value: T): void {
+            if (callSetterFirst) setter(value);
             if (origDescriptor.set) {
                 origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
             }
-            setter(value);
+            if (!callSetterFirst) setter(value);
         },
         enumerable: origDescriptor.enumerable,
         configurable: origDescriptor.configurable,
@@ -130,6 +139,7 @@ function hookPropertySetter<This extends EzComponent>(
  * @param target the class to get the property descriptor from
  * @param key the property to get the descriptor for
  * @returns PropertyDescriptor
+ * @throws Error if the property descriptor is not found
  */
 function getPropertyDescriptor<This extends EzComponent>(
     target: This,
@@ -231,17 +241,29 @@ export function BindCSSClass(id: string) {
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 
-            const origValue = element.className;
             const value = context.access.get(this);
-            element.className = origValue + " " + value;
+
+            let valArray = value.split(" ").filter((v) => v.length > 0);
+            if (valArray.length > 0) element.classList.add(...value.split(" "));
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: string): void => {
-                        (element as any)["className"] = origValue + " " + value;
+                        let currentList = context.access
+                            .get(this)
+                            .split(" ")
+                            .filter((v) => v.length > 0);
+                        if (currentList.length > 0)
+                            element.classList.remove(...currentList);
+                        let newClasses = value
+                            .split(" ")
+                            .filter((v) => v.length > 0);
+                        if (newClasses.length > 0)
+                            element.classList.add(...newClasses);
                     },
+                    true,
                 );
             } else {
                 hookProperty(
@@ -249,14 +271,77 @@ export function BindCSSClass(id: string) {
                     context.name,
                     value,
                     (value: string): void => {
-                        (element as any)["className"] = origValue + " " + value;
+                        let currentList = context.access
+                            .get(this)
+                            .split(" ")
+                            .filter((v) => v.length > 0);
+                        if (currentList.length > 0)
+                            element.classList.remove(...currentList);
+                        let newClasses = value
+                            .split(" ")
+                            .filter((v) => v.length > 0);
+                        if (newClasses.length > 0)
+                            element.classList.add(...newClasses);
                     },
+                    true,
                 );
             }
         });
     };
 }
 
+/**
+ * @description Decorator to bind the cssClassName property if the boolean property is true
+ * @param id the element to bind the property to
+ * @param cssClassName the class name to add
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
+ * @BindCSSClassEnabled("myDiv", "myCSSClass")
+ * public enabled: boolean = true;
+ */
+export function BindCSSClassEnabled(id: string, cssClassName: string) {
+    return function <This extends EzComponent, Value extends boolean>(
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey: keyof This = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.classList.remove(cssClassName);
+            if (value) element.classList.add(cssClassName);
+            if (origDescriptor.set) {
+                hookPropertySetter(
+                    this,
+                    context.name,
+                    origDescriptor,
+                    (value: boolean): void => {
+                        element.classList.remove(cssClassName);
+                        if (value) element.classList.add(cssClassName);
+                    },
+                    true,
+                );
+            } else {
+                hookProperty(
+                    this,
+                    context.name,
+                    value,
+                    (value: boolean): void => {
+                        element.classList.remove(cssClassName);
+                        if (value) element.classList.add(cssClassName);
+                    },
+                    true,
+                );
+            }
+        });
+    };
+}
 /**
  * @description Decorator to bind the innerHtml property to an element.
  * @param id the element to bind the property to
@@ -392,47 +477,26 @@ export function BindAttribute(id: string, attribute: string) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 
             const value = context.access.get(this);
-            let setfn: (value?: string) => void;
+            let setfn: any;
             if (typeof value === "boolean") {
-                setfn = (value?: string) => {
+                setfn = (value: boolean) => {
                     if (value) {
-                        element.setAttribute(attribute, value);
+                        element.setAttribute(attribute, "true");
                     } else {
                         element.removeAttribute(attribute);
                     }
                 };
-                setfn(value ? "true" : undefined);
+                setfn(value);
             } else {
-                setfn = (value?: string) => {
-                    if (value) element.setAttribute(attribute, value);
+                setfn = (value: string) => {
+                    element.setAttribute(attribute, value);
                 };
-                setfn(value.toString());
+                setfn(value);
             }
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, setfn);
             } else {
-                if (typeof value === "boolean") {
-                    const privateKey: keyof This = getPrivateKey(context.name);
-                    Object.defineProperty(this, privateKey, {
-                        value,
-                        writable: true,
-                        enumerable: false,
-                        configurable: true,
-                    });
-                    Object.defineProperty(this, publicKey, {
-                        get(): boolean {
-                            return this[privateKey] as boolean;
-                        },
-                        set(value: boolean) {
-                            this[privateKey] = value;
-                            setfn(value ? "true" : undefined);
-                        },
-                        enumerable: true,
-                        configurable: true,
-                    });
-                } else {
-                    hookProperty(this, context.name, value.toString(), setfn);
-                }
+                hookProperty(this, context.name, value, setfn);
             }
         });
     };

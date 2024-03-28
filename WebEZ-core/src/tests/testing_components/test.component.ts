@@ -3,6 +3,8 @@ import {
     AppendPipe,
     BindAttribute,
     BindCSSClass,
+    BindCSSClassEnabled,
+    //BindCSSClassEnable,
     BindInnerHTML,
     BindStyle,
     BindValue,
@@ -46,6 +48,10 @@ const html = `<div id="child1"></div>
 <div id="bindDiv11"></div>
 <div id="bindDiv12"></div>
 <div id="bindDiv13"></div>
+<div id="bindDiv14"></div>
+<div id="bindDiv15"></div>
+<div id="bindDiv16"></div>
+<div id="bindDiv17" class="initial"></div>
 <div id="styleDiv1"></div>
 <div id="styleDiv2"></div>
 <div id="styleDiv3"></div>
@@ -113,6 +119,22 @@ export class TestComponent extends EzComponent {
 
     @BindCSSClass("bindDiv13")
     testcss2: string = "btn";
+
+    @BindCSSClassEnabled("bindDiv14", "title")
+    testcss3: boolean = true;
+
+    @BindCSSClassEnabled("bindDiv15", "title")
+    testcss4: boolean = false;
+
+    @BindCSSClassEnabled("bindDiv15", "title")
+    @BindCSSClassEnabled("bindDiv15", "header")
+    testcss5: boolean = false;
+
+    @BindCSSClassEnabled("bindDiv16", "title")
+    @BindCSSClassEnabled("bindDiv16", "header")
+    testcss6: boolean = true;
+    @BindCSSClassEnabled("bindDiv17", "title")
+    testcss7: boolean = false;
 
     @BindAttribute("attribBtn1", "disabled")
     testAttrib1: boolean = false;
