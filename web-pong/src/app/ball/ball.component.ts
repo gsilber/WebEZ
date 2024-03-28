@@ -1,9 +1,9 @@
 import {
     BindStyle,
-    AppendPipe,
     EzComponent,
     Timer,
     EventSubject,
+    BindStyleToNumberAppendPx,
 } from "@gsilber/webez";
 import html from "./ball.component.html";
 import css from "./ball.component.css";
@@ -29,15 +29,8 @@ export class BallComponent extends EzComponent {
      * @summary Binds to ball style.width
      * @summary Appends px to the value
      */
-    @BindStyle("ball", "width")
-    @AppendPipe("px")
-    private _ball_width: string = Globals.BALL_DIMENSION.toString();
-    private get ball_width(): number {
-        return parseInt(this._ball_width);
-    }
-    private set ball_width(value: number) {
-        this._ball_width = value.toString();
-    }
+    @BindStyleToNumberAppendPx("ball", "width")
+    public ball_width: number = Globals.BALL_DIMENSION;
 
     /**
      * @description The height of the ball
@@ -47,15 +40,8 @@ export class BallComponent extends EzComponent {
      * @summary Binds to ball style.height
      * @summary Appends px to the value
      */
-    @BindStyle("ball", "height")
-    @AppendPipe("px")
-    private _ball_height: string = Globals.BALL_DIMENSION.toString();
-    private get ball_height(): number {
-        return parseInt(this._ball_height);
-    }
-    private set ball_height(value: number) {
-        this._ball_height = value.toString();
-    }
+    @BindStyleToNumberAppendPx("ball", "height")
+    public ball_height: number = Globals.BALL_DIMENSION;
 
     /**
      * @description The x coordinate of the ball
@@ -65,18 +51,8 @@ export class BallComponent extends EzComponent {
      * @summary Binds to ball style.left
      * @summary Appends px to the value
      */
-    @BindStyle("ball", "left")
-    @AppendPipe("px")
-    private _ball_x: string = (
-        (Globals.BOARD_WIDTH - this.ball_width) /
-        2
-    ).toString();
-    private get ball_x(): number {
-        return parseInt(this._ball_x);
-    }
-    private set ball_x(value: number) {
-        this._ball_x = value.toString();
-    }
+    @BindStyleToNumberAppendPx("ball", "left")
+    public ball_x: number = (Globals.BOARD_WIDTH - this.ball_width) / 2;
 
     /**
      * @description The y coordinate of the ball
@@ -86,18 +62,8 @@ export class BallComponent extends EzComponent {
      * @summary Binds to ball style.top
      * @summary Appends px to the value
      */
-    @BindStyle("ball", "top")
-    @AppendPipe("px")
-    private _ball_y: string = (
-        (Globals.BOARD_HEIGHT - this.ball_height) /
-        2
-    ).toString();
-    private get ball_y(): number {
-        return parseInt(this._ball_y);
-    }
-    private set ball_y(value: number) {
-        this._ball_y = value.toString();
-    }
+    @BindStyleToNumberAppendPx("ball", "top")
+    public ball_y: number = (Globals.BOARD_HEIGHT - this.ball_height) / 2;
 
     /**
      * @description Whether the ball is currently running

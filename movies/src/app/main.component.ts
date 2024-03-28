@@ -1,12 +1,6 @@
 import html from "./main.component.html";
 import css from "./main.component.css";
-import {
-    AppendPipe,
-    BindInnerHTML,
-    BindStyle,
-    EzComponent,
-    PrependPipe,
-} from "@gsilber/webez";
+import { BindStyle, BindValue, EzComponent } from "@gsilber/webez";
 import { MovieDBService } from "./themoviedb/moviedb.service";
 import { CarouselComponent } from "./ui-elements/carousel/carousel.component";
 import { SearchResult } from "./themoviedb/models/search-results.model";
@@ -23,36 +17,35 @@ export class MainComponent extends EzComponent {
     private movies: SearchResult[] = [];
 
     /** Bindings for details */
-    @BindInnerHTML("movie-title")
+    @BindValue("movie-title")
     private movieTitle: string = "";
 
-    @BindInnerHTML("release-date")
+    @BindValue("release-date")
     private releaseDate: string = "";
 
-    @BindInnerHTML("genres")
+    @BindValue("genres")
     private genres: string = "";
 
-    @AppendPipe(" minutes")
-    @BindInnerHTML("runtime")
+    @BindValue("runtime", (value: string) => value + " minutes")
     private runtime: string = "";
 
-    @AppendPipe("'>Home Page</a>")
-    @PrependPipe("<a href='")
-    @BindInnerHTML("home-link")
+    @BindValue(
+        "home-link",
+        (value: string) => `<a href='${value}>'Home Page</a>`,
+    )
     private homePage: string = "";
 
-    @PrependPipe("<b>Overview:</b><br/> ")
-    @BindInnerHTML("overview")
+    @BindValue("overview", (value: string) => `<b>Overview:</b><br/> ${value}`)
     private overview: string = "";
 
-    @AppendPipe("'>IMDB Page</a>")
-    @PrependPipe("<a href='")
-    @BindInnerHTML("imdb-link")
+    @BindValue(
+        "imdb-link",
+        (value: string) => `<a href='${value}'>IMDB Page</a>`,
+    )
     private imdbLink: string = "";
 
     /**End bindings for details */
-    @BindStyle("content", "width")
-    @AppendPipe("px")
+    @BindStyle("content", "width", (value: string) => value.toString() + "px")
     private _carouselWidth: string = "100%";
     private get carouselWidth(): number {
         return parseInt(this._carouselWidth);
@@ -61,8 +54,7 @@ export class MainComponent extends EzComponent {
         this._carouselWidth = value.toString();
     }
 
-    @BindStyle("content", "height")
-    @AppendPipe("px")
+    @BindStyle("content", "height", (value: string) => value.toString() + "px")
     private _carouselHeight: string = "300";
     private get carouselHeight(): number {
         return parseInt(this._carouselHeight);

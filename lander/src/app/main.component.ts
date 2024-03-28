@@ -1,9 +1,8 @@
 import html from "./main.component.html";
 import css from "./main.component.css";
 import {
-    AppendPipe,
     BindCSSClass,
-    BindStyle,
+    BindStyleToNumberAppendPx,
     Click,
     EzComponent,
     EzDialog,
@@ -37,9 +36,8 @@ export class MainComponent extends EzComponent {
      * @summary Binds to the terrain component's height
      * @summary Appends "px" to the value
      */
-    @BindStyle("terrain", "height")
-    @AppendPipe("px")
-    private _terrainHeight: string = "150";
+    @BindStyleToNumberAppendPx("terrain", "height")
+    private _terrainHeight: number = 150;
 
     /**
      * @description The class of the start button (for disabling)
@@ -59,7 +57,7 @@ export class MainComponent extends EzComponent {
      */
     constructor() {
         super(html, css);
-        this.terrain = new TerrainComponent(parseInt(this._terrainHeight));
+        this.terrain = new TerrainComponent(this._terrainHeight);
         this.lander = new LanderComponent(this.terrain.terrainItems, this.hud);
         this.addComponent(this.terrain, "terrain");
         this.addComponent(this.lander, "content");

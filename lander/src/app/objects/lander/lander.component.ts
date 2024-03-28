@@ -1,11 +1,10 @@
 import html from "./lander.component.html";
 import css from "./lander.component.css";
 import {
-    AppendPipe,
     BindStyle,
+    BindStyleToNumberAppendPx,
     EventSubject,
     EzComponent,
-    Pipe,
     Timer,
     WindowEvent,
 } from "@gsilber/webez";
@@ -28,8 +27,11 @@ export class LanderComponent extends EzComponent {
      * @default "assets/lander.png"
      * @private
      */
-    @Pipe((value: string) => `url(${value}?v=${new Date().valueOf()})`)
-    @BindStyle("lander", "backgroundImage")
+    @BindStyle(
+        "lander",
+        "backgroundImage",
+        (value: string) => `url(${value}?v=${new Date().valueOf()})`,
+    )
     private _landerImg: string = "assets/lander.png";
 
     /** @description Various lander stats
@@ -53,9 +55,8 @@ export class LanderComponent extends EzComponent {
      * @private
      * @summary Binds to the lander's style.left
      */
-    @BindStyle("lander", "left")
-    @AppendPipe("px")
-    private _xPos: string = "0";
+    @BindStyleToNumberAppendPx("lander", "left")
+    private _xPos: number = 0;
 
     /**
      * @description The y position of the lander
@@ -64,9 +65,8 @@ export class LanderComponent extends EzComponent {
      * @private
      * @summary Binds to the lander's style.top
      */
-    @BindStyle("lander", "top")
-    @AppendPipe("px")
-    private _yPos: string = "0";
+    @BindStyleToNumberAppendPx("lander", "top")
+    private _yPos: number = 0;
 
     /**
      * @description The position of the lander
@@ -76,7 +76,7 @@ export class LanderComponent extends EzComponent {
      * @summary Gets the position of the lander in screen coordinates
      */
     private get position(): Position {
-        return { x: parseInt(this._xPos), y: parseInt(this._yPos) };
+        return { x: this._xPos, y: this._yPos };
     }
 
     /**
@@ -87,8 +87,8 @@ export class LanderComponent extends EzComponent {
      * @summary Sets the position of the lander in screen coordinates within the game div
      */
     private set position(value: Position) {
-        this._xPos = value.x.toString();
-        this._yPos = value.y.toString();
+        this._xPos = value.x;
+        this._yPos = value.y;
     }
 
     /**

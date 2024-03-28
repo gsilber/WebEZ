@@ -168,7 +168,8 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
 export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
     id: string,
     style: K,
-    transform: (value: Value) => CSSStyleDeclaration[K] = (value: Value) => value as CSSStyleDeclaration[K],
+    transform: (value: Value) => CSSStyleDeclaration[K] = (value: Value) =>
+        value as CSSStyleDeclaration[K],
 ): <This extends EzComponent>(
     target: undefined,
     context: ClassFieldDecoratorContext<This, Value>,
@@ -609,10 +610,10 @@ export function BindVisibleToBoolean<
  * @export
  * @example
  * //This will set the width of the div to the number in width
- * @BindstyleToNumberAppendPx("myDiv", "width")
+ * @BindStyleToNumberAppendPx("myDiv", "width")
  * public width: number = 100;
  */
-export function BindstyleToNumberAppendPx<
+export function BindStyleToNumberAppendPx<
     K extends keyof CSSStyleDeclaration,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     This extends EzComponent,

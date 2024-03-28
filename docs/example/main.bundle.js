@@ -438,7 +438,7 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BindstyleToNumberAppendPx = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.BindStyleToNumberAppendPx = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
@@ -752,13 +752,13 @@ exports.BindVisibleToBoolean = BindVisibleToBoolean;
  * @export
  * @example
  * //This will set the width of the div to the number in width
- * @BindstyleToNumberAppendPx("myDiv", "width")
+ * @BindStyleToNumberAppendPx("myDiv", "width")
  * public width: number = 100;
  */
-function BindstyleToNumberAppendPx(id, style) {
+function BindStyleToNumberAppendPx(id, style) {
     return BindStyle(id, style, (value) => `${value}px`);
 }
-exports.BindstyleToNumberAppendPx = BindstyleToNumberAppendPx;
+exports.BindStyleToNumberAppendPx = BindStyleToNumberAppendPx;
 
 
 /***/ }),

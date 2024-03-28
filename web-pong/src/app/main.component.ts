@@ -1,9 +1,8 @@
 import html from "./main.component.html";
 import css from "./main.component.css";
 import {
-    AppendPipe,
-    BindInnerHTML,
-    BindStyle,
+    BindValue,
+    BindStyleToNumberAppendPx,
     Click,
     EzComponent,
     EzDialog,
@@ -31,9 +30,8 @@ export class MainComponent extends EzComponent {
      * @memberof MainComponent
      * @summary Binds to game-board style.width
      */
-    @BindStyle("game-board", "width")
-    @AppendPipe("px")
-    private boardWidth: string = Globals.BOARD_WIDTH.toString();
+    @BindStyleToNumberAppendPx("game-board", "width")
+    private boardWidth: number = Globals.BOARD_WIDTH;
 
     /**
      * @description The height of the game board
@@ -42,9 +40,8 @@ export class MainComponent extends EzComponent {
      * @memberof MainComponent
      * @summary Binds to game-board style.height
      */
-    @BindStyle("game-board", "height")
-    @AppendPipe("px")
-    private boardHeight: string = Globals.BOARD_HEIGHT.toString();
+    @BindStyleToNumberAppendPx("ball", "width")
+    private boardHeight: number = Globals.BOARD_HEIGHT;
 
     /**
      * @description The paddle component
@@ -86,7 +83,7 @@ export class MainComponent extends EzComponent {
      * @memberof MainComponent
      * @summary Binds to timer innerHTML
      */
-    @BindInnerHTML("timer")
+    @BindValue("timer")
     private time: string = "00:00";
 
     /**

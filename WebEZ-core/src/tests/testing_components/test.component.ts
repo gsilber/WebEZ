@@ -4,8 +4,8 @@ import {
     BindCSSClass,
     BindCSSClassToBoolean,
     BindStyle,
+    BindStyleToNumberAppendPx,
     BindValue,
-    BindstyleToNumberAppendPx,
 } from "../../bind.decorators";
 import {
     Click,
@@ -96,7 +96,7 @@ export class TestComponent extends EzComponent {
     @BindStyle("styleDiv1", "color")
     testStyle1: string = "red";
 
-    @BindstyleToNumberAppendPx("styleDiv4", "width")
+    @BindStyleToNumberAppendPx("styleDiv4", "width")
     testStyle4: number = 100;
 
     @BindStyle("styleDiv2", "color")

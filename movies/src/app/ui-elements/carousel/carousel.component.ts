@@ -1,7 +1,7 @@
 import {
     BindCSSClass,
-    BindInnerHTML,
     BindStyle,
+    BindValue,
     Click,
     EventSubject,
     EzComponent,
@@ -179,15 +179,15 @@ export class CarouselComponent extends EzComponent {
     private card3Animate: string = "";
     @BindCSSClass("card4")
     private card4Animate: string = "";
-    @BindInnerHTML("card0item")
+    @BindValue("card0item")
     private card0 = "";
-    @BindInnerHTML("card1item")
+    @BindValue("card1item")
     private card1 = "";
-    @BindInnerHTML("card2item")
+    @BindValue("card2item")
     private card2 = "";
-    @BindInnerHTML("card3item")
+    @BindValue("card3item")
     private card3 = "";
-    @BindInnerHTML("card4item")
+    @BindValue("card4item")
     private card4 = "";
     /*End Bindings*/
 

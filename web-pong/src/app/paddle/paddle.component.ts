@@ -1,6 +1,6 @@
 import {
-    AppendPipe,
     BindStyle,
+    BindStyleToNumberAppendPx,
     EzComponent,
     WindowEvent,
 } from "@gsilber/webez";
@@ -27,15 +27,8 @@ export class PaddleComponent extends EzComponent {
      * @memberof PaddleComponent
      * @summary Binds to paddle style.width
      */
-    @BindStyle("paddle", "width")
-    @AppendPipe("px")
-    private _paddle_width: string = Globals.PADDLE_WIDTH.toString();
-    get paddle_width(): number {
-        return parseInt(this._paddle_width);
-    }
-    set paddle_width(value: number) {
-        this._paddle_width = value.toString();
-    }
+    @BindStyleToNumberAppendPx("paddle", "width")
+    paddle_width: number = Globals.PADDLE_WIDTH;
 
     /**
      * @description The height of the paddle
@@ -44,15 +37,8 @@ export class PaddleComponent extends EzComponent {
      * @memberof PaddleComponent
      * @summary Binds to paddle style.height
      */
-    @BindStyle("paddle", "height")
-    @AppendPipe("px")
-    private _paddle_height: string = Globals.PADDLE_HEIGHT.toString();
-    private get paddle_height(): number {
-        return parseInt(this._paddle_height);
-    }
-    private set paddle_height(value: number) {
-        this._paddle_height = value.toString();
-    }
+    @BindStyleToNumberAppendPx("paddle", "height")
+    paddle_height: number = Globals.PADDLE_HEIGHT;
 
     /**
      * @description The x coordinate of the paddle
@@ -62,15 +48,8 @@ export class PaddleComponent extends EzComponent {
      * @summary Binds to paddle style.left
      * @summary Appends px to the value
      */
-    @BindStyle("paddle", "left")
-    @AppendPipe("px")
-    private _paddle_x: string = Globals.PADDLE_INDENT.toString();
-    get paddle_x(): number {
-        return parseInt(this._paddle_x);
-    }
-    set paddle_x(value: number) {
-        this._paddle_x = value.toString();
-    }
+    @BindStyleToNumberAppendPx("paddle", "left")
+    paddle_x: number = Globals.PADDLE_INDENT;
 
     /**
      * @description The y coordinate of the paddle
@@ -80,15 +59,8 @@ export class PaddleComponent extends EzComponent {
      * @summary Binds to paddle style.top
      * @summary Appends px to the value
      */
-    @BindStyle("paddle", "top")
-    @AppendPipe("px")
-    private _paddle_y: string = "0";
-    private get paddle_y(): number {
-        return parseInt(this._paddle_y);
-    }
-    private set paddle_y(value: number) {
-        this._paddle_y = value.toString();
-    }
+    @BindStyleToNumberAppendPx("paddle", "top")
+    paddle_y: number = 0;
 
     /**
      * @description The color of the paddle

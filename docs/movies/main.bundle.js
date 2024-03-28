@@ -438,7 +438,7 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ReplacePipe = exports.PrependPipe = exports.AppendPipe = exports.Pipe = exports.BindAttribute = exports.BindValue = exports.BindInnerHTML = exports.BindCSSClassEnabled = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.BindStyleToNumberAppendPx = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
@@ -454,28 +454,6 @@ function getPublicKey(name) {
  */
 function getPrivateKey(name) {
     return `__${String(name)}`;
-}
-/**
- * @description Gets the pipe key of the field name
- * @param name the name of the field
- * @returns the pipe key
- */
-function getPipeKey(name) {
-    return `__${String(name)}_pipe`;
-}
-/**
- * @description computes a piped value
- * @param target the class to decorate
- * @param name the name of the field
- * @returns The field with the pipe applied if it has not already been applied
- */
-function computePipe(target, name, value) {
-    const pipeKey = getPipeKey(name);
-    let newValue = value;
-    if (target[pipeKey]) {
-        newValue = target[pipeKey](newValue);
-    }
-    return newValue;
 }
 /**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
@@ -550,18 +528,8 @@ function getPropertyDescriptor(target, key) {
     }
     return origDescriptor;
 }
-/**
- * @description Decorator to bind a specific style to an element
- * @param id the element to bind the property to
- * @param style the style to bind (i.e. background-color, left, top, etc.)
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will set the background color of the div with id myDiv to the value in backgroundColor
- * @BindStyle("myDiv", "backgroundColor")
- * public backgroundColor: string = "red";
- */
-function BindStyle(id, style) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindStyle(id, style, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -572,32 +540,23 @@ function BindStyle(id, style) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = computePipe(this, context.name, value);
+            element.style[style] = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element.style[style] = computePipe(this, context.name, value);
+                    element.style[style] = transform(value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element.style[style] = computePipe(this, context.name, value);
+                    element.style[style] = transform(value);
                 });
             }
         });
     };
 }
 exports.BindStyle = BindStyle;
-/**
- * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
- * @param id the element to bind the property to
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will set the CSS class of the div with id myDiv to the value in cssClass
- * @BindCSSClass("myDiv")
- * public cssClass: string = "myCSSClass";
- */
-function BindCSSClass(id) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindCSSClass(id, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -607,18 +566,19 @@ function BindCSSClass(id) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            let valArray = value.split(" ").filter((v) => v.length > 0);
+            let valArray = transform(value)
+                .split(" ")
+                .filter((v) => v.length > 0);
             if (valArray.length > 0)
-                element.classList.add(...value.split(" "));
+                element.classList.add(...valArray);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    let currentList = context.access
-                        .get(this)
+                    let currentList = transform(context.access.get(this))
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (currentList.length > 0)
                         element.classList.remove(...currentList);
-                    let newClasses = value
+                    let newClasses = transform(value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -627,13 +587,12 @@ function BindCSSClass(id) {
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    let currentList = context.access
-                        .get(this)
+                    let currentList = transform(context.access.get(this))
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (currentList.length > 0)
                         element.classList.remove(...currentList);
-                    let newClasses = value
+                    let newClasses = transform(value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -644,7 +603,8 @@ function BindCSSClass(id) {
     };
 }
 exports.BindCSSClass = BindCSSClass;
-function BindCSSClassEnabled(id, cssClassName) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindValue(id, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -654,117 +614,64 @@ function BindCSSClassEnabled(id, cssClassName) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            element.classList.remove(cssClassName);
-            if (value)
-                element.classList.add(cssClassName);
+            if (element instanceof HTMLInputElement)
+                element.value = transform(value);
+            else if (element instanceof HTMLTextAreaElement)
+                element.value = transform(value);
+            else if (element instanceof HTMLSelectElement)
+                element.value = transform(value);
+            else if (element instanceof HTMLOptionElement) {
+                element.value = transform(value);
+                element.text = transform(value);
+            }
+            else
+                element.innerHTML = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element.classList.remove(cssClassName);
-                    if (value)
-                        element.classList.add(cssClassName);
-                }, true);
-            }
-            else {
-                hookProperty(this, context.name, value, (value) => {
-                    element.classList.remove(cssClassName);
-                    if (value)
-                        element.classList.add(cssClassName);
-                }, true);
-            }
-        });
-    };
-}
-exports.BindCSSClassEnabled = BindCSSClassEnabled;
-/**
- * @description Decorator to bind the innerHtml property to an element.
- * @param id the element to bind the property to
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will display Hello World in the div with id myDiv
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello World";
- */
-function BindInnerHTML(id) {
-    return function (_target, context) {
-        context.addInitializer(function () {
-            const element = this["shadow"].getElementById(id);
-            if (!element) {
-                throw new Error(`can not find HTML element with id: ${id}`);
-            }
-            const publicKey = getPublicKey(context.name);
-            const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const value = context.access.get(this);
-            element.innerHTML = computePipe(this, context.name, value);
-            if (origDescriptor.set) {
-                hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element["innerHTML"] = computePipe(this, context.name, value);
+                    if (element instanceof HTMLInputElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLTextAreaElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLSelectElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLOptionElement) {
+                        element.value =
+                            transform(value);
+                        element.text = transform(value);
+                    }
+                    else
+                        element.innerHTML = transform(value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element["innerHTML"] = computePipe(this, context.name, value);
-                });
-            }
-        });
-    };
-}
-exports.BindInnerHTML = BindInnerHTML;
-/**
- * @description Decorator to bind the Value property to an element.  Should be input elements
- * @param id the element to bind the property to
- * @returns DecoratorCallback
- * @note This decorator should be last in the list of decorators for a property and can only appear once.
- * @export
- * @example
- * //This will bind the value of the input element with id myInput to the value property of the class
- * @BindValue("myInput")
- * public value: string = "Hello";
- */
-function BindValue(id) {
-    return function (target, context) {
-        context.addInitializer(function () {
-            const element = this["shadow"].getElementById(id);
-            if (!element) {
-                throw new Error(`can not find HTML element with id: ${id}`);
-            }
-            const publicKey = getPublicKey(context.name);
-            const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const value = context.access.get(this);
-            element.value = value;
-            //hook both getter and setter to value
-            if (origDescriptor.set) {
-                throw new Error("Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.");
-            }
-            else {
-                hookProperty(this, context.name, value, (value) => {
-                    element["value"] = value;
-                });
-                element.addEventListener("input", () => {
-                    this[publicKey] = element.value;
+                    if (element instanceof HTMLInputElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLTextAreaElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLSelectElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLOptionElement) {
+                        element.value =
+                            transform(value);
+                        element.text = transform(value);
+                    }
+                    else
+                        element.innerHTML = transform(value);
                 });
             }
         });
     };
 }
 exports.BindValue = BindValue;
-/**
- * @description Decorator to bind any attribute of an element to a property
- * @param id the element to bind the property to
- * @param attribute the attribute to bind
- * @note can be bound to both a boolean or a string property.  For a boolean, the value adds or removes the attribute (for things like disabled, checked, etc.).  If a string,the attribute is set to that value.
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will set the disabled attribute of the button with id myButton to the value of the disabled property
- * @BindAttribute("myButton", "disabled")
- * public disabled: boolean = false;
- * @example
- * //This will set the src attribute of the img with id myImg to the value of the src property
- * @BindAttribute("myImg", "src")
- * public src: string = "https://via.placeholder.com/150";
- */
-function BindAttribute(id, attribute) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindAttribute(id, attribute, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -775,23 +682,13 @@ function BindAttribute(id, attribute) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             let setfn;
-            if (typeof value === "boolean") {
-                setfn = (value) => {
-                    if (value) {
-                        element.setAttribute(attribute, "true");
-                    }
-                    else {
-                        element.removeAttribute(attribute);
-                    }
-                };
-                setfn(value);
-            }
-            else {
-                setfn = (value) => {
-                    element.setAttribute(attribute, value);
-                };
-                setfn(value);
-            }
+            setfn = (value) => {
+                if (transform(value) !== "")
+                    element.setAttribute(attribute, transform(value));
+                else
+                    element.removeAttribute(attribute);
+            };
+            setfn(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, setfn);
             }
@@ -802,84 +699,66 @@ function BindAttribute(id, attribute) {
     };
 }
 exports.BindAttribute = BindAttribute;
+// Wrapper methods for specific operations
 /**
- * @description Decorator to transform the value of a property before it is set on the html element.
- * @param fn {PipeFunction} the function to transform the value
- * @returns DecoratorCallback
- * @example
- * //This will display Hello World in the div with id myDiv
- * @Pipe((v: string) => v + " World")
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello";
- * @export
- */
-function Pipe(fn) {
-    return function (target, context) {
-        context.addInitializer(function () {
-            const privateKey = getPipeKey(context.name);
-            //get method descriptor for publicKey in This
-            if (this[privateKey]) {
-                //overwrite it and call the original first
-                const origMethod = this[privateKey];
-                this[privateKey] = (value) => {
-                    return fn(origMethod(value));
-                };
-                context.access.set(this, context.access.get(this));
-            }
-            else {
-                this[privateKey] = fn;
-                context.access.set(this, context.access.get(this));
-            }
-        });
-    };
-}
-exports.Pipe = Pipe;
-/**
- * @description Decorator to append to the value of a property before it is set on the html element.
- * @param val string to append
+ * @description Decorator to bind the cssClassName property if the boolean property is true
+ * @param id the element to bind the property to
+ * @param cssClassName the class name to add
  * @returns DecoratorCallback
  * @export
  * @example
- * //This will display Hello World in the div with id myDiv
- * @AppendPipe(" World")
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello";
+ * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
+ * @BindCSSClassToBoolean("myDiv", "myCSSClass")
+ * public enabled: boolean = true;
  */
-function AppendPipe(val) {
-    return Pipe((v) => v + val);
+function BindCSSClassToBoolean(id, cssClassName) {
+    return BindCSSClass(id, (value) => (value ? cssClassName : ""));
 }
-exports.AppendPipe = AppendPipe;
+exports.BindCSSClassToBoolean = BindCSSClassToBoolean;
 /**
- * @description Decorator to prepend the value of a property before it is set on the html element.
- * @param val The string to prepend
+ * @description Decorator to bind the disabled attribute of an element to a boolean
+ * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
  * @example
- * //This will display Hello World in the div with id myDiv
- * @PrependPipe("Hello ")
- * @BindInnerHTML("myDiv")
- * public hello: string = "World";
+ * //This will disable the button with id myButton if the disabled property is true
+ * @BindDisabledToBoolean("myButton")
+ * public disabled: boolean = true;
  */
-function PrependPipe(val) {
-    return Pipe((v) => val + v);
+function BindDisabledToBoolean(id) {
+    return BindAttribute(id, "disabled", (value) => value ? "disabled" : "");
 }
-exports.PrependPipe = PrependPipe;
+exports.BindDisabledToBoolean = BindDisabledToBoolean;
 /**
- * @description Decorator to replace the value of a property before it is set on the html element.
- * @param search {string | RegExp} The string to replace
- * @param  replaceWith The string to replace in the current string
+ * @description Decorator to bind the visibility of an element to a boolean
+ * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
  * @example
- * //This will display Hello World in the div with id myDiv
- * @ReplacePipe("planet", "World")
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello planet";
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindCheckedToBoolean("myCheckbox")
+ * public checked: boolean = true;
  */
-function ReplacePipe(search, replaceWith) {
-    return Pipe((v) => v.replace(search, replaceWith));
+function BindVisibleToBoolean(id) {
+    return BindStyle(id, "display", (value) => value ? "block" : "none");
 }
-exports.ReplacePipe = ReplacePipe;
+exports.BindVisibleToBoolean = BindVisibleToBoolean;
+/**
+ * @description Decorator to bind a specific style to a number, and append a 'px' to the value
+ * @param id the element to bind the property to
+ * @param a value that the transformer will turn into a string that will be set as the style
+ * @returns DecoratorCallback
+ * @overload
+ * @export
+ * @example
+ * //This will set the width of the div to the number in width
+ * @BindStyleToNumberAppendPx("myDiv", "width")
+ * public width: number = 100;
+ */
+function BindStyleToNumberAppendPx(id, style) {
+    return BindStyle(id, style, (value) => `${value}px`);
+}
+exports.BindStyleToNumberAppendPx = BindStyleToNumberAppendPx;
 
 
 /***/ }),
@@ -1966,15 +1845,15 @@ let MainComponent = (() => {
         (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            _movieTitle_decorators = [(0, webez_1.BindInnerHTML)("movie-title")];
-            _releaseDate_decorators = [(0, webez_1.BindInnerHTML)("release-date")];
-            _genres_decorators = [(0, webez_1.BindInnerHTML)("genres")];
-            _runtime_decorators = [(0, webez_1.AppendPipe)(" minutes"), (0, webez_1.BindInnerHTML)("runtime")];
-            _homePage_decorators = [(0, webez_1.AppendPipe)("'>Home Page</a>"), (0, webez_1.PrependPipe)("<a href='"), (0, webez_1.BindInnerHTML)("home-link")];
-            _overview_decorators = [(0, webez_1.PrependPipe)("<b>Overview:</b><br/> "), (0, webez_1.BindInnerHTML)("overview")];
-            _imdbLink_decorators = [(0, webez_1.AppendPipe)("'>IMDB Page</a>"), (0, webez_1.PrependPipe)("<a href='"), (0, webez_1.BindInnerHTML)("imdb-link")];
-            __carouselWidth_decorators = [(0, webez_1.BindStyle)("content", "width"), (0, webez_1.AppendPipe)("px")];
-            __carouselHeight_decorators = [(0, webez_1.BindStyle)("content", "height"), (0, webez_1.AppendPipe)("px")];
+            _movieTitle_decorators = [(0, webez_1.BindValue)("movie-title")];
+            _releaseDate_decorators = [(0, webez_1.BindValue)("release-date")];
+            _genres_decorators = [(0, webez_1.BindValue)("genres")];
+            _runtime_decorators = [(0, webez_1.BindValue)("runtime", (value) => value + " minutes")];
+            _homePage_decorators = [(0, webez_1.BindValue)("home-link", (value) => `<a href='${value}>'Home Page</a>`)];
+            _overview_decorators = [(0, webez_1.BindValue)("overview", (value) => `<b>Overview:</b><br/> ${value}`)];
+            _imdbLink_decorators = [(0, webez_1.BindValue)("imdb-link", (value) => `<a href='${value}'>IMDB Page</a>`)];
+            __carouselWidth_decorators = [(0, webez_1.BindStyle)("content", "width", (value) => value.toString() + "px")];
+            __carouselHeight_decorators = [(0, webez_1.BindStyle)("content", "height", (value) => value.toString() + "px")];
             __esDecorate(null, null, _movieTitle_decorators, { kind: "field", name: "movieTitle", static: false, private: false, access: { has: obj => "movieTitle" in obj, get: obj => obj.movieTitle, set: (obj, value) => { obj.movieTitle = value; } }, metadata: _metadata }, _movieTitle_initializers, _movieTitle_extraInitializers);
             __esDecorate(null, null, _releaseDate_decorators, { kind: "field", name: "releaseDate", static: false, private: false, access: { has: obj => "releaseDate" in obj, get: obj => obj.releaseDate, set: (obj, value) => { obj.releaseDate = value; } }, metadata: _metadata }, _releaseDate_initializers, _releaseDate_extraInitializers);
             __esDecorate(null, null, _genres_decorators, { kind: "field", name: "genres", static: false, private: false, access: { has: obj => "genres" in obj, get: obj => obj.genres, set: (obj, value) => { obj.genres = value; } }, metadata: _metadata }, _genres_initializers, _genres_extraInitializers);
@@ -2628,11 +2507,11 @@ let CarouselComponent = (() => {
             _card2Animate_decorators = [(0, webez_1.BindCSSClass)("card2")];
             _card3Animate_decorators = [(0, webez_1.BindCSSClass)("card3")];
             _card4Animate_decorators = [(0, webez_1.BindCSSClass)("card4")];
-            _card0_decorators = [(0, webez_1.BindInnerHTML)("card0item")];
-            _card1_decorators = [(0, webez_1.BindInnerHTML)("card1item")];
-            _card2_decorators = [(0, webez_1.BindInnerHTML)("card2item")];
-            _card3_decorators = [(0, webez_1.BindInnerHTML)("card3item")];
-            _card4_decorators = [(0, webez_1.BindInnerHTML)("card4item")];
+            _card0_decorators = [(0, webez_1.BindValue)("card0item")];
+            _card1_decorators = [(0, webez_1.BindValue)("card1item")];
+            _card2_decorators = [(0, webez_1.BindValue)("card2item")];
+            _card3_decorators = [(0, webez_1.BindValue)("card3item")];
+            _card4_decorators = [(0, webez_1.BindValue)("card4item")];
             _moveRight_decorators = [(0, webez_1.Click)("right")];
             _moveLeft_decorators = [(0, webez_1.Click)("left")];
             __esDecorate(_a, null, _moveRight_decorators, { kind: "method", name: "moveRight", static: false, private: false, access: { has: obj => "moveRight" in obj, get: obj => obj.moveRight }, metadata: _metadata }, null, _instanceExtraInitializers);

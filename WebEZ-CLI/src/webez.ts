@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const version: string = '0.4.0';
+const version: string = '0.4.1';
 
 import fs from "fs";
 import path from "path";

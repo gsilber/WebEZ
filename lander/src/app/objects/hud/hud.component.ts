@@ -1,8 +1,7 @@
 import {
-    AppendPipe,
     BindCSSClass,
-    BindInnerHTML,
     BindStyle,
+    BindValue,
     EzComponent,
 } from "@gsilber/webez";
 import html from "./hud.component.html";
@@ -47,8 +46,7 @@ export class HudComponent extends EzComponent {
      * @summary Binds to the deltaX element innerHTML
      * @summary Appends " m/s" to the value
      */
-    @BindInnerHTML("deltax")
-    @AppendPipe(" m/s")
+    @BindValue("deltax", (value: string) => value + " m/s")
     private _horizDeltaV: string = "0";
 
     /**
@@ -59,8 +57,7 @@ export class HudComponent extends EzComponent {
      * @summary Binds to the deltaY element innerHTML
      * @summary Appends " m/s" to the value
      */
-    @AppendPipe(" m/s")
-    @BindInnerHTML("deltay")
+    @BindValue("deltay", (value: string) => value + " m/s")
     private _vertDeltaV: string = "0";
 
     /**
@@ -149,8 +146,7 @@ export class HudComponent extends EzComponent {
      * @summary Binds to the altitude above mean sea level element innerHTML
      * @summary Appends " m" to the value
      */
-    @BindInnerHTML("altitudemsl")
-    @AppendPipe(" m")
+    @BindValue("altitudemsl", (value: string) => value + " m")
     private _altMSL: string = "0";
 
     /**
@@ -170,8 +166,7 @@ export class HudComponent extends EzComponent {
      * @summary Binds to the altitude above terrain element innerHTML
      * @summary Appends " m" to the value
      */
-    @BindInnerHTML("altitudeterrain")
-    @AppendPipe(" m")
+    @BindValue("altitudeterrain", (value: string) => value + " m")
     private _altTerain: string = "0";
 
     /**
@@ -201,8 +196,7 @@ export class HudComponent extends EzComponent {
      * @summary Binds to the fuel element innerHTML
      * @summary Appends " lbs" to the value
      */
-    @BindInnerHTML("fuel")
-    @AppendPipe(" lbs")
+    @BindValue("fuel", (value: string) => value + " lbs")
     private _fuel: string = Globals.LANDER_FUEL_CAPACITY.toString();
 
     /**
@@ -228,8 +222,7 @@ export class HudComponent extends EzComponent {
      * @summary Binds to the time element innerHTML
      * @summary Appends " s" to the value
      */
-    @BindInnerHTML("time")
-    @AppendPipe(" s")
+    @BindValue("time", (value: string) => value + " s")
     private _time: string = "0";
 
     /**
@@ -248,7 +241,7 @@ export class HudComponent extends EzComponent {
      * @summary The rotation of the lander
      * @summary Binds to the rotation element innerHTML
      */
-    @BindInnerHTML("rotation")
+    @BindValue("rotation")
     private _rotation: string = "0";
 
     /**
@@ -269,7 +262,7 @@ export class HudComponent extends EzComponent {
      * @summary The status of the lander
      * @summary Binds to the status element innerHTML
      */
-    @BindInnerHTML("status")
+    @BindValue("status")
     private _status: string = "Waiting...";
 
     /**

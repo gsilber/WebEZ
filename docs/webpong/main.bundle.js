@@ -438,7 +438,7 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ReplacePipe = exports.PrependPipe = exports.AppendPipe = exports.Pipe = exports.BindAttribute = exports.BindValue = exports.BindInnerHTML = exports.BindCSSClassEnabled = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.BindStyleToNumberAppendPx = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
@@ -454,28 +454,6 @@ function getPublicKey(name) {
  */
 function getPrivateKey(name) {
     return `__${String(name)}`;
-}
-/**
- * @description Gets the pipe key of the field name
- * @param name the name of the field
- * @returns the pipe key
- */
-function getPipeKey(name) {
-    return `__${String(name)}_pipe`;
-}
-/**
- * @description computes a piped value
- * @param target the class to decorate
- * @param name the name of the field
- * @returns The field with the pipe applied if it has not already been applied
- */
-function computePipe(target, name, value) {
-    const pipeKey = getPipeKey(name);
-    let newValue = value;
-    if (target[pipeKey]) {
-        newValue = target[pipeKey](newValue);
-    }
-    return newValue;
 }
 /**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
@@ -550,18 +528,8 @@ function getPropertyDescriptor(target, key) {
     }
     return origDescriptor;
 }
-/**
- * @description Decorator to bind a specific style to an element
- * @param id the element to bind the property to
- * @param style the style to bind (i.e. background-color, left, top, etc.)
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will set the background color of the div with id myDiv to the value in backgroundColor
- * @BindStyle("myDiv", "backgroundColor")
- * public backgroundColor: string = "red";
- */
-function BindStyle(id, style) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindStyle(id, style, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -572,32 +540,23 @@ function BindStyle(id, style) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = computePipe(this, context.name, value);
+            element.style[style] = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element.style[style] = computePipe(this, context.name, value);
+                    element.style[style] = transform(value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element.style[style] = computePipe(this, context.name, value);
+                    element.style[style] = transform(value);
                 });
             }
         });
     };
 }
 exports.BindStyle = BindStyle;
-/**
- * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
- * @param id the element to bind the property to
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will set the CSS class of the div with id myDiv to the value in cssClass
- * @BindCSSClass("myDiv")
- * public cssClass: string = "myCSSClass";
- */
-function BindCSSClass(id) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindCSSClass(id, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -607,18 +566,19 @@ function BindCSSClass(id) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            let valArray = value.split(" ").filter((v) => v.length > 0);
+            let valArray = transform(value)
+                .split(" ")
+                .filter((v) => v.length > 0);
             if (valArray.length > 0)
-                element.classList.add(...value.split(" "));
+                element.classList.add(...valArray);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    let currentList = context.access
-                        .get(this)
+                    let currentList = transform(context.access.get(this))
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (currentList.length > 0)
                         element.classList.remove(...currentList);
-                    let newClasses = value
+                    let newClasses = transform(value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -627,13 +587,12 @@ function BindCSSClass(id) {
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    let currentList = context.access
-                        .get(this)
+                    let currentList = transform(context.access.get(this))
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (currentList.length > 0)
                         element.classList.remove(...currentList);
-                    let newClasses = value
+                    let newClasses = transform(value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -644,7 +603,8 @@ function BindCSSClass(id) {
     };
 }
 exports.BindCSSClass = BindCSSClass;
-function BindCSSClassEnabled(id, cssClassName) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindValue(id, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -654,117 +614,64 @@ function BindCSSClassEnabled(id, cssClassName) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            element.classList.remove(cssClassName);
-            if (value)
-                element.classList.add(cssClassName);
+            if (element instanceof HTMLInputElement)
+                element.value = transform(value);
+            else if (element instanceof HTMLTextAreaElement)
+                element.value = transform(value);
+            else if (element instanceof HTMLSelectElement)
+                element.value = transform(value);
+            else if (element instanceof HTMLOptionElement) {
+                element.value = transform(value);
+                element.text = transform(value);
+            }
+            else
+                element.innerHTML = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element.classList.remove(cssClassName);
-                    if (value)
-                        element.classList.add(cssClassName);
-                }, true);
-            }
-            else {
-                hookProperty(this, context.name, value, (value) => {
-                    element.classList.remove(cssClassName);
-                    if (value)
-                        element.classList.add(cssClassName);
-                }, true);
-            }
-        });
-    };
-}
-exports.BindCSSClassEnabled = BindCSSClassEnabled;
-/**
- * @description Decorator to bind the innerHtml property to an element.
- * @param id the element to bind the property to
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will display Hello World in the div with id myDiv
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello World";
- */
-function BindInnerHTML(id) {
-    return function (_target, context) {
-        context.addInitializer(function () {
-            const element = this["shadow"].getElementById(id);
-            if (!element) {
-                throw new Error(`can not find HTML element with id: ${id}`);
-            }
-            const publicKey = getPublicKey(context.name);
-            const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const value = context.access.get(this);
-            element.innerHTML = computePipe(this, context.name, value);
-            if (origDescriptor.set) {
-                hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element["innerHTML"] = computePipe(this, context.name, value);
+                    if (element instanceof HTMLInputElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLTextAreaElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLSelectElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLOptionElement) {
+                        element.value =
+                            transform(value);
+                        element.text = transform(value);
+                    }
+                    else
+                        element.innerHTML = transform(value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element["innerHTML"] = computePipe(this, context.name, value);
-                });
-            }
-        });
-    };
-}
-exports.BindInnerHTML = BindInnerHTML;
-/**
- * @description Decorator to bind the Value property to an element.  Should be input elements
- * @param id the element to bind the property to
- * @returns DecoratorCallback
- * @note This decorator should be last in the list of decorators for a property and can only appear once.
- * @export
- * @example
- * //This will bind the value of the input element with id myInput to the value property of the class
- * @BindValue("myInput")
- * public value: string = "Hello";
- */
-function BindValue(id) {
-    return function (target, context) {
-        context.addInitializer(function () {
-            const element = this["shadow"].getElementById(id);
-            if (!element) {
-                throw new Error(`can not find HTML element with id: ${id}`);
-            }
-            const publicKey = getPublicKey(context.name);
-            const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const value = context.access.get(this);
-            element.value = value;
-            //hook both getter and setter to value
-            if (origDescriptor.set) {
-                throw new Error("Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.");
-            }
-            else {
-                hookProperty(this, context.name, value, (value) => {
-                    element["value"] = value;
-                });
-                element.addEventListener("input", () => {
-                    this[publicKey] = element.value;
+                    if (element instanceof HTMLInputElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLTextAreaElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLSelectElement)
+                        element.value =
+                            transform(value);
+                    else if (element instanceof HTMLOptionElement) {
+                        element.value =
+                            transform(value);
+                        element.text = transform(value);
+                    }
+                    else
+                        element.innerHTML = transform(value);
                 });
             }
         });
     };
 }
 exports.BindValue = BindValue;
-/**
- * @description Decorator to bind any attribute of an element to a property
- * @param id the element to bind the property to
- * @param attribute the attribute to bind
- * @note can be bound to both a boolean or a string property.  For a boolean, the value adds or removes the attribute (for things like disabled, checked, etc.).  If a string,the attribute is set to that value.
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will set the disabled attribute of the button with id myButton to the value of the disabled property
- * @BindAttribute("myButton", "disabled")
- * public disabled: boolean = false;
- * @example
- * //This will set the src attribute of the img with id myImg to the value of the src property
- * @BindAttribute("myImg", "src")
- * public src: string = "https://via.placeholder.com/150";
- */
-function BindAttribute(id, attribute) {
+// Actual implementation, should not be in documentation as the overloads capture the two cases
+function BindAttribute(id, attribute, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
             const element = this["shadow"].getElementById(id);
@@ -775,23 +682,13 @@ function BindAttribute(id, attribute) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             let setfn;
-            if (typeof value === "boolean") {
-                setfn = (value) => {
-                    if (value) {
-                        element.setAttribute(attribute, "true");
-                    }
-                    else {
-                        element.removeAttribute(attribute);
-                    }
-                };
-                setfn(value);
-            }
-            else {
-                setfn = (value) => {
-                    element.setAttribute(attribute, value);
-                };
-                setfn(value);
-            }
+            setfn = (value) => {
+                if (transform(value) !== "")
+                    element.setAttribute(attribute, transform(value));
+                else
+                    element.removeAttribute(attribute);
+            };
+            setfn(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, setfn);
             }
@@ -802,84 +699,66 @@ function BindAttribute(id, attribute) {
     };
 }
 exports.BindAttribute = BindAttribute;
+// Wrapper methods for specific operations
 /**
- * @description Decorator to transform the value of a property before it is set on the html element.
- * @param fn {PipeFunction} the function to transform the value
- * @returns DecoratorCallback
- * @example
- * //This will display Hello World in the div with id myDiv
- * @Pipe((v: string) => v + " World")
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello";
- * @export
- */
-function Pipe(fn) {
-    return function (target, context) {
-        context.addInitializer(function () {
-            const privateKey = getPipeKey(context.name);
-            //get method descriptor for publicKey in This
-            if (this[privateKey]) {
-                //overwrite it and call the original first
-                const origMethod = this[privateKey];
-                this[privateKey] = (value) => {
-                    return fn(origMethod(value));
-                };
-                context.access.set(this, context.access.get(this));
-            }
-            else {
-                this[privateKey] = fn;
-                context.access.set(this, context.access.get(this));
-            }
-        });
-    };
-}
-exports.Pipe = Pipe;
-/**
- * @description Decorator to append to the value of a property before it is set on the html element.
- * @param val string to append
+ * @description Decorator to bind the cssClassName property if the boolean property is true
+ * @param id the element to bind the property to
+ * @param cssClassName the class name to add
  * @returns DecoratorCallback
  * @export
  * @example
- * //This will display Hello World in the div with id myDiv
- * @AppendPipe(" World")
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello";
+ * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
+ * @BindCSSClassToBoolean("myDiv", "myCSSClass")
+ * public enabled: boolean = true;
  */
-function AppendPipe(val) {
-    return Pipe((v) => v + val);
+function BindCSSClassToBoolean(id, cssClassName) {
+    return BindCSSClass(id, (value) => (value ? cssClassName : ""));
 }
-exports.AppendPipe = AppendPipe;
+exports.BindCSSClassToBoolean = BindCSSClassToBoolean;
 /**
- * @description Decorator to prepend the value of a property before it is set on the html element.
- * @param val The string to prepend
+ * @description Decorator to bind the disabled attribute of an element to a boolean
+ * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
  * @example
- * //This will display Hello World in the div with id myDiv
- * @PrependPipe("Hello ")
- * @BindInnerHTML("myDiv")
- * public hello: string = "World";
+ * //This will disable the button with id myButton if the disabled property is true
+ * @BindDisabledToBoolean("myButton")
+ * public disabled: boolean = true;
  */
-function PrependPipe(val) {
-    return Pipe((v) => val + v);
+function BindDisabledToBoolean(id) {
+    return BindAttribute(id, "disabled", (value) => value ? "disabled" : "");
 }
-exports.PrependPipe = PrependPipe;
+exports.BindDisabledToBoolean = BindDisabledToBoolean;
 /**
- * @description Decorator to replace the value of a property before it is set on the html element.
- * @param search {string | RegExp} The string to replace
- * @param  replaceWith The string to replace in the current string
+ * @description Decorator to bind the visibility of an element to a boolean
+ * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
  * @example
- * //This will display Hello World in the div with id myDiv
- * @ReplacePipe("planet", "World")
- * @BindInnerHTML("myDiv")
- * public hello: string = "Hello planet";
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindCheckedToBoolean("myCheckbox")
+ * public checked: boolean = true;
  */
-function ReplacePipe(search, replaceWith) {
-    return Pipe((v) => v.replace(search, replaceWith));
+function BindVisibleToBoolean(id) {
+    return BindStyle(id, "display", (value) => value ? "block" : "none");
 }
-exports.ReplacePipe = ReplacePipe;
+exports.BindVisibleToBoolean = BindVisibleToBoolean;
+/**
+ * @description Decorator to bind a specific style to a number, and append a 'px' to the value
+ * @param id the element to bind the property to
+ * @param a value that the transformer will turn into a string that will be set as the style
+ * @returns DecoratorCallback
+ * @overload
+ * @export
+ * @example
+ * //This will set the width of the div to the number in width
+ * @BindStyleToNumberAppendPx("myDiv", "width")
+ * public width: number = 100;
+ */
+function BindStyleToNumberAppendPx(id, style) {
+    return BindStyle(id, style, (value) => `${value}px`);
+}
+exports.BindStyleToNumberAppendPx = BindStyleToNumberAppendPx;
 
 
 /***/ }),
@@ -1828,48 +1707,24 @@ let BallComponent = (() => {
     var _a;
     let _classSuper = webez_1.EzComponent;
     let _instanceExtraInitializers = [];
-    let __ball_width_decorators;
-    let __ball_width_initializers = [];
-    let __ball_width_extraInitializers = [];
-    let __ball_height_decorators;
-    let __ball_height_initializers = [];
-    let __ball_height_extraInitializers = [];
-    let __ball_x_decorators;
-    let __ball_x_initializers = [];
-    let __ball_x_extraInitializers = [];
-    let __ball_y_decorators;
-    let __ball_y_initializers = [];
-    let __ball_y_extraInitializers = [];
+    let _ball_width_decorators;
+    let _ball_width_initializers = [];
+    let _ball_width_extraInitializers = [];
+    let _ball_height_decorators;
+    let _ball_height_initializers = [];
+    let _ball_height_extraInitializers = [];
+    let _ball_x_decorators;
+    let _ball_x_initializers = [];
+    let _ball_x_extraInitializers = [];
+    let _ball_y_decorators;
+    let _ball_y_initializers = [];
+    let _ball_y_extraInitializers = [];
     let _ball_color_decorators;
     let _ball_color_initializers = [];
     let _ball_color_extraInitializers = [];
     let _increaseSpeed_decorators;
     let _moveBall_decorators;
     return _a = class BallComponent extends _classSuper {
-            get ball_width() {
-                return parseInt(this._ball_width);
-            }
-            set ball_width(value) {
-                this._ball_width = value.toString();
-            }
-            get ball_height() {
-                return parseInt(this._ball_height);
-            }
-            set ball_height(value) {
-                this._ball_height = value.toString();
-            }
-            get ball_x() {
-                return parseInt(this._ball_x);
-            }
-            set ball_x(value) {
-                this._ball_x = value.toString();
-            }
-            get ball_y() {
-                return parseInt(this._ball_y);
-            }
-            set ball_y(value) {
-                this._ball_y = value.toString();
-            }
             /**
              * @description The constructor for the ball component
              * @param {PaddleComponent} [paddle=new PaddleComponent()] - The paddle component
@@ -1887,7 +1742,7 @@ let BallComponent = (() => {
                  * @summary Binds to ball style.width
                  * @summary Appends px to the value
                  */
-                this._ball_width = __runInitializers(this, __ball_width_initializers, globals_1.Globals.BALL_DIMENSION.toString());
+                this.ball_width = __runInitializers(this, _ball_width_initializers, globals_1.Globals.BALL_DIMENSION);
                 /**
                  * @description The height of the ball
                  * @private
@@ -1896,7 +1751,7 @@ let BallComponent = (() => {
                  * @summary Binds to ball style.height
                  * @summary Appends px to the value
                  */
-                this._ball_height = (__runInitializers(this, __ball_width_extraInitializers), __runInitializers(this, __ball_height_initializers, globals_1.Globals.BALL_DIMENSION.toString()));
+                this.ball_height = (__runInitializers(this, _ball_width_extraInitializers), __runInitializers(this, _ball_height_initializers, globals_1.Globals.BALL_DIMENSION));
                 /**
                  * @description The x coordinate of the ball
                  * @private
@@ -1905,8 +1760,7 @@ let BallComponent = (() => {
                  * @summary Binds to ball style.left
                  * @summary Appends px to the value
                  */
-                this._ball_x = (__runInitializers(this, __ball_height_extraInitializers), __runInitializers(this, __ball_x_initializers, ((globals_1.Globals.BOARD_WIDTH - this.ball_width) /
-                    2).toString()));
+                this.ball_x = (__runInitializers(this, _ball_height_extraInitializers), __runInitializers(this, _ball_x_initializers, (globals_1.Globals.BOARD_WIDTH - this.ball_width) / 2));
                 /**
                  * @description The y coordinate of the ball
                  * @private
@@ -1915,14 +1769,13 @@ let BallComponent = (() => {
                  * @summary Binds to ball style.top
                  * @summary Appends px to the value
                  */
-                this._ball_y = (__runInitializers(this, __ball_x_extraInitializers), __runInitializers(this, __ball_y_initializers, ((globals_1.Globals.BOARD_HEIGHT - this.ball_height) /
-                    2).toString()));
+                this.ball_y = (__runInitializers(this, _ball_x_extraInitializers), __runInitializers(this, _ball_y_initializers, (globals_1.Globals.BOARD_HEIGHT - this.ball_height) / 2));
                 /**
                  * @description Whether the ball is currently running
                  * @private
                  * @type {boolean}
                  */
-                this.running = (__runInitializers(this, __ball_y_extraInitializers), false);
+                this.running = (__runInitializers(this, _ball_y_extraInitializers), false);
                 /**
                  * @description holds the current timer kill function
                  */
@@ -2067,19 +1920,19 @@ let BallComponent = (() => {
         (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            __ball_width_decorators = [(0, webez_1.BindStyle)("ball", "width"), (0, webez_1.AppendPipe)("px")];
-            __ball_height_decorators = [(0, webez_1.BindStyle)("ball", "height"), (0, webez_1.AppendPipe)("px")];
-            __ball_x_decorators = [(0, webez_1.BindStyle)("ball", "left"), (0, webez_1.AppendPipe)("px")];
-            __ball_y_decorators = [(0, webez_1.BindStyle)("ball", "top"), (0, webez_1.AppendPipe)("px")];
+            _ball_width_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("ball", "width")];
+            _ball_height_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("ball", "height")];
+            _ball_x_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("ball", "left")];
+            _ball_y_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("ball", "top")];
             _ball_color_decorators = [(0, webez_1.BindStyle)("ball", "backgroundColor")];
             _increaseSpeed_decorators = [(0, webez_1.Timer)(10000)];
             _moveBall_decorators = [(0, webez_1.Timer)(50)];
             __esDecorate(_a, null, _increaseSpeed_decorators, { kind: "method", name: "increaseSpeed", static: false, private: false, access: { has: obj => "increaseSpeed" in obj, get: obj => obj.increaseSpeed }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(_a, null, _moveBall_decorators, { kind: "method", name: "moveBall", static: false, private: false, access: { has: obj => "moveBall" in obj, get: obj => obj.moveBall }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(null, null, __ball_width_decorators, { kind: "field", name: "_ball_width", static: false, private: false, access: { has: obj => "_ball_width" in obj, get: obj => obj._ball_width, set: (obj, value) => { obj._ball_width = value; } }, metadata: _metadata }, __ball_width_initializers, __ball_width_extraInitializers);
-            __esDecorate(null, null, __ball_height_decorators, { kind: "field", name: "_ball_height", static: false, private: false, access: { has: obj => "_ball_height" in obj, get: obj => obj._ball_height, set: (obj, value) => { obj._ball_height = value; } }, metadata: _metadata }, __ball_height_initializers, __ball_height_extraInitializers);
-            __esDecorate(null, null, __ball_x_decorators, { kind: "field", name: "_ball_x", static: false, private: false, access: { has: obj => "_ball_x" in obj, get: obj => obj._ball_x, set: (obj, value) => { obj._ball_x = value; } }, metadata: _metadata }, __ball_x_initializers, __ball_x_extraInitializers);
-            __esDecorate(null, null, __ball_y_decorators, { kind: "field", name: "_ball_y", static: false, private: false, access: { has: obj => "_ball_y" in obj, get: obj => obj._ball_y, set: (obj, value) => { obj._ball_y = value; } }, metadata: _metadata }, __ball_y_initializers, __ball_y_extraInitializers);
+            __esDecorate(null, null, _ball_width_decorators, { kind: "field", name: "ball_width", static: false, private: false, access: { has: obj => "ball_width" in obj, get: obj => obj.ball_width, set: (obj, value) => { obj.ball_width = value; } }, metadata: _metadata }, _ball_width_initializers, _ball_width_extraInitializers);
+            __esDecorate(null, null, _ball_height_decorators, { kind: "field", name: "ball_height", static: false, private: false, access: { has: obj => "ball_height" in obj, get: obj => obj.ball_height, set: (obj, value) => { obj.ball_height = value; } }, metadata: _metadata }, _ball_height_initializers, _ball_height_extraInitializers);
+            __esDecorate(null, null, _ball_x_decorators, { kind: "field", name: "ball_x", static: false, private: false, access: { has: obj => "ball_x" in obj, get: obj => obj.ball_x, set: (obj, value) => { obj.ball_x = value; } }, metadata: _metadata }, _ball_x_initializers, _ball_x_extraInitializers);
+            __esDecorate(null, null, _ball_y_decorators, { kind: "field", name: "ball_y", static: false, private: false, access: { has: obj => "ball_y" in obj, get: obj => obj.ball_y, set: (obj, value) => { obj.ball_y = value; } }, metadata: _metadata }, _ball_y_initializers, _ball_y_extraInitializers);
             __esDecorate(null, null, _ball_color_decorators, { kind: "field", name: "ball_color", static: false, private: false, access: { has: obj => "ball_color" in obj, get: obj => obj.ball_color, set: (obj, value) => { obj.ball_color = value; } }, metadata: _metadata }, _ball_color_initializers, _ball_color_extraInitializers);
             if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         })(),
@@ -2215,7 +2068,7 @@ let MainComponent = (() => {
                  * @memberof MainComponent
                  * @summary Binds to game-board style.width
                  */
-                this.boardWidth = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _boardWidth_initializers, globals_1.Globals.BOARD_WIDTH.toString()));
+                this.boardWidth = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _boardWidth_initializers, globals_1.Globals.BOARD_WIDTH));
                 /**
                  * @description The height of the game board
                  * @private
@@ -2223,7 +2076,7 @@ let MainComponent = (() => {
                  * @memberof MainComponent
                  * @summary Binds to game-board style.height
                  */
-                this.boardHeight = (__runInitializers(this, _boardWidth_extraInitializers), __runInitializers(this, _boardHeight_initializers, globals_1.Globals.BOARD_HEIGHT.toString()));
+                this.boardHeight = (__runInitializers(this, _boardWidth_extraInitializers), __runInitializers(this, _boardHeight_initializers, globals_1.Globals.BOARD_HEIGHT));
                 /**
                  * @description The paddle component
                  * @private
@@ -2316,9 +2169,9 @@ let MainComponent = (() => {
         (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            _boardWidth_decorators = [(0, webez_1.BindStyle)("game-board", "width"), (0, webez_1.AppendPipe)("px")];
-            _boardHeight_decorators = [(0, webez_1.BindStyle)("game-board", "height"), (0, webez_1.AppendPipe)("px")];
-            _time_decorators = [(0, webez_1.BindInnerHTML)("timer")];
+            _boardWidth_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("game-board", "width")];
+            _boardHeight_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("ball", "width")];
+            _time_decorators = [(0, webez_1.BindValue)("timer")];
             _startGame_decorators = [(0, webez_1.Click)("go")];
             _updateTimer_decorators = [(0, webez_1.Timer)(1000)];
             __esDecorate(_a, null, _startGame_decorators, { kind: "method", name: "startGame", static: false, private: false, access: { has: obj => "startGame" in obj, get: obj => obj.startGame }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -2400,47 +2253,23 @@ let PaddleComponent = (() => {
     var _a;
     let _classSuper = webez_1.EzComponent;
     let _instanceExtraInitializers = [];
-    let __paddle_width_decorators;
-    let __paddle_width_initializers = [];
-    let __paddle_width_extraInitializers = [];
-    let __paddle_height_decorators;
-    let __paddle_height_initializers = [];
-    let __paddle_height_extraInitializers = [];
-    let __paddle_x_decorators;
-    let __paddle_x_initializers = [];
-    let __paddle_x_extraInitializers = [];
-    let __paddle_y_decorators;
-    let __paddle_y_initializers = [];
-    let __paddle_y_extraInitializers = [];
+    let _paddle_width_decorators;
+    let _paddle_width_initializers = [];
+    let _paddle_width_extraInitializers = [];
+    let _paddle_height_decorators;
+    let _paddle_height_initializers = [];
+    let _paddle_height_extraInitializers = [];
+    let _paddle_x_decorators;
+    let _paddle_x_initializers = [];
+    let _paddle_x_extraInitializers = [];
+    let _paddle_y_decorators;
+    let _paddle_y_initializers = [];
+    let _paddle_y_extraInitializers = [];
     let __paddle_color_decorators;
     let __paddle_color_initializers = [];
     let __paddle_color_extraInitializers = [];
     let _onKeyPress_decorators;
     return _a = class PaddleComponent extends _classSuper {
-            get paddle_width() {
-                return parseInt(this._paddle_width);
-            }
-            set paddle_width(value) {
-                this._paddle_width = value.toString();
-            }
-            get paddle_height() {
-                return parseInt(this._paddle_height);
-            }
-            set paddle_height(value) {
-                this._paddle_height = value.toString();
-            }
-            get paddle_x() {
-                return parseInt(this._paddle_x);
-            }
-            set paddle_x(value) {
-                this._paddle_x = value.toString();
-            }
-            get paddle_y() {
-                return parseInt(this._paddle_y);
-            }
-            set paddle_y(value) {
-                this._paddle_y = value.toString();
-            }
             /**
              * @description The maximum y coordinate of the paddle
              * @private
@@ -2464,7 +2293,7 @@ let PaddleComponent = (() => {
                  * @memberof PaddleComponent
                  * @summary Binds to paddle style.width
                  */
-                this._paddle_width = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, __paddle_width_initializers, globals_1.Globals.PADDLE_WIDTH.toString()));
+                this.paddle_width = (__runInitializers(this, _instanceExtraInitializers), __runInitializers(this, _paddle_width_initializers, globals_1.Globals.PADDLE_WIDTH));
                 /**
                  * @description The height of the paddle
                  * @private
@@ -2472,7 +2301,7 @@ let PaddleComponent = (() => {
                  * @memberof PaddleComponent
                  * @summary Binds to paddle style.height
                  */
-                this._paddle_height = (__runInitializers(this, __paddle_width_extraInitializers), __runInitializers(this, __paddle_height_initializers, globals_1.Globals.PADDLE_HEIGHT.toString()));
+                this.paddle_height = (__runInitializers(this, _paddle_width_extraInitializers), __runInitializers(this, _paddle_height_initializers, globals_1.Globals.PADDLE_HEIGHT));
                 /**
                  * @description The x coordinate of the paddle
                  * @private
@@ -2481,7 +2310,7 @@ let PaddleComponent = (() => {
                  * @summary Binds to paddle style.left
                  * @summary Appends px to the value
                  */
-                this._paddle_x = (__runInitializers(this, __paddle_height_extraInitializers), __runInitializers(this, __paddle_x_initializers, globals_1.Globals.PADDLE_INDENT.toString()));
+                this.paddle_x = (__runInitializers(this, _paddle_height_extraInitializers), __runInitializers(this, _paddle_x_initializers, globals_1.Globals.PADDLE_INDENT));
                 /**
                  * @description The y coordinate of the paddle
                  * @private
@@ -2490,7 +2319,7 @@ let PaddleComponent = (() => {
                  * @summary Binds to paddle style.top
                  * @summary Appends px to the value
                  */
-                this._paddle_y = (__runInitializers(this, __paddle_x_extraInitializers), __runInitializers(this, __paddle_y_initializers, "0"));
+                this.paddle_y = (__runInitializers(this, _paddle_x_extraInitializers), __runInitializers(this, _paddle_y_initializers, 0));
                 /**
                  * @description The color of the paddle
                  * @private
@@ -2498,7 +2327,7 @@ let PaddleComponent = (() => {
                  * @memberof PaddleComponent
                  * @summary Binds to paddle style.backgroundColor
                  */
-                this._paddle_color = (__runInitializers(this, __paddle_y_extraInitializers), __runInitializers(this, __paddle_color_initializers, globals_1.Globals.PADDLE_COLOR));
+                this._paddle_color = (__runInitializers(this, _paddle_y_extraInitializers), __runInitializers(this, __paddle_color_initializers, globals_1.Globals.PADDLE_COLOR));
                 /**
                  * @description The speed of the paddle
                  * @private
@@ -2556,17 +2385,17 @@ let PaddleComponent = (() => {
         (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
-            __paddle_width_decorators = [(0, webez_1.BindStyle)("paddle", "width"), (0, webez_1.AppendPipe)("px")];
-            __paddle_height_decorators = [(0, webez_1.BindStyle)("paddle", "height"), (0, webez_1.AppendPipe)("px")];
-            __paddle_x_decorators = [(0, webez_1.BindStyle)("paddle", "left"), (0, webez_1.AppendPipe)("px")];
-            __paddle_y_decorators = [(0, webez_1.BindStyle)("paddle", "top"), (0, webez_1.AppendPipe)("px")];
+            _paddle_width_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("paddle", "width")];
+            _paddle_height_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("paddle", "height")];
+            _paddle_x_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("paddle", "left")];
+            _paddle_y_decorators = [(0, webez_1.BindStyleToNumberAppendPx)("paddle", "top")];
             __paddle_color_decorators = [(0, webez_1.BindStyle)("paddle", "backgroundColor")];
             _onKeyPress_decorators = [(0, webez_1.WindowEvent)("keydown")];
             __esDecorate(_a, null, _onKeyPress_decorators, { kind: "method", name: "onKeyPress", static: false, private: false, access: { has: obj => "onKeyPress" in obj, get: obj => obj.onKeyPress }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(null, null, __paddle_width_decorators, { kind: "field", name: "_paddle_width", static: false, private: false, access: { has: obj => "_paddle_width" in obj, get: obj => obj._paddle_width, set: (obj, value) => { obj._paddle_width = value; } }, metadata: _metadata }, __paddle_width_initializers, __paddle_width_extraInitializers);
-            __esDecorate(null, null, __paddle_height_decorators, { kind: "field", name: "_paddle_height", static: false, private: false, access: { has: obj => "_paddle_height" in obj, get: obj => obj._paddle_height, set: (obj, value) => { obj._paddle_height = value; } }, metadata: _metadata }, __paddle_height_initializers, __paddle_height_extraInitializers);
-            __esDecorate(null, null, __paddle_x_decorators, { kind: "field", name: "_paddle_x", static: false, private: false, access: { has: obj => "_paddle_x" in obj, get: obj => obj._paddle_x, set: (obj, value) => { obj._paddle_x = value; } }, metadata: _metadata }, __paddle_x_initializers, __paddle_x_extraInitializers);
-            __esDecorate(null, null, __paddle_y_decorators, { kind: "field", name: "_paddle_y", static: false, private: false, access: { has: obj => "_paddle_y" in obj, get: obj => obj._paddle_y, set: (obj, value) => { obj._paddle_y = value; } }, metadata: _metadata }, __paddle_y_initializers, __paddle_y_extraInitializers);
+            __esDecorate(null, null, _paddle_width_decorators, { kind: "field", name: "paddle_width", static: false, private: false, access: { has: obj => "paddle_width" in obj, get: obj => obj.paddle_width, set: (obj, value) => { obj.paddle_width = value; } }, metadata: _metadata }, _paddle_width_initializers, _paddle_width_extraInitializers);
+            __esDecorate(null, null, _paddle_height_decorators, { kind: "field", name: "paddle_height", static: false, private: false, access: { has: obj => "paddle_height" in obj, get: obj => obj.paddle_height, set: (obj, value) => { obj.paddle_height = value; } }, metadata: _metadata }, _paddle_height_initializers, _paddle_height_extraInitializers);
+            __esDecorate(null, null, _paddle_x_decorators, { kind: "field", name: "paddle_x", static: false, private: false, access: { has: obj => "paddle_x" in obj, get: obj => obj.paddle_x, set: (obj, value) => { obj.paddle_x = value; } }, metadata: _metadata }, _paddle_x_initializers, _paddle_x_extraInitializers);
+            __esDecorate(null, null, _paddle_y_decorators, { kind: "field", name: "paddle_y", static: false, private: false, access: { has: obj => "paddle_y" in obj, get: obj => obj.paddle_y, set: (obj, value) => { obj.paddle_y = value; } }, metadata: _metadata }, _paddle_y_initializers, _paddle_y_extraInitializers);
             __esDecorate(null, null, __paddle_color_decorators, { kind: "field", name: "_paddle_color", static: false, private: false, access: { has: obj => "_paddle_color" in obj, get: obj => obj._paddle_color, set: (obj, value) => { obj._paddle_color = value; } }, metadata: _metadata }, __paddle_color_initializers, __paddle_color_extraInitializers);
             if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         })(),
