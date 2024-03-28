@@ -43,24 +43,6 @@ function getPipeKey<This extends EzComponent>(
 }
 
 /**
- * @description computes a piped value
- * @param target the class to decorate
- * @param name the name of the field
- * @returns The field with the pipe applied if it has not already been applied
- */
-function computePipe<This extends EzComponent>(
-    target: This,
-    name: string | symbol,
-    value: string,
-): string {
-    const pipeKey = getPipeKey(name);
-    let newValue = value;
-    if (target[pipeKey] as any) {
-        newValue = (target[pipeKey] as any)(newValue) as string;
-    }
-    return newValue;
-}
-/**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
  * @param target the class to replace the setter in
  * @param name the property to replace the setter for
@@ -215,22 +197,14 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value: Value = context.access.get(this);
             //replace the style tag with the new value
-            (element.style[style] as any) = computePipe(
-                this,
-                context.name,
-                transform(value),
-            );
+            (element.style[style] as any) = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        (element.style[style] as any) = computePipe(
-                            this,
-                            context.name,
-                            transform(value),
-                        );
+                        (element.style[style] as any) = transform(value);
                     },
                 );
             } else {
@@ -239,11 +213,7 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        (element.style[style] as any) = computePipe(
-                            this,
-                            context.name,
-                            transform(value),
-                        );
+                        (element.style[style] as any) = transform(value);
                     },
                 );
             }
@@ -463,22 +433,14 @@ export function BindInnerHTML<Value>(
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            element.innerHTML = computePipe(
-                this,
-                context.name,
-                transform(value),
-            );
+            element.innerHTML = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        (element as any)["innerHTML"] = computePipe(
-                            this,
-                            context.name,
-                            transform(value),
-                        );
+                        (element as any)["innerHTML"] = transform(value);
                     },
                 );
             } else {
@@ -487,11 +449,7 @@ export function BindInnerHTML<Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        (element as any)["innerHTML"] = computePipe(
-                            this,
-                            context.name,
-                            transform(value),
-                        );
+                        (element as any)["innerHTML"] = transform(value);
                     },
                 );
             }
