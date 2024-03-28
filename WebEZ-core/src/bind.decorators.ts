@@ -138,7 +138,7 @@ export function BindStyle<
     style: K,
     transform?: (value: Value) => CSSStyleDeclaration[K],
 ): <This extends EzComponent>(
-    target: any,
+    target: undefined,
     context: ClassFieldDecoratorContext<This, Value>,
 ) => any;
 
@@ -160,7 +160,7 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
     style: K,
     transform: (value: Value) => CSSStyleDeclaration[K],
 ): <This extends EzComponent>(
-    target: any,
+    target: undefined,
     context: ClassFieldDecoratorContext<This, Value>,
 ) => any;
 
@@ -168,9 +168,9 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
 export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
     id: string,
     style: K,
-    transform: (value: Value) => string = (value: Value) => value as string,
+    transform: (value: Value) => CSSStyleDeclaration[K] = (value: Value) => value as CSSStyleDeclaration[K],
 ): <This extends EzComponent>(
-    target: any,
+    target: undefined,
     context: ClassFieldDecoratorContext<This, Value>,
 ) => any {
     return function <This extends EzComponent>(
