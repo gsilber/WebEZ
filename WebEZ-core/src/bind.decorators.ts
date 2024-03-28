@@ -197,14 +197,16 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value: Value = context.access.get(this);
             //replace the style tag with the new value
-            (element.style[style] as any) = transform(value);
+            element.style[style] = transform(value) as CSSStyleDeclaration[K];
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        (element.style[style] as any) = transform(value);
+                        element.style[style] = transform(
+                            value,
+                        ) as CSSStyleDeclaration[K];
                     },
                 );
             } else {
@@ -213,7 +215,9 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        (element.style[style] as any) = transform(value);
+                        element.style[style] = transform(
+                            value,
+                        ) as CSSStyleDeclaration[K];
                     },
                 );
             }
@@ -440,7 +444,7 @@ export function BindInnerHTML<Value>(
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        (element as any)["innerHTML"] = transform(value);
+                        element.innerHTML = transform(value);
                     },
                 );
             } else {
@@ -449,7 +453,7 @@ export function BindInnerHTML<Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        (element as any)["innerHTML"] = transform(value);
+                        element.innerHTML = transform(value);
                     },
                 );
             }
@@ -623,7 +627,7 @@ export function BindAttribute<K extends string, Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 
             const value = context.access.get(this);
-            let setfn: any;
+            let setfn: (value: Value) => void;
             setfn = (value: Value) => {
                 if (transform(value) !== "")
                     element.setAttribute(attribute, transform(value));
