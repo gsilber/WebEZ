@@ -162,6 +162,8 @@ export class MainComponent extends EzComponent {
 ```
 ## Decorators
 ### @BindValue(id)
+> Binds to {string} 
+
 Connects the value property of an html element with id bidirectionally with a member variable of the class.
 ```
 HTML FILE:
@@ -173,6 +175,7 @@ TS File:
 @BindValue("inp1") inputValue:string="";
 ```
 ### @BindInnerHTML(id)
+> Binds to {string} 
 Connects the innerHTML property of an html element with id with a member variable of the class.  Updating the variable will update the html element, but not the other way around
 ```
 HTML FILE:
@@ -182,6 +185,8 @@ HTML FILE:
 @BindInnerHTML("div1") divString:string='Hello world!!!';
 ```
 ### @BindCSSClass(id)
+> Binds to {string} 
+
 Connects the css class of an html element with id with a member variable of the class.  This does not effect css classes defined in the html.
 ```
 HTML File:
@@ -192,6 +197,8 @@ TS File:
 @BindCSSClass("div2") div2Style:string="btn btn-primary"
 ```
 ### @BindCssClassEnabled(id,cssClassName)
+> Binds to {boolean} 
+
 This decorator connects a boolean property such then when it is true, the cssClassName is applied to the element with id.  This is independent of ```@BindCSSClass``` which binds a string value into the css class list
 ```
 HTML File:
@@ -208,6 +215,8 @@ TS File:
 @BindCSSClassEnabled("div1","hidden")
 ```
 ### @BindStyle(id,style)
+> Binds to {string} 
+
 Connects a specific style of an html element with id with a member variable of the class.  If the style you want has a -, the decorator expects in in camel case (i.e. background-color would be backgroundColor)
 ```
 HTML File:
@@ -218,6 +227,8 @@ TS File:
 @BindStyle('div3','backgroundColor') div3BgColor:string="red";
 ```
 ### @BindAttribute(id,attributeName)
+> Binds to {string,boolean} 
+
 Unlike the other binders, this can be bound to either a string or a boolean.  If you bind to a string, it will set the value of the attribute.  If you bind to a boolean it will add or remove the attribute (for attributes like disabled that are active if they exist on the object, even if their value is undefined).
 ```
 HTML File:
@@ -233,6 +244,8 @@ disableBtn:boolean=false;
 imgSrc:string="http://my.imagesrc.com/img1";
 ```
 ### @GenericEvent(id,event)
+> Binds to {(evt:?Event)=>void} 
+
 This will connect any html event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
 ```
 HTML File:
@@ -246,6 +259,8 @@ onBtn1Click(evt:Event){
 }
 ```
 ### @Click(id)
+> Binds to {(evt:?Event)=>void} 
+
 This will connect the html click event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
 ```
 HTML File:
@@ -259,6 +274,8 @@ onBtn1Click(evt:Event){
 }
 ```
 ### @Blur(id)
+> Binds to {(evt:?Event)=>void} 
+
 This will connect the html blur event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
 ```
 HTML File:
@@ -272,6 +289,8 @@ onInputBlur(evt:Event){
 }
 ```
 ### @Change(id)
+> Binds to {(evt:?Event)=>void} 
+
 This will connect the html change event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
 ```
 HTML File:
@@ -286,6 +305,8 @@ onInputChange(evt:Event){
 ```
 
 ### @Input(id)
+> Binds to {(evt:?Event)=>void} 
+
 This will connect the html input event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
 ```
 HTML File:
@@ -299,6 +320,8 @@ onInput(evt:Event){
 }
 ```
 ### @Pipe(pipeFunction)
+> Binds to {PipeFunction} (v:string)=>string
+
 You can transform the text in a field before it is displayed using the ```@Pipe``` decorator.  These can be stacked and will be applied in the order they appear.  They can and should be stacked with any other ```@Bind``` decorator and will transform the text displayed.
 ```
 HTML File:
@@ -316,12 +339,19 @@ TS File:
 
 ```
 ### @AppendPipe(string)
+> Binds to {PipeFunction} (v:string)=>string
+
 You can append the text to a field before it is displayed.
 ### @PrependPipe(string)
+> Binds to {PipeFunction} (v:string)=>string
+
 You can prepend the text to a field before it is displayed.
 ### @ReplacePipe(search:string|RegExp,replaceWith:string)
-YOu can replace the search text with the repaceWith text before it is displayed.
+> Binds to {PipeFunction} (v:string)=>string
+
+You can replace the search text with the repaceWith text before it is displayed.
 ## Stacking Methods
+
 With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list.  Stacked decorators are applied from bottom to top.
 ```
 @BindInnerHTML("div1"}
@@ -339,10 +369,12 @@ onValuesChanged(evt:Event){
 
 ## Utility Methods
 ### @Timer(milliseconds)
+> Binds to {TimerCancelFunction} ()=>void
+
 There is a special decorator ```@Timer(milliseconds)``` which will call the decorated method every interval until the supplied cancel function is called.
 ```
 @Timer(1000)
-onTimer(cancel: CancelFunction){
+onTimer(cancel: TimerCancelFunction){
     this.count++;
     console.log(this.count);
     if (this.count>=15) cancel();
@@ -350,10 +382,13 @@ onTimer(cancel: CancelFunction){
 ```
 This example will be called once per second.  It will print a counter from 0 to 15, and will stop the timer permenantly after 15 is printed.
 ### @WindowEvent(event)
+> Binds to {e:Event)=>void}
+
 There is another decorator ```@WindowEvent(event)``` which captures events on the entire window.  Useful for picking up keystrokes, mouse events, or resize events.
 ```
 @WindowEvent("resize")
-onMainWindowResize(sz:SizeInfo){
+
+onMainWindowResize(evt:Event){
     console.log("The whole window is "+sz.windowWidth+" pixels wide.");
 }
 ```

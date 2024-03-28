@@ -154,6 +154,7 @@ class EzComponent {
      * @param {T} data The data to send in the request body (optional)
      * @returns {Promise<T>} A promise that resolves with the response data
      * @memberof EzComponent
+     * @static
      * @example myComponent.ajax("https://some.api.url.com/posts", HttpMethod.GET)
      *  .subscribe((data) => {
      *   console.log(data);
@@ -161,7 +162,7 @@ class EzComponent {
      *   console.error(error);
      * });
      */
-    ajax(url, method, headers = [], data) {
+    static ajax(url, method, headers = [], data) {
         const evt = new eventsubject_1.EventSubject();
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
@@ -171,7 +172,6 @@ class EzComponent {
                     xhr.setRequestHeader(key, header[key]);
             });
         }
-        xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 evt.next(JSON.parse(xhr.responseText));
@@ -438,7 +438,7 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ReplacePipe = exports.PrependPipe = exports.AppendPipe = exports.Pipe = exports.BindValue = exports.BindInnerHTML = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.ReplacePipe = exports.PrependPipe = exports.AppendPipe = exports.Pipe = exports.BindAttribute = exports.BindValue = exports.BindInnerHTML = exports.BindCSSClassEnabled = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
@@ -483,8 +483,9 @@ function computePipe(target, name, value) {
  * @param name the property to replace the setter for
  * @param value the initial value of the property
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
+ * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
  */
-function hookProperty(target, name, value, setter) {
+function hookProperty(target, name, value, setter, callSetterFirst = false) {
     const publicKey = getPublicKey(name);
     const privateKey = getPrivateKey(name);
     Object.defineProperty(target, privateKey, {
@@ -498,8 +499,11 @@ function hookProperty(target, name, value, setter) {
             return this[privateKey];
         },
         set(value) {
+            if (callSetterFirst)
+                setter(value);
             this[privateKey] = value;
-            setter(value);
+            if (!callSetterFirst)
+                setter(value);
         },
         enumerable: true,
         configurable: true,
@@ -511,16 +515,20 @@ function hookProperty(target, name, value, setter) {
  * @param name the property to replace the setter and getter for
  * @param origDescriptor the original property descriptor
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
+ * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
  */
-function hookPropertySetter(target, name, origDescriptor, setter) {
+function hookPropertySetter(target, name, origDescriptor, setter, callSetterFirst = false) {
     const publicKey = getPublicKey(name);
     Object.defineProperty(target, publicKey, {
         get: origDescriptor.get, // Leave the get accessor as it was
         set(value) {
+            if (callSetterFirst)
+                setter(value);
             if (origDescriptor.set) {
                 origDescriptor.set.call(target, value); // Call the original set accessor with the provided value
             }
-            setter(value);
+            if (!callSetterFirst)
+                setter(value);
         },
         enumerable: origDescriptor.enumerable,
         configurable: origDescriptor.configurable,
@@ -531,6 +539,7 @@ function hookPropertySetter(target, name, origDescriptor, setter) {
  * @param target the class to get the property descriptor from
  * @param key the property to get the descriptor for
  * @returns PropertyDescriptor
+ * @throws Error if the property descriptor is not found
  */
 function getPropertyDescriptor(target, key) {
     let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
@@ -597,23 +606,75 @@ function BindCSSClass(id) {
             }
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const origValue = element.className;
             const value = context.access.get(this);
-            element.className = origValue + " " + value;
+            let valArray = value.split(" ").filter((v) => v.length > 0);
+            if (valArray.length > 0)
+                element.classList.add(...value.split(" "));
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element["className"] = origValue + " " + value;
-                });
+                    let currentList = context.access
+                        .get(this)
+                        .split(" ")
+                        .filter((v) => v.length > 0);
+                    if (currentList.length > 0)
+                        element.classList.remove(...currentList);
+                    let newClasses = value
+                        .split(" ")
+                        .filter((v) => v.length > 0);
+                    if (newClasses.length > 0)
+                        element.classList.add(...newClasses);
+                }, true);
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element["className"] = origValue + " " + value;
-                });
+                    let currentList = context.access
+                        .get(this)
+                        .split(" ")
+                        .filter((v) => v.length > 0);
+                    if (currentList.length > 0)
+                        element.classList.remove(...currentList);
+                    let newClasses = value
+                        .split(" ")
+                        .filter((v) => v.length > 0);
+                    if (newClasses.length > 0)
+                        element.classList.add(...newClasses);
+                }, true);
             }
         });
     };
 }
 exports.BindCSSClass = BindCSSClass;
+function BindCSSClassEnabled(id, cssClassName) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            element.classList.remove(cssClassName);
+            if (value)
+                element.classList.add(cssClassName);
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, (value) => {
+                    element.classList.remove(cssClassName);
+                    if (value)
+                        element.classList.add(cssClassName);
+                }, true);
+            }
+            else {
+                hookProperty(this, context.name, value, (value) => {
+                    element.classList.remove(cssClassName);
+                    if (value)
+                        element.classList.add(cssClassName);
+                }, true);
+            }
+        });
+    };
+}
+exports.BindCSSClassEnabled = BindCSSClassEnabled;
 /**
  * @description Decorator to bind the innerHtml property to an element.
  * @param id the element to bind the property to
@@ -687,6 +748,60 @@ function BindValue(id) {
     };
 }
 exports.BindValue = BindValue;
+/**
+ * @description Decorator to bind any attribute of an element to a property
+ * @param id the element to bind the property to
+ * @param attribute the attribute to bind
+ * @note can be bound to both a boolean or a string property.  For a boolean, the value adds or removes the attribute (for things like disabled, checked, etc.).  If a string,the attribute is set to that value.
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will set the disabled attribute of the button with id myButton to the value of the disabled property
+ * @BindAttribute("myButton", "disabled")
+ * public disabled: boolean = false;
+ * @example
+ * //This will set the src attribute of the img with id myImg to the value of the src property
+ * @BindAttribute("myImg", "src")
+ * public src: string = "https://via.placeholder.com/150";
+ */
+function BindAttribute(id, attribute) {
+    return function (target, context) {
+        context.addInitializer(function () {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const publicKey = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const value = context.access.get(this);
+            let setfn;
+            if (typeof value === "boolean") {
+                setfn = (value) => {
+                    if (value) {
+                        element.setAttribute(attribute, "true");
+                    }
+                    else {
+                        element.removeAttribute(attribute);
+                    }
+                };
+                setfn(value);
+            }
+            else {
+                setfn = (value) => {
+                    element.setAttribute(attribute, value);
+                };
+                setfn(value);
+            }
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, setfn);
+            }
+            else {
+                hookProperty(this, context.name, value, setfn);
+            }
+        });
+    };
+}
+exports.BindAttribute = BindAttribute;
 /**
  * @description Decorator to transform the value of a property before it is set on the html element.
  * @param fn {PipeFunction} the function to transform the value
@@ -780,11 +895,11 @@ exports.ReplacePipe = ReplacePipe;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.bootstrap = void 0;
 /** @hidden */
-function bootstrap(target, testModeHTML = "") {
+function bootstrap(target, testModeHTML = "", ...args) {
     if (testModeHTML.length > 0) {
         window.document.body.innerHTML = testModeHTML;
     }
-    let obj = Object.assign(new target());
+    let obj = Object.assign(new target(...args));
     const element = window.document.getElementById("main-target");
     if (element)
         obj.appendToDomElement(element);
