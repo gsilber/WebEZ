@@ -215,31 +215,6 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
 }
 
 /**
- * @description Decorator to bind a specific style to a number, and append a 'px' to the value
- * @param id the element to bind the property to
- * @param a value that the transformer will turn into a string that will be set as the style
- * @returns DecoratorCallback
- * @overload
- * @export
- * @example
- * //This will set the width of the div to the number in width
- * @BindstyleToNumberAppendPx("myDiv", "width")
- * public width: number = 100;
- */
-export function BindstyleToNumberAppendPx<
-    K extends keyof CSSStyleDeclaration,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    This extends EzComponent,
-    Value extends number,
->(id: string, style: K) {
-    return BindStyle(
-        id,
-        style,
-        (value: Value) => `${value}px` as CSSStyleDeclaration[K],
-    );
-}
-
-/**
  * @description Decorator to bind the className property to an element.
  * @param id the element to bind the property to
  * @param transform an optional function to transform the value to a string before it is set on the element
@@ -345,25 +320,6 @@ export function BindCSSClass<Value>(
             }
         });
     };
-}
-
-/**
- * @description Decorator to bind the cssClassName property if the boolean property is true
- * @param id the element to bind the property to
- * @param cssClassName the class name to add
- * @returns DecoratorCallback
- * @export
- * @example
- * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
- * @BindCSSClassToBoolean("myDiv", "myCSSClass")
- * public enabled: boolean = true;
- */
-export function BindCSSClassToBoolean<
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    This extends EzComponent,
-    Value extends boolean,
->(id: string, cssClassName: string) {
-    return BindCSSClass(id, (value: Value) => (value ? cssClassName : ""));
 }
 
 /**
@@ -582,4 +538,89 @@ export function BindAttribute<K extends string, Value>(
             }
         });
     };
+}
+
+// Wrapper methods for specific operations
+/**
+ * @description Decorator to bind the cssClassName property if the boolean property is true
+ * @param id the element to bind the property to
+ * @param cssClassName the class name to add
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
+ * @BindCSSClassToBoolean("myDiv", "myCSSClass")
+ * public enabled: boolean = true;
+ */
+export function BindCSSClassToBoolean<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    This extends EzComponent,
+    Value extends boolean,
+>(id: string, cssClassName: string) {
+    return BindCSSClass(id, (value: Value) => (value ? cssClassName : ""));
+}
+
+/**
+ * @description Decorator to bind the disabled attribute of an element to a boolean
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will disable the button with id myButton if the disabled property is true
+ * @BindDisabledToBoolean("myButton")
+ * public disabled: boolean = true;
+ */
+export function BindDisabledToBoolean<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    This extends EzComponent,
+    Value extends boolean,
+>(id: string) {
+    return BindAttribute(id, "disabled", (value: Value) =>
+        value ? "disabled" : "",
+    );
+}
+
+/**
+ * @description Decorator to bind the visibility of an element to a boolean
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindCheckedToBoolean("myCheckbox")
+ * public checked: boolean = true;
+ */
+export function BindVisibleToBoolean<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    This extends EzComponent,
+    Value extends boolean,
+>(id: string) {
+    return BindStyle(id, "display", (value: Value) =>
+        value ? "block" : "none",
+    );
+}
+
+/**
+ * @description Decorator to bind a specific style to a number, and append a 'px' to the value
+ * @param id the element to bind the property to
+ * @param a value that the transformer will turn into a string that will be set as the style
+ * @returns DecoratorCallback
+ * @overload
+ * @export
+ * @example
+ * //This will set the width of the div to the number in width
+ * @BindstyleToNumberAppendPx("myDiv", "width")
+ * public width: number = 100;
+ */
+export function BindstyleToNumberAppendPx<
+    K extends keyof CSSStyleDeclaration,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    This extends EzComponent,
+    Value extends number,
+>(id: string, style: K) {
+    return BindStyle(
+        id,
+        style,
+        (value: Value) => `${value}px` as CSSStyleDeclaration[K],
+    );
 }
