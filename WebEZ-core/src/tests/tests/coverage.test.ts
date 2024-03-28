@@ -3,7 +3,6 @@ import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
 import { NoRootParentCompnent } from "../testing_components/exceptions/bad.components";
 import { SizeInfo } from "../../EzComponent";
-declare const window: Window;
 describe("Exceptions and  (out of band testing)", () => {
     describe("Attach to body instead of target", () => {
         test("Create Instance", () => {
@@ -25,6 +24,19 @@ describe("Exceptions and  (out of band testing)", () => {
             let toplevel: any = undefined;
             toplevel = bootstrap<NoRootParentCompnent>(NoRootParentCompnent);
             expect(toplevel).toBeInstanceOf(NoRootParentCompnent);
+        });
+    });
+    describe("Callable methods", () => {
+        test("Create Instance", () => {
+            let toplevel: any = undefined;
+            toplevel = bootstrap<TestComponent>(TestComponent);
+            expect(toplevel).toBeInstanceOf(TestComponent);
+            toplevel.evtTest = false;
+            toplevel.focus("evtInput3");
+            expect(toplevel.evtTest).toBeTruthy();
+            toplevel.evtTest = false;
+            toplevel.click("evtButton3");
+            expect(toplevel.evtTest).toBeTruthy();
         });
     });
     describe("Resize Event Tests", () => {

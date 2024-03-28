@@ -3,9 +3,9 @@ import {
     BindAttribute,
     BindCSSClass,
     BindCSSClassToBoolean,
-    BindInnerHTML,
     BindStyle,
     BindValue,
+    BindstyleToNumberAppendPx,
 } from "../../bind.decorators";
 import {
     Click,
@@ -25,11 +25,15 @@ const html = `<div id="child1"></div>
 <div id="child4"></div>
 <button id="evtButton1"></button>
 <button id="evtButton2"></button>
+<button id="evtButton3"></button>
 <div id="evtDiv1"></div>
 <div id="evtDiv2"></div>
+<div id="evtDiv3"></div>
 <input type="text" id="evtInput1" />
+<input type="text" id="evtInput3" />
 <input type="text" id="bindInput1" />
 <input type="text" id="bindInput2" />
+<input type="text" id="bindInput3" />
 <div id="bindDiv1"></div>
 <div id="bindDiv2"></div>
 <div id="bindDiv3"></div>
@@ -47,9 +51,26 @@ const html = `<div id="child1"></div>
 <div id="bindDiv15"></div>
 <div id="bindDiv16"></div>
 <div id="bindDiv17" class="initial"></div>
+<div id="bindDiv18"></div>
+<div id="bindDiv19"></div>
+<div id="bindDiv20"></div>
+<div id="bindDiv21"></div>
+<textarea id="bindTa1"></textarea>
+<select id="bindSel1">
+    <option id="bindOpt1" value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+</select>
+<textarea id="bindTa2"></textarea>
+<select id="bindSel2">
+    <option id="bindOpt2" value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+</select>
 <div id="styleDiv1"></div>
 <div id="styleDiv2"></div>
 <div id="styleDiv3"></div>
+<div id="styleDiv4"></div>
 <button id="attribBtn1"></button>
 <button id="attribBtn2"></button>
 <button id="attribBtn3"></button>
@@ -75,24 +96,36 @@ export class TestComponent extends EzComponent {
     @BindStyle("styleDiv1", "color")
     testStyle1: string = "red";
 
+    @BindstyleToNumberAppendPx("styleDiv4", "width")
+    testStyle4: number = 100;
+
     @BindStyle("styleDiv2", "color")
     @BindStyle("styleDiv3", "color")
     testStyle2: string = "blue";
 
-    @BindInnerHTML("bindDiv1")
+    @BindValue("bindDiv1")
     testbind1: string = "hello";
 
     @BindValue("bindInput1")
     testbind2: string = "hello";
+    @Input("bindInput1")
+    testbind2Change(event: Event) {
+        this.testbind2 = (event.target as HTMLInputElement).value;
+    }
 
-    @BindInnerHTML("bindDiv2")
-    @BindInnerHTML("bindDiv3")
+    @BindValue("bindDiv2")
+    @BindValue("bindDiv3")
     testbind3: string = "hello";
 
-    @BindInnerHTML("bindDiv4")
-    @BindInnerHTML("bindDiv5")
+    @BindValue("bindDiv4")
+    @BindValue("bindDiv5")
     @BindValue("bindInput2")
     testbind4: string = "hello";
+
+    @Input("bindInput2")
+    testbind4Change(event: Event) {
+        this.testbind4 = (event.target as HTMLInputElement).value;
+    }
 
     @BindCSSClass("bindDiv6")
     testbind5: string = "hello";
@@ -100,8 +133,8 @@ export class TestComponent extends EzComponent {
     @BindCSSClass("bindDiv8")
     testbind6: string = "hello";
 
-    @BindInnerHTML("bindDiv9", (val: string) => `$$$${val} ${"World!!!"}`)
-    @BindInnerHTML("bindDiv10", (val: string) => `$$$${val} ${"World!!!"}`)
+    @BindValue("bindDiv9", (val: string) => `$$$${val} ${"World!!!"}`)
+    @BindValue("bindDiv10", (val: string) => `$$$${val} ${"World!!!"}`)
     testbind7: string = "hello";
 
     @BindCSSClass("bindDiv11")
@@ -146,14 +179,39 @@ export class TestComponent extends EzComponent {
     testAttrib5: boolean = true;
 
     @BindAttribute("attribImg1", "src")
-    @BindInnerHTML("attribDiv1")
+    @BindValue("attribDiv1")
     testAttrib2: string = "https://www.google.com";
 
-    @BindInnerHTML("attribDiv1")
+    @BindValue("attribDiv1")
     @BindAttribute("attribImg1", "src")
     testAttrib6: string = "https://www.google.com";
 
     timerTest1: number = 0;
+    @BindValue("bindTa1")
+    testTa1: string = "hello";
+
+    @BindValue("bindSel1")
+    testSel1: string = "2";
+
+    @BindValue("bindOpt1")
+    testOpt1: string = "99";
+
+    @BindValue("bindInput3")
+    @BindValue("bindDiv21")
+    testInput3: string = "hello";
+
+    @BindValue("bindTa2")
+    @BindValue("bindDiv18")
+    testTa2: string = "hello";
+
+    @BindValue("bindSel2")
+    @BindValue("bindDiv19")
+    testSel2: string = "2";
+
+    @BindValue("bindOpt2")
+    @BindValue("bindDiv20")
+    testOpt2: string = "99";
+
     constructor() {
         super(html, css);
         this.addComponent(this.child1, "child1");
@@ -188,6 +246,16 @@ export class TestComponent extends EzComponent {
     @Input("evtInput1")
     evtInput1Change(event: Event) {
         this.testVal4 = (event.target as HTMLInputElement).value;
+    }
+
+    evtTest: boolean = false;
+    @Click("evtButton3")
+    evtbutton2Click() {
+        this.evtTest = !this.evtTest;
+    }
+    @GenericEvent("evtInput3", "focus")
+    evtInput1Event() {
+        this.evtTest = !this.evtTest;
     }
 
     @WindowEvent("resize")

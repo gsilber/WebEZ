@@ -1,7 +1,7 @@
 import { EzComponent } from "../../../EzComponent";
 import {
+    BindAttribute,
     BindCSSClass,
-    BindInnerHTML,
     BindStyle,
     BindValue,
 } from "../../../bind.decorators";
@@ -25,13 +25,6 @@ export class BadCssComponent extends EzComponent {
         super(html, css);
     }
 }
-export class BadInnerHTMLComponent extends EzComponent {
-    @BindInnerHTML("doesNotExist")
-    val: string = "hello";
-    constructor() {
-        super(html, css);
-    }
-}
 export class BadValueComponent extends EzComponent {
     @BindValue("doesNotExist")
     val: string = "hello";
@@ -39,20 +32,11 @@ export class BadValueComponent extends EzComponent {
         super(html, css);
     }
 }
-export class BadValueComponentStack extends EzComponent {
-    @BindValue("exists")
-    @BindValue("exists2")
-    val: string = "hello";
+export class BadAttributeComponent extends EzComponent {
+    @BindAttribute("doesNotExist", "disabled")
+    val: string = "true";
     constructor() {
-        super('<div id="exists"></div><div id="exists2"></div>', css);
-    }
-}
-export class BadValueComponentOrder extends EzComponent {
-    @BindValue("exists")
-    @BindInnerHTML("exists2")
-    val: string = "hello";
-    constructor() {
-        super('<div id="exists"></div><div id="exists2"></div>', css);
+        super(html, css);
     }
 }
 export class NoRootChildComponent extends EzComponent {

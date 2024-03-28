@@ -32,17 +32,6 @@ function getPrivateKey<This extends EzComponent>(
 }
 
 /**
- * @description Gets the pipe key of the field name
- * @param name the name of the field
- * @returns the pipe key
- */
-function getPipeKey<This extends EzComponent>(
-    name: string | symbol,
-): keyof This {
-    return `__${String(name)}_pipe` as keyof This;
-}
-
-/**
  * @description replaces a property with a new setter and the default getter.  The new setter can call the original setter.
  * @param target the class to replace the setter in
  * @param name the property to replace the setter for
@@ -239,6 +228,7 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
  */
 export function BindstyleToNumberAppendPx<
     K extends keyof CSSStyleDeclaration,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     This extends EzComponent,
     Value extends number,
 >(id: string, style: K) {
@@ -250,7 +240,7 @@ export function BindstyleToNumberAppendPx<
 }
 
 /**
- * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
+ * @description Decorator to bind the className property to an element.
  * @param id the element to bind the property to
  * @param transform an optional function to transform the value to a string before it is set on the element
  * @returns DecoratorCallback
@@ -270,7 +260,7 @@ export function BindCSSClass<Value extends string>(
 ) => any;
 
 /**
- * @description Decorator to bind the className property to an element.  Only effects BindStyle and BindInnerHtml decorators
+ * @description Decorator to bind the className property to an element.
  * @param id the element to bind the property to
  * @param transform a function to transform the value to a string before it is set on the element
  * @returns DecoratorCallback
@@ -369,6 +359,7 @@ export function BindCSSClass<Value>(
  * public enabled: boolean = true;
  */
 export function BindCSSClassToBoolean<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     This extends EzComponent,
     Value extends boolean,
 >(id: string, cssClassName: string) {
@@ -376,21 +367,30 @@ export function BindCSSClassToBoolean<
 }
 
 /**
- * @description Decorator to bind the innerHtml property to an element.
+ * @description Decorator to bind the innerHtml or value property to an element.
  * @param id the element to bind the property to
  * @param transform an optional function to transform the value before it is set on the element
  * @returns DecoratorCallback
  * @export
  * @example
  * //This will display Hello World in the div with id myDiv
- * @BindInnerHTML("myDiv")
+ * @BindValue("myDiv")
  * public hello: string = "Hello World";
  * @example
  * //This will display Hello World in the div with id myDiv in upper case
- * @BindInnerHTML("myDiv", (value: string) => value.toUpperCase())
+ * @BindValue("myDiv", (value: string) => value.toUpperCase())
  * public hello: string = "Hello World";
+ * @example
+ * //This will display the value of the variable in the input box with id myInput
+ * @BindValue("myInput")
+ * public hello: string = "Hello World";
+ * @example
+ * //This will display the value of the variable in the input box with id myInput in upper case
+ * @BindValue("myInput", (value: string) => value.toUpperCase())
+ * public hello: string = "Hello World";
+ *
  */
-export function BindInnerHTML<Value extends string>(
+export function BindValue<Value extends string>(
     id: string,
     transform?: (value: Value) => string,
 ): <This extends EzComponent>(
@@ -406,10 +406,14 @@ export function BindInnerHTML<Value extends string>(
  * @export
  * @example
  * //This will display Hello World in the div with id myDiv
- * @BindInnerHTML("myDiv", (value: boolean) => value ? "Hello" : "Goodbye")
+ * @BindValue("myDiv", (value: boolean) => value ? "Hello" : "Goodbye")
  * public hello: boolean = true;
+ * @example
+ * //This will display hello world in the input box with id myInput
+ * @BindValue("myInput", (value: string) => value.toUpperCase())
+ * public hello: string = "Hello World";
  */
-export function BindInnerHTML<Value>(
+export function BindValue<Value>(
     id: string,
     transform: (value: Value) => string,
 ): <This extends EzComponent>(
@@ -418,7 +422,7 @@ export function BindInnerHTML<Value>(
 ) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
-export function BindInnerHTML<Value>(
+export function BindValue<Value>(
     id: string,
     transform: (value: Value) => string = (value: Value) => value as string,
 ): <This extends EzComponent>(
@@ -437,14 +441,36 @@ export function BindInnerHTML<Value>(
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            element.innerHTML = transform(value);
+            if (element instanceof HTMLInputElement)
+                (element as HTMLInputElement).value = transform(value);
+            else if (element instanceof HTMLTextAreaElement)
+                (element as HTMLTextAreaElement).value = transform(value);
+            else if (element instanceof HTMLSelectElement)
+                (element as HTMLSelectElement).value = transform(value);
+            else if (element instanceof HTMLOptionElement) {
+                (element as HTMLOptionElement).value = transform(value);
+                element.text = transform(value);
+            } else element.innerHTML = transform(value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        element.innerHTML = transform(value);
+                        if (element instanceof HTMLInputElement)
+                            (element as HTMLInputElement).value =
+                                transform(value);
+                        else if (element instanceof HTMLTextAreaElement)
+                            (element as HTMLTextAreaElement).value =
+                                transform(value);
+                        else if (element instanceof HTMLSelectElement)
+                            (element as HTMLSelectElement).value =
+                                transform(value);
+                        else if (element instanceof HTMLOptionElement) {
+                            (element as HTMLOptionElement).value =
+                                transform(value);
+                            element.text = transform(value);
+                        } else element.innerHTML = transform(value);
                     },
                 );
             } else {
@@ -453,107 +479,22 @@ export function BindInnerHTML<Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        element.innerHTML = transform(value);
+                        if (element instanceof HTMLInputElement)
+                            (element as HTMLInputElement).value =
+                                transform(value);
+                        else if (element instanceof HTMLTextAreaElement)
+                            (element as HTMLTextAreaElement).value =
+                                transform(value);
+                        else if (element instanceof HTMLSelectElement)
+                            (element as HTMLSelectElement).value =
+                                transform(value);
+                        else if (element instanceof HTMLOptionElement) {
+                            (element as HTMLOptionElement).value =
+                                transform(value);
+                            element.text = transform(value);
+                        } else element.innerHTML = transform(value);
                     },
                 );
-            }
-        });
-    };
-}
-
-/**
- * @description Decorator to bind the Value property to an element.  Should be input elements
- * @param id the element to bind the property to
- * @param transform an optional pair of functions of the form {forward: fn1,revers: fn2} to transform the value before it is set on the element and before it is retrieved from the element
- * @returns DecoratorCallback
- * @note This decorator should be last in the list of decorators for a property and can only appear once.
- * @export
- * @example
- * //This will bind the value of the input element with id myInput to the value property of the class
- * @BindValue("myInput")
- * public value: string = "Hello";
- */
-export function BindValue<Value extends string>(
-    id: string,
-    transform?: {
-        forward: (value: Value) => string;
-        reverse: (value: string) => Value;
-    },
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
-
-/**
- * @description Decorator to bind the Value property to an element.  Should be input elements
- * @param id the element to bind the property to
- * @param transform a pair of functions of the form {forward: fn1,revers: fn2} to transform the value before it is set on the element and before it is retrieved from the element
- * @returns DecoratorCallback
- * @note This decorator should be last in the list of decorators for a property and can only appear once.
- * @export
- * @example
- * //This will bind the value of the input element with id myInput to the value property of the class
- * @BindValue("myInput",{forward:(v: number) => v.toString(), reverse: (v: string) => parseInt(v})
- * public value: number = 4;
- */
-export function BindValue<Value>(
-    id: string,
-    transform: {
-        forward: (value: Value) => string;
-        reverse: (value: string) => Value;
-    },
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
-
-// Actual implementation, should not be in documentation as the overloads capture the two cases
-export function BindValue<Value>(
-    id: string,
-    transform: {
-        forward: (value: Value) => string;
-        reverse: (value: string) => Value;
-    } = {
-        forward: (value: Value) => value as string,
-        reverse: (value: string) => value as Value,
-    },
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any {
-    return function <This extends EzComponent>(
-        target: undefined,
-        context: ClassFieldDecoratorContext<This, Value>,
-    ) {
-        context.addInitializer(function (this: This) {
-            const element = this["shadow"].getElementById(id) as
-                | HTMLInputElement
-                | undefined;
-            if (!element) {
-                throw new Error(`can not find HTML element with id: ${id}`);
-            }
-            const publicKey: keyof This = getPublicKey(context.name);
-            const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const value = context.access.get(this);
-
-            element.value = transform.forward(value);
-            //hook both getter and setter to value
-            if (origDescriptor.set) {
-                throw new Error(
-                    "Cannot stack multiple value decorators.  If stacking with InnerHtml decorator, the value decorator must be last in the list.",
-                );
-            } else {
-                hookProperty(
-                    this,
-                    context.name,
-                    value,
-                    (value: Value): void => {
-                        element["value"] = transform.forward(value);
-                    },
-                );
-                element.addEventListener("input", () => {
-                    (this[publicKey] as any) = transform.reverse(element.value);
-                });
             }
         });
     };
