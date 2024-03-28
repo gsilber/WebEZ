@@ -121,11 +121,11 @@ export class MainComponent extends EzComponent {
 	@BindValue("user-name")
     userName: string = "";
 
-	@BindInnerHtml("user-count")
-    userCount: string = "0";
+	@BindValue("user-count",(v:number)=>v.toString())
+    userCount: number = 0;
 
     @BindStyle("user-count","color")
-    userCountColor:string=red;
+    userCountColor:string="red";
     
     constructor() {
         super(html, css);
@@ -146,9 +146,12 @@ export class MainComponent extends EzComponent {
 	@BindValue("user-name")
     userName: string = "";
 
-	@BindInnerHtml("user-count")
-    userCount: string = "0";
+	@BindValue("user-count",(v:number)=>v.toString())
+    userCount: number = 0;
 
+    @BindStyle("user-count","color")
+    userCountColor:string="red";
+    
     constructor() {
         super(html, css);
     }
@@ -160,76 +163,56 @@ export class MainComponent extends EzComponent {
     }
 }
 ```
-## Decorators
+## Bind Decorators
 ### @BindValue(id)
-> Binds to {string} 
+> Binds to string, or must have a transform that returns a string 
 
-Connects the value property of an html element with id bidirectionally with a member variable of the class.
+Connects the value property of an html element with id.  Optionally takes a transform method.
 ```
 HTML FILE:
 <input type='text' id='inp1'/>
+<input type='text' id='inp2'/>
 ```
 
 ```
 TS File:
 @BindValue("inp1") inputValue:string="";
-```
-### @BindInnerHTML(id)
-> Binds to {string} 
-Connects the innerHTML property of an html element with id with a member variable of the class.  Updating the variable will update the html element, but not the other way around
-```
-HTML FILE:
-<div id="div1"></div>
-```
-```TS File:
-@BindInnerHTML("div1") divString:string='Hello world!!!';
+@BindValue("inp2",(v:number)=>v.toString())  inputValue2:number=0;
+
+
 ```
 ### @BindCSSClass(id)
-> Binds to {string} 
+> Binds to string or must have a transform that returns a string.
 
 Connects the css class of an html element with id with a member variable of the class.  This does not effect css classes defined in the html.
 ```
 HTML File:
 <div id="div2"></div>
-```
-```
-TS File:
-@BindCSSClass("div2") div2Style:string="btn btn-primary"
-```
-### @BindCssClassEnabled(id,cssClassName)
-> Binds to {boolean} 
-
-This decorator connects a boolean property such then when it is true, the cssClassName is applied to the element with id.  This is independent of ```@BindCSSClass``` which binds a string value into the css class list
-```
-HTML File:
-<div id="div1">Hello World!!!</div>
-```
-```
-CSS File:
-.hidden{
-    display:none;
-}
-```
-```
-TS File:
-@BindCSSClassEnabled("div1","hidden")
-```
-### @BindStyle(id,style)
-> Binds to {string} 
-
-Connects a specific style of an html element with id with a member variable of the class.  If the style you want has a -, the decorator expects in in camel case (i.e. background-color would be backgroundColor)
-```
-HTML File:
 <div id="div3"></div>
 ```
 ```
 TS File:
-@BindStyle('div3','backgroundColor') div3BgColor:string="red";
+@BindCSSClass("div2") div2Class:string="btn btn-primary";
+@BindCSSClass("div3",(v:boolean)=>v?"hidden":"") hidden:boolean=true;
+```
+### @BindStyle(id,style)
+> Binds to string or must have a transform that returns a string.
+
+Connects a specific style of an html element with id with a member variable of the class.  If the style you want has a -, the decorator expects in in camel case (i.e. background-color would be backgroundColor)
+```
+HTML File:
+<div id="div2"></div>
+<div id="div3"></div>
+```
+```
+TS File:
+@BindStyle('div2','backgroundColor') div3BgColor:string="red";
+@BindStyle('div2','display',(v:boolean)=>v?"none":"block") hidden:boolean=true;
 ```
 ### @BindAttribute(id,attributeName)
-> Binds to {string,boolean} 
+> Binds to string or must have a transform that returns a string.
 
-Unlike the other binders, this can be bound to either a string or a boolean.  If you bind to a string, it will set the value of the attribute.  If you bind to a boolean it will add or remove the attribute (for attributes like disabled that are active if they exist on the object, even if their value is undefined).
+Connects an attribute of an html element with id with a member variable of the class.  If the value is the empty string, the attribute is deleted from the element.
 ```
 HTML File:
 <btn id="btn1">
@@ -237,12 +220,71 @@ HTML File:
 ```
 ```
 TS File:
-@BindAttribute("btn1","disabled")
+@BindAttribute("btn1","disabled",(v:boolean)=>v?"disabled":"")
 disableBtn:boolean=false;
 
 @BindAttribute("img1","src")
 imgSrc:string="http://my.imagesrc.com/img1";
 ```
+
+### @BindCSSClassToBoolean(id,className)
+> Binds to a boolean
+
+Connects className to the element with id if the value is true.  Removes it otherwise.
+```
+HTML File:
+<div id="div1"></div>
+```
+```
+TS File:
+@BindCSSClassToBoolean('div1','size-huge') makeItBig:boolean=true;
+
+```
+
+### BindDisabledToBoolean(id)
+> Binds to a boolean
+
+Disables the element with id when true.  Enables it otherwise
+```
+HTML File:
+<div id="div1"></div>
+```
+```
+TS File:
+@BindDisabledToBoolean('div1') disabled:boolean=false;
+
+```
+### BindVisibleToBoolean
+>Binds to a boolean
+
+Shows or hides an element based on the value of the boolean.
+```
+HTML File:
+<div id="div1"></div>
+```
+```
+TS File:
+@BindVisibleToBoolean('div1') visible:boolean=true;
+
+```
+
+
+### BindStyleToNumberAppendPx
+>Binds to a number
+
+Binds a numeric property to the element with id and appends "px" to the end of the string.
+```
+HTML File:
+<div id="div1"></div>
+```
+```
+TS File:
+@BindStyleToNumberAppendPx("div1","width") width:number=200;
+
+```
+
+
+## Event Decorators
 ### @GenericEvent(id,event)
 > Binds to {(evt:?Event)=>void} 
 
@@ -319,43 +361,34 @@ onInput(evt:Event){
     console.log(evt);
 }
 ```
-### @Pipe(pipeFunction)
-> Binds to {PipeFunction} (v:string)=>string
+### Bind Transforms
 
-You can transform the text in a field before it is displayed using the ```@Pipe``` decorator.  These can be stacked and will be applied in the order they appear.  They can and should be stacked with any other ```@Bind``` decorator and will transform the text displayed.
+Unless otherwise specified, bind decorators can take an extra argument to convert the member you are binding's value to a string before sending it to the decorator.  These transform methods must return the appropriate type for the element and type of decorator.
 ```
 HTML File:
 <div id="mover" class="small-square-box"></div>
 ```
+If our property is a string, we don't have to do anything.
 ```
 TS File:
-    @Pipe((numStr: string) => numStr + "px")
-    @BindStyle("mover", "top")
-    private mover: string = "0";
-    . . .
-    @Click("btn"){
-        this.mover=(+this.mover+10).toString();
-    }
-
+@BindStyle('mover','top') value:string="100px";
 ```
-### @AppendPipe(string)
-> Binds to {PipeFunction} (v:string)=>string
+If our propety is a number, then we can still bind it like this
+```
+@BindStyle('mover','top',(v:number)=>v.toString()+"px") value:number=100;
+```
+Note that the method we pass in converts our property type (number) to a string.
 
-You can append the text to a field before it is displayed.
-### @PrependPipe(string)
-> Binds to {PipeFunction} (v:string)=>string
-
-You can prepend the text to a field before it is displayed.
-### @ReplacePipe(search:string|RegExp,replaceWith:string)
-> Binds to {PipeFunction} (v:string)=>string
-
-You can replace the search text with the repaceWith text before it is displayed.
+There are also some simple wrappers available to help you as documented above.  In the case of our last example, we could use a wrapper like this:
+```
+@BindStyleToNumberAppendPx("div1") value:number=100;
+```
 ## Stacking Methods
 
-With the exception of the ```@BindValue``` decorator, decorators can be stacked on methods and properties.  The ```@BindValue``` can appear only once and if stacked with other decorators, must be the last one in the list.  Stacked decorators are applied from bottom to top.
+All decorators can be stacked on methods and properties.  Stacked decorators are applied from bottom to top.
 ```
-@BindInnerHTML("div1"}
-@BindInnerHTML("div2")
+@BindValue("div1"}
+@BindValue("div2")
 @BindValue("input1")
 inputValue:string='';
 
