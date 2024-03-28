@@ -28,6 +28,8 @@ module.exports = {
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": "error",
 
+        "no-redeclare": "off",
+
         // https://typescript-eslint.io/rules/ban-ts-comment
         // Disallow @ts-<directive> comments or require descriptions after directives.
         "@typescript-eslint/ban-ts-comment": "error",

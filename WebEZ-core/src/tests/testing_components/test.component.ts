@@ -1,16 +1,11 @@
 import { EzComponent } from "../../EzComponent";
 import {
-    AppendPipe,
     BindAttribute,
     BindCSSClass,
-    BindCSSClassEnabled,
-    //BindCSSClassEnable,
+    BindCSSClassToBoolean,
     BindInnerHTML,
     BindStyle,
     BindValue,
-    Pipe,
-    PrependPipe,
-    ReplacePipe,
 } from "../../bind.decorators";
 import {
     Click,
@@ -105,12 +100,8 @@ export class TestComponent extends EzComponent {
     @BindCSSClass("bindDiv8")
     testbind6: string = "hello";
 
-    @BindInnerHTML("bindDiv9")
-    @ReplacePipe("world", "World")
-    @PrependPipe("$$$")
-    @AppendPipe("!!!")
-    @Pipe((val: string) => val + " world")
-    @BindInnerHTML("bindDiv10")
+    @BindInnerHTML("bindDiv9", (val: string) => `$$$${val} ${"World!!!"}`)
+    @BindInnerHTML("bindDiv10", (val: string) => `$$$${val} ${"World!!!"}`)
     testbind7: string = "hello";
 
     @BindCSSClass("bindDiv11")
@@ -120,30 +111,38 @@ export class TestComponent extends EzComponent {
     @BindCSSClass("bindDiv13")
     testcss2: string = "btn";
 
-    @BindCSSClassEnabled("bindDiv14", "title")
+    @BindCSSClassToBoolean("bindDiv14", "title")
     testcss3: boolean = true;
 
-    @BindCSSClassEnabled("bindDiv15", "title")
+    @BindCSSClassToBoolean("bindDiv15", "title")
     testcss4: boolean = false;
 
-    @BindCSSClassEnabled("bindDiv15", "title")
-    @BindCSSClassEnabled("bindDiv15", "header")
+    @BindCSSClassToBoolean("bindDiv15", "title")
+    @BindCSSClassToBoolean("bindDiv15", "header")
     testcss5: boolean = false;
 
-    @BindCSSClassEnabled("bindDiv16", "title")
-    @BindCSSClassEnabled("bindDiv16", "header")
+    @BindCSSClassToBoolean("bindDiv16", "title")
+    @BindCSSClassToBoolean("bindDiv16", "header")
     testcss6: boolean = true;
-    @BindCSSClassEnabled("bindDiv17", "title")
+    @BindCSSClassToBoolean("bindDiv17", "title")
     testcss7: boolean = false;
 
-    @BindAttribute("attribBtn1", "disabled")
+    @BindAttribute("attribBtn1", "disabled", (val: boolean) =>
+        val ? "disabled" : "",
+    )
     testAttrib1: boolean = false;
 
-    @BindAttribute("attribBtn2", "disabled")
+    @BindAttribute("attribBtn2", "disabled", (val: boolean) =>
+        val ? "disabled" : "",
+    )
     testAttrib3: boolean = true;
 
-    @BindAttribute("attribBtn4", "disabled")
-    @BindAttribute("attribBtn3", "disabled")
+    @BindAttribute("attribBtn4", "disabled", (val: boolean) =>
+        val ? "disabled" : "",
+    )
+    @BindAttribute("attribBtn3", "disabled", (val: boolean) =>
+        val ? "disabled" : "",
+    )
     testAttrib5: boolean = true;
 
     @BindAttribute("attribImg1", "src")
