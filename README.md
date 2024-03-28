@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.3.14)
+# WebEZ - A simple web framework for Typescript (0.3.15)
 
 ## Getting Started
 
@@ -190,6 +190,22 @@ HTML File:
 ```
 TS File:
 @BindCSSClass("div2") div2Style:string="btn btn-primary"
+```
+### @BindCssClassEnabled(id,cssClassName)
+This decorator connects a boolean property such then when it is true, the cssClassName is applied to the element with id.  This is independent of ```@BindCSSClass``` which binds a string value into the css class list
+```
+HTML File:
+<div id="div1">Hello World!!!</div>
+```
+```
+CSS File:
+.hidden{
+    display:none;
+}
+```
+```
+TS File:
+@BindCSSClassEnabled("div1","hidden")
 ```
 ### @BindStyle(id,style)
 Connects a specific style of an html element with id with a member variable of the class.  If the style you want has a -, the decorator expects in in camel case (i.e. background-color would be backgroundColor)

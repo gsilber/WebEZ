@@ -97,6 +97,22 @@ describe("WebEZ-Bind", () => {
             toplevel.testcss2 = "btn2";
             expect(toplevel.testcss2).toContain("btn2");
             expect(el.className).toContain("btn2");
+            el = toplevel["shadow"].getElementById("bindDiv14") as HTMLElement;
+            expect(el.className).toContain("title");
+            toplevel.testcss3 = false;
+            expect(toplevel.testcss3).toBe(false);
+            expect(el.className).not.toContain("title");
+            toplevel.testcss3 = true;
+            expect(toplevel.testcss3).toBe(true);
+            expect(el.className).toContain("title");
+            el = toplevel["shadow"].getElementById("bindDiv15") as HTMLElement;
+            expect(el.className).not.toContain("title");
+            toplevel.testcss4 = true;
+            expect(toplevel.testcss4).toBe(true);
+            expect(el.className).toContain("title");
+            toplevel.testcss4 = false;
+            expect(toplevel.testcss4).toBe(false);
+            expect(el.className).not.toContain("title");
         });
         test("Stacked Binders with CSSClass", () => {
             let el1 = toplevel["shadow"].getElementById(
@@ -113,6 +129,33 @@ describe("WebEZ-Bind", () => {
             expect(toplevel.testcss1).toContain("btn2");
             expect(el1.className).toContain("btn2");
             expect(el2.className).toContain("btn2");
+            let el = toplevel["shadow"].getElementById(
+                "bindDiv15",
+            ) as HTMLElement;
+            expect(el.className).not.toContain("header");
+            expect(el.className).not.toContain("title");
+            toplevel.testcss5 = true;
+            expect(toplevel.testcss5).toBe(true);
+            expect(el.className).toContain("header");
+            expect(el.className).toContain("title");
+            toplevel.testcss5 = false;
+            expect(toplevel.testcss5).toBe(false);
+            expect(el.className).not.toContain("header");
+            expect(el.className).not.toContain("title");
+            el = toplevel["shadow"].getElementById("bindDiv16") as HTMLElement;
+            expect(el.className).toContain("header");
+            expect(el.className).toContain("title");
+            toplevel.testcss6 = false;
+            expect(toplevel.testcss6).toBe(false);
+            expect(el.className).not.toContain("header");
+            expect(el.className).not.toContain("title");
+            toplevel.testcss6 = true;
+            expect(toplevel.testcss6).toBe(true);
+            expect(el.className).toContain("header");
+            expect(el.className).toContain("title");
+            el = toplevel["shadow"].getElementById("bindDiv17") as HTMLElement;
+            expect(el.className).not.toContain("title");
+            expect(el.className).toContain("initial");
         });
         test("Single Binders with BindStyle", () => {
             let el = toplevel["shadow"].getElementById(
