@@ -5,7 +5,7 @@ declare const window: Window;
 /**
  * @description Type of timer cancel events
  */
-export declare type TimerCancelMethod = () => void;
+export declare type TimerCancelFunction = () => void;
 
 /**
  * @description Decorator to bind a generic event to an element
@@ -143,7 +143,7 @@ export function Input(htmlElementID: string) {
  */
 export function Timer(intervalMS: number) {
     return function <This extends EzComponent, Value extends () => void>(
-        target: (this: This, cancelFn: TimerCancelMethod) => void,
+        target: (this: This, cancelFn: TimerCancelFunction) => void,
         context: ClassMethodDecoratorContext<
             This,
             (this: This, cancel: Value) => void

@@ -3,11 +3,7 @@
  */
 import { EzComponent } from "./EzComponent";
 
-/**
- * @description Cancel function that the timer decorator can add to the method it decorates.
- * @export
- */
-export declare type CancelFunction = () => void;
+
 /**
  * @description Pipe function to be passed tot he type decorator
  * @export
