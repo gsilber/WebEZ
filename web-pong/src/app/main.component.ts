@@ -40,7 +40,7 @@ export class MainComponent extends EzComponent {
      * @memberof MainComponent
      * @summary Binds to game-board style.height
      */
-    @BindStyleToNumberAppendPx("ball", "width")
+    @BindStyleToNumberAppendPx("game-board", "height")
     private boardHeight: number = Globals.BOARD_HEIGHT;
 
     /**

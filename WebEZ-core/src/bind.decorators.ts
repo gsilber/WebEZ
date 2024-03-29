@@ -275,27 +275,38 @@ export function BindCSSClass<Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 
             const value: Value = context.access.get(this);
-
-            let valArray = transform(value)
-                .split(" ")
-                .filter((v) => v.length > 0);
-            if (valArray.length > 0) element.classList.add(...valArray);
+            if (value) {
+                let valArray = transform(value)
+                    .split(" ")
+                    .filter((v) => v.length > 0);
+                if (valArray.length > 0) element.className = valArray.join(" ");
+            }
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        let currentList = transform(context.access.get(this))
-                            .split(" ")
-                            .filter((v) => v.length > 0);
-                        if (currentList.length > 0)
-                            element.classList.remove(...currentList);
+                        let origValue = context.access.get(this);
+                        let currentList;
+                        if (origValue) {
+                            currentList = transform(origValue)
+                                .split(" ")
+                                .filter((v) => v.length > 0);
+                            if (currentList.length > 0)
+                                currentList.forEach(
+                                    (v: string) =>
+                                        (element.className =
+                                            element.className.replace(v, "")),
+                                );
+                        }
                         let newClasses = transform(value)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (newClasses.length > 0)
-                            element.classList.add(...newClasses);
+                            newClasses.forEach(
+                                (v: string) => (element.className += ` ${v}`),
+                            );
                     },
                     true,
                 );
@@ -305,16 +316,27 @@ export function BindCSSClass<Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        let currentList = transform(context.access.get(this))
-                            .split(" ")
-                            .filter((v) => v.length > 0);
-                        if (currentList.length > 0)
-                            element.classList.remove(...currentList);
+                        let origValue = context.access.get(this);
+                        let currentList;
+                        if (origValue) {
+                            currentList = transform(origValue)
+                                .split(" ")
+                                .filter((v) => v.length > 0);
+                            if (currentList.length > 0)
+                                currentList.forEach(
+                                    (v: string) =>
+                                        (element.className =
+                                            element.className.replace(v, "")),
+                                );
+                        }
+
                         let newClasses = transform(value)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (newClasses.length > 0)
-                            element.classList.add(...newClasses);
+                            newClasses.forEach(
+                                (v: string) => (element.className += ` ${v}`),
+                            );
                     },
                     true,
                 );

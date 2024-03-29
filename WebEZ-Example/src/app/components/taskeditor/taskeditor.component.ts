@@ -5,6 +5,7 @@ import {
     EventSubject,
     BindValue,
     Input,
+    BindDisabledToBoolean,
 } from "@gsilber/webez";
 import html from "./taskeditor.component.html";
 import css from "./taskeditor.component.css";
@@ -29,11 +30,12 @@ export interface TaskData {
  */
 export class TaskeditorComponent extends EzComponent {
     @BindValue("tasktext") private tasktext: string = "";
-    @BindCSSClass("save") private saveDisabled: string = "disabled";
+
+    @BindDisabledToBoolean("save") private saveDisabled: boolean = true;
     @Input("tasktext")
     private onTaskTextChange(evt: Event) {
-        this.saveDisabled =
-            (evt.target as HTMLInputElement).value === "" ? "disabled" : "";
+        this.tasktext = (evt.target as HTMLInputElement).value;
+        this.saveDisabled = this.tasktext === "";
     }
 
     editClose: EventSubject<boolean> = new EventSubject<boolean>();
