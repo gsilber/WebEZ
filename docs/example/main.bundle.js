@@ -566,37 +566,49 @@ function BindCSSClass(id, transform = (value) => value) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            let valArray = transform(value)
-                .split(" ")
-                .filter((v) => v.length > 0);
-            if (valArray.length > 0)
-                element.classList.add(...valArray);
+            if (value) {
+                let valArray = transform(value)
+                    .split(" ")
+                    .filter((v) => v.length > 0);
+                if (valArray.length > 0)
+                    element.className = valArray.join(" ");
+            }
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    let currentList = transform(context.access.get(this))
-                        .split(" ")
-                        .filter((v) => v.length > 0);
-                    if (currentList.length > 0)
-                        element.classList.remove(...currentList);
+                    let origValue = context.access.get(this);
+                    let currentList;
+                    if (origValue) {
+                        currentList = transform(origValue)
+                            .split(" ")
+                            .filter((v) => v.length > 0);
+                        if (currentList.length > 0)
+                            currentList.forEach((v) => (element.className =
+                                element.className.replace(v, "")));
+                    }
                     let newClasses = transform(value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
-                        element.classList.add(...newClasses);
+                        newClasses.forEach((v) => (element.className += ` ${v}`));
                 }, true);
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    let currentList = transform(context.access.get(this))
-                        .split(" ")
-                        .filter((v) => v.length > 0);
-                    if (currentList.length > 0)
-                        element.classList.remove(...currentList);
+                    let origValue = context.access.get(this);
+                    let currentList;
+                    if (origValue) {
+                        currentList = transform(origValue)
+                            .split(" ")
+                            .filter((v) => v.length > 0);
+                        if (currentList.length > 0)
+                            currentList.forEach((v) => (element.className =
+                                element.className.replace(v, "")));
+                    }
                     let newClasses = transform(value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
-                        element.classList.add(...newClasses);
+                        newClasses.forEach((v) => (element.className += ` ${v}`));
                 }, true);
             }
         });
@@ -2022,8 +2034,8 @@ let TaskeditorComponent = (() => {
     let _onCancel_decorators;
     return _a = class TaskeditorComponent extends _classSuper {
             onTaskTextChange(evt) {
-                this.saveDisabled =
-                    evt.target.value === "" ? "disabled" : "";
+                this.tasktext = evt.target.value;
+                this.saveDisabled = this.tasktext === "";
             }
             /**
              * @description Creates an instance of TaskEditorComponent.
@@ -2034,7 +2046,7 @@ let TaskeditorComponent = (() => {
                 super(taskeditor_component_html_1.default, taskeditor_component_css_1.default);
                 this.tasks = (__runInitializers(this, _instanceExtraInitializers), tasks);
                 this.tasktext = __runInitializers(this, _tasktext_initializers, "");
-                this.saveDisabled = (__runInitializers(this, _tasktext_extraInitializers), __runInitializers(this, _saveDisabled_initializers, "disabled"));
+                this.saveDisabled = (__runInitializers(this, _tasktext_extraInitializers), __runInitializers(this, _saveDisabled_initializers, true));
                 this.editClose = (__runInitializers(this, _saveDisabled_extraInitializers), new webez_1.EventSubject());
                 this.tasktext = tasks.taskText;
             }
@@ -2061,7 +2073,7 @@ let TaskeditorComponent = (() => {
             var _b;
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create((_b = _classSuper[Symbol.metadata]) !== null && _b !== void 0 ? _b : null) : void 0;
             _tasktext_decorators = [(0, webez_1.BindValue)("tasktext")];
-            _saveDisabled_decorators = [(0, webez_1.BindCSSClass)("save")];
+            _saveDisabled_decorators = [(0, webez_1.BindDisabledToBoolean)("save")];
             _onTaskTextChange_decorators = [(0, webez_1.Input)("tasktext")];
             _onSave_decorators = [(0, webez_1.Click)("save")];
             _onCancel_decorators = [(0, webez_1.Click)("cancel")];
@@ -2156,8 +2168,8 @@ let TasklineComponent = (() => {
     return _a = class TasklineComponent extends _classSuper {
             set editing(value) {
                 this._editing = value;
-                this.editorVisible = value ? "visible" : "";
-                this.viewerVisible = value ? "" : "visible";
+                this.editorVisible = value ? "visible" : "hidden";
+                this.viewerVisible = value ? "hidden" : "visible";
                 this.editor.focusInput();
                 this.lineEdit.next();
             }
