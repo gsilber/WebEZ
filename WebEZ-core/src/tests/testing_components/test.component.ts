@@ -3,9 +3,11 @@ import {
     BindAttribute,
     BindCSSClass,
     BindCSSClassToBoolean,
+    BindDisabledToBoolean,
     BindStyle,
     BindStyleToNumberAppendPx,
     BindValue,
+    BindVisibleToBoolean,
 } from "../../bind.decorators";
 import {
     Click,
@@ -55,6 +57,8 @@ const html = `<div id="child1"></div>
 <div id="bindDiv19"></div>
 <div id="bindDiv20"></div>
 <div id="bindDiv21"></div>
+<button id="bindBtn22"></button>
+<div id="bindDiv23"></div>
 <textarea id="bindTa1"></textarea>
 <select id="bindSel1">
     <option id="bindOpt1" value="1">1</option>
@@ -211,6 +215,12 @@ export class TestComponent extends EzComponent {
     @BindValue("bindOpt2")
     @BindValue("bindDiv20")
     testOpt2: string = "99";
+
+    @BindDisabledToBoolean("bindBtn22")
+    testDisabled1: boolean = true;
+
+    @BindVisibleToBoolean("bindDiv23")
+    testVisible1: boolean = false;
 
     constructor() {
         super(html, css);

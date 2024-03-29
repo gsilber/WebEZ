@@ -110,7 +110,6 @@ function getPropertyDescriptor<This extends EzComponent>(
 ): PropertyDescriptor {
     let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
     /* this can't happen.  Just here for type safety checking*/
-    /* istanbul ignore next */
     if (!origDescriptor) {
         throw new Error(`can not find setter with name: ${key as string}`);
     }

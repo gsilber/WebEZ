@@ -2,7 +2,7 @@ import { describe, expect, test, beforeAll } from "@jest/globals";
 import { TestComponent } from "../testing_components/test.component";
 import { bootstrap } from "../../bootstrap";
 import { TestDialog } from "../testing_components/dialog/test.dialog";
-import { popupDialog } from "../../EzDialog";
+import { EzDialog, popupDialog } from "../../EzDialog";
 
 describe("WebEZ-Construction and DOM", () => {
     let toplevel: any = undefined;
@@ -30,11 +30,8 @@ describe("WebEZ-Construction and DOM", () => {
                 expect(result).toBe("Ok");
             });
             if (popupDialog) {
-                let btn = popupDialog["shadow"].getElementById(
-                    "btn_Ok",
-                ) as HTMLElement;
-                expect(btn).not.toBeNull();
-                btn.dispatchEvent(new Event("click"));
+                EzDialog.clickPopupButton(9);
+                EzDialog.clickPopupButton(0);
             } else {
                 //should not happen
                 expect(true).toBe(false);
