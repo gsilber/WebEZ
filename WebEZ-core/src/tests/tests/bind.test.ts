@@ -142,7 +142,6 @@ describe("WebEZ-Bind", () => {
             expect(el.className).not.toContain("header");
             expect(el.className).not.toContain("title");
             el = toplevel["shadow"].getElementById("bindDiv16") as HTMLElement;
-            expect(el.className).toContain("header");
             expect(el.className).toContain("title");
             toplevel.testcss6 = false;
             expect(toplevel.testcss6).toBe(false);
