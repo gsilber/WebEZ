@@ -244,14 +244,14 @@ export abstract class EzComponent {
     }
 
     /**
-     * @description Get the value of an element on this component. : Returns undefined if element is not found or if element does not have a value property (like a div)
+     * @description Get the value of an element on this component.
      * @param {string} elementId The id of the element to get the value of
      * @returns string | undefined
+     * @throws Error when element does not have a value property or does not exist
      * @memberof
      */
-    getValue(elementId: string): string | undefined {
+    getValue(elementId: string): string {
         const element = this.shadow.getElementById(elementId);
-
         if (element instanceof HTMLInputElement)
             return (element as HTMLInputElement).value;
         else if (element instanceof HTMLTextAreaElement)
@@ -260,6 +260,6 @@ export abstract class EzComponent {
             return (element as HTMLSelectElement).value;
         else if (element instanceof HTMLOptionElement)
             return (element as HTMLOptionElement).value;
-        else return undefined;
+        else throw new Error("Element does not have a value property");
     }
 }

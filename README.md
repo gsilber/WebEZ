@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.4.4)
+# WebEZ - A simple web framework for Typescript (0.4.5)
 
 ## Getting Started
 
@@ -431,9 +431,13 @@ Set the focus to an element on the current component by id
 this.setfocus('input1');
 ```
 ### getValue(htmlElementId)
-Get the value of the elment on the current component by id.  If the element does not exist or does not have a value this method return ```undefined```.
+Get the value of the elment on the current component by id.  If the element does not exist or does not have a value this method Throws an Error object.
 ```
-let val:string=this.getValue("input1");
+try{
+    let val:string=this.getValue("input1");
+}catch(e){
+    console.error(e)
+}
 ```
 
 ### click(htmlElementId)

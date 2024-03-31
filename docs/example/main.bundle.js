@@ -63,7 +63,6 @@ class EzComponent {
         this.template.innerHTML = this.html;
         for (let style of window.document.styleSheets) {
             /* Jest does not populate the ownerNode member, so this can't be tested*/
-            /* istanbul ignore next */
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
         }
@@ -217,6 +216,25 @@ class EzComponent {
         let el = this.shadow.getElementById(elementId);
         if (el)
             el.click();
+    }
+    /**
+     * @description Get the value of an element on this component. : Returns undefined if element is not found or if element does not have a value property (like a div)
+     * @param {string} elementId The id of the element to get the value of
+     * @returns string | undefined
+     * @memberof
+     */
+    getValue(elementId) {
+        const element = this.shadow.getElementById(elementId);
+        if (element instanceof HTMLInputElement)
+            return element.value;
+        else if (element instanceof HTMLTextAreaElement)
+            return element.value;
+        else if (element instanceof HTMLSelectElement)
+            return element.value;
+        else if (element instanceof HTMLOptionElement)
+            return element.value;
+        else
+            return undefined;
     }
 }
 exports.EzComponent = EzComponent;
@@ -522,7 +540,6 @@ function hookPropertySetter(target, name, origDescriptor, setter, callSetterFirs
 function getPropertyDescriptor(target, key) {
     let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
     /* this can't happen.  Just here for type safety checking*/
-    /* istanbul ignore next */
     if (!origDescriptor) {
         throw new Error(`can not find setter with name: ${key}`);
     }
@@ -2034,6 +2051,9 @@ let TaskeditorComponent = (() => {
     let _onCancel_decorators;
     return _a = class TaskeditorComponent extends _classSuper {
             onTaskTextChange(evt) {
+                const value = this.getValue("tasktext");
+                if (value)
+                    this.tasktext = value;
                 this.tasktext = evt.target.value;
                 this.saveDisabled = this.tasktext === "";
             }

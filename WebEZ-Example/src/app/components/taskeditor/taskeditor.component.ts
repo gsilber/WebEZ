@@ -34,6 +34,8 @@ export class TaskeditorComponent extends EzComponent {
     @BindDisabledToBoolean("save") private saveDisabled: boolean = true;
     @Input("tasktext")
     private onTaskTextChange(evt: Event) {
+        const value: string | undefined = this.getValue("tasktext");
+        if (value) this.tasktext = value;
         this.tasktext = (evt.target as HTMLInputElement).value;
         this.saveDisabled = this.tasktext === "";
     }

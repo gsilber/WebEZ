@@ -59,17 +59,16 @@ describe("Exceptions and  (out of band testing)", () => {
             toplevel = bootstrap<TestComponent>(TestComponent);
         });
         test("getValue: does not exist", () => {
-            expect(toplevel.getValue("doesnotexist")).toBeUndefined();
-        });
-        test("getValue: does not exist", () => {
-            expect(toplevel.getValue("doesnotexist")).toBeUndefined();
+            const callFn = () => toplevel.getValue("doesnotexist") as string;
+            expect(callFn).toThrowError(Error);
         });
         test("getValue: div", () => {
             const input = toplevel.shadow.getElementById(
                 "covDiv1",
             ) as HTMLInputElement;
             input.value = "test";
-            expect(toplevel.getValue("covDiv1")).toBeUndefined();
+            const callFn = () => toplevel.getValue("doesnotexist") as string;
+            expect(callFn).toThrowError(Error);
         });
         test("getValue: input", () => {
             const input = toplevel.shadow.getElementById(
