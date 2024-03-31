@@ -242,4 +242,24 @@ export abstract class EzComponent {
         let el = this.shadow.getElementById(elementId);
         if (el) el.click();
     }
+
+    /**
+     * @description Get the value of an element on this component. : Returns undefined if element is not found or if element does not have a value property (like a div)
+     * @param {string} elementId The id of the element to get the value of
+     * @returns string | undefined
+     * @memberof
+     */
+    getValue(elementId: string): string | undefined {
+        const element = this.shadow.getElementById(elementId);
+
+        if (element instanceof HTMLInputElement)
+            return (element as HTMLInputElement).value;
+        else if (element instanceof HTMLTextAreaElement)
+            return (element as HTMLTextAreaElement).value;
+        else if (element instanceof HTMLSelectElement)
+            return (element as HTMLSelectElement).value;
+        else if (element instanceof HTMLOptionElement)
+            return (element as HTMLOptionElement).value;
+        else return undefined;
+    }
 }

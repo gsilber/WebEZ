@@ -430,6 +430,12 @@ Set the focus to an element on the current component by id
 ```
 this.setfocus('input1');
 ```
+### getValue(htmlElementId)
+Get the value of the elment on the current component by id.  If the element does not exist or does not have a value this method return ```undefined```.
+```
+let val:string=this.getValue("input1");
+```
+
 ### click(htmlElementId)
 Click the element on the current component by id.  This is useful for testing.
 ```

@@ -83,6 +83,8 @@ const html = `<div id="child1"></div>
 <img id="attribImg2" />
 <div id="attribDiv1"></div>
 <div id="attribDiv2"></div>
+<div id="covDiv1"></div>
+<input type="text" id="covInp1"></input>
 `;
 const css = "";
 

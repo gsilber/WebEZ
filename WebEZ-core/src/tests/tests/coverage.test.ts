@@ -1,4 +1,4 @@
-import { describe, expect, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
 import { NoRootParentCompnent } from "../testing_components/exceptions/bad.components";
@@ -51,6 +51,32 @@ describe("Exceptions and  (out of band testing)", () => {
                 expect(sz.windowHeight).toBe(mysz.windowHeight);
                 expect(sz.windowWidth).toBe(mysz.windowWidth);
             });
+        });
+    });
+    describe("Test getValue Method", () => {
+        let toplevel: any = undefined;
+        beforeEach(() => {
+            toplevel = bootstrap<TestComponent>(TestComponent);
+        });
+        test("getValue: does not exist", () => {
+            expect(toplevel.getValue("doesnotexist")).toBeUndefined();
+        });
+        test("getValue: does not exist", () => {
+            expect(toplevel.getValue("doesnotexist")).toBeUndefined();
+        });
+        test("getValue: div", () => {
+            const input = toplevel.shadow.getElementById(
+                "covDiv1",
+            ) as HTMLInputElement;
+            input.value = "test";
+            expect(toplevel.getValue("covDiv1")).toBeUndefined();
+        });
+        test("getValue: input", () => {
+            const input = toplevel.shadow.getElementById(
+                "covInp1",
+            ) as HTMLInputElement;
+            input.value = "test";
+            expect(toplevel.getValue("covInp1")).toBe("test");
         });
     });
 });
