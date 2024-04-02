@@ -836,24 +836,14 @@ exports.bootstrap = bootstrap;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Timer = exports.Input = exports.Change = exports.Blur = exports.Click = exports.WindowEvent = exports.GenericEvent = void 0;
-/**
- * @description Decorator to bind a generic event to an element
- * @param htmlElementID the element to bind the event to
- * @param type the event to bind
- * @returns DecoratorCallback
- * @export
- * @example
- * @GenericEvent("myButton", "click")
- * myButtonClick(e: MouseEvent) {
- *    console.log("Button was clicked");
- * }
- */
 function GenericEvent(htmlElementID, type) {
     return function (target, context) {
         context.addInitializer(function () {
             let element = this["shadow"].getElementById(htmlElementID);
             if (element) {
                 element.addEventListener(type, (e) => {
+                    if (type === "input" || type === "change")
+                        e.value = element.value;
                     target.call(this, e);
                 });
             }
@@ -2058,7 +2048,7 @@ let TaskeditorComponent = (() => {
     return _a = class TaskeditorComponent extends _classSuper {
             onTaskTextChange(evt) {
                 try {
-                    this.tasktext = this.getValue("tasktext");
+                    this.tasktext = evt.value;
                 }
                 catch (e) {
                     console.error(e);

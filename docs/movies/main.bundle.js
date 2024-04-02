@@ -63,7 +63,6 @@ class EzComponent {
         this.template.innerHTML = this.html;
         for (let style of window.document.styleSheets) {
             /* Jest does not populate the ownerNode member, so this can't be tested*/
-            /* istanbul ignore next */
             if (style.ownerNode)
                 this.shadow.appendChild(style.ownerNode.cloneNode(true));
         }
@@ -217,6 +216,26 @@ class EzComponent {
         let el = this.shadow.getElementById(elementId);
         if (el)
             el.click();
+    }
+    /**
+     * @description Get the value of an element on this component.
+     * @param {string} elementId The id of the element to get the value of
+     * @returns string | undefined
+     * @throws Error when element does not have a value property or does not exist
+     * @memberof
+     */
+    getValue(elementId) {
+        const element = this.shadow.getElementById(elementId);
+        if (element instanceof HTMLInputElement)
+            return element.value;
+        else if (element instanceof HTMLTextAreaElement)
+            return element.value;
+        else if (element instanceof HTMLSelectElement)
+            return element.value;
+        else if (element instanceof HTMLOptionElement)
+            return element.value;
+        else
+            throw new Error("Element does not have a value property");
     }
 }
 exports.EzComponent = EzComponent;
@@ -522,7 +541,6 @@ function hookPropertySetter(target, name, origDescriptor, setter, callSetterFirs
 function getPropertyDescriptor(target, key) {
     let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
     /* this can't happen.  Just here for type safety checking*/
-    /* istanbul ignore next */
     if (!origDescriptor) {
         throw new Error(`can not find setter with name: ${key}`);
     }
@@ -540,15 +558,15 @@ function BindStyle(id, style, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = transform(value);
+            element.style[style] = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element.style[style] = transform(value);
+                    element.style[style] = transform.call(this, value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element.style[style] = transform(value);
+                    element.style[style] = transform.call(this, value);
                 });
             }
         });
@@ -567,7 +585,8 @@ function BindCSSClass(id, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             if (value) {
-                let valArray = transform(value)
+                let valArray = transform
+                    .call(this, value)
                     .split(" ")
                     .filter((v) => v.length > 0);
                 if (valArray.length > 0)
@@ -578,14 +597,16 @@ function BindCSSClass(id, transform = (value) => value) {
                     let origValue = context.access.get(this);
                     let currentList;
                     if (origValue) {
-                        currentList = transform(origValue)
+                        currentList = transform
+                            .call(this, origValue)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (currentList.length > 0)
                             currentList.forEach((v) => (element.className =
                                 element.className.replace(v, "")));
                     }
-                    let newClasses = transform(value)
+                    let newClasses = transform
+                        .call(this, value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -597,14 +618,16 @@ function BindCSSClass(id, transform = (value) => value) {
                     let origValue = context.access.get(this);
                     let currentList;
                     if (origValue) {
-                        currentList = transform(origValue)
+                        currentList = transform
+                            .call(this, origValue)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (currentList.length > 0)
                             currentList.forEach((v) => (element.className =
                                 element.className.replace(v, "")));
                     }
-                    let newClasses = transform(value)
+                    let newClasses = transform
+                        .call(this, value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -627,55 +650,55 @@ function BindValue(id, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             if (element instanceof HTMLInputElement)
-                element.value = transform(value);
+                element.value = transform.call(this, value);
             else if (element instanceof HTMLTextAreaElement)
-                element.value = transform(value);
+                element.value = transform.call(this, value);
             else if (element instanceof HTMLSelectElement)
-                element.value = transform(value);
+                element.value = transform.call(this, value);
             else if (element instanceof HTMLOptionElement) {
-                element.value = transform(value);
-                element.text = transform(value);
+                element.value = transform.call(this, value);
+                element.text = transform.call(this, value);
             }
             else
-                element.innerHTML = transform(value);
+                element.innerHTML = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
                     if (element instanceof HTMLInputElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLTextAreaElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLSelectElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLOptionElement) {
                         element.value =
-                            transform(value);
-                        element.text = transform(value);
+                            transform.call(this, value);
+                        element.text = transform.call(this, value);
                     }
                     else
-                        element.innerHTML = transform(value);
+                        element.innerHTML = transform.call(this, value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
                     if (element instanceof HTMLInputElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLTextAreaElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLSelectElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLOptionElement) {
                         element.value =
-                            transform(value);
-                        element.text = transform(value);
+                            transform.call(this, value);
+                        element.text = transform.call(this, value);
                     }
                     else
-                        element.innerHTML = transform(value);
+                        element.innerHTML = transform.call(this, value);
                 });
             }
         });
@@ -695,8 +718,8 @@ function BindAttribute(id, attribute, transform = (value) => value) {
             const value = context.access.get(this);
             let setfn;
             setfn = (value) => {
-                if (transform(value) !== "")
-                    element.setAttribute(attribute, transform(value));
+                if (transform.call(this, value) !== "")
+                    element.setAttribute(attribute, transform.call(this, value));
                 else
                     element.removeAttribute(attribute);
             };
@@ -813,24 +836,14 @@ exports.bootstrap = bootstrap;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Timer = exports.Input = exports.Change = exports.Blur = exports.Click = exports.WindowEvent = exports.GenericEvent = void 0;
-/**
- * @description Decorator to bind a generic event to an element
- * @param htmlElementID the element to bind the event to
- * @param type the event to bind
- * @returns DecoratorCallback
- * @export
- * @example
- * @GenericEvent("myButton", "click")
- * myButtonClick(e: MouseEvent) {
- *    console.log("Button was clicked");
- * }
- */
 function GenericEvent(htmlElementID, type) {
     return function (target, context) {
         context.addInitializer(function () {
             let element = this["shadow"].getElementById(htmlElementID);
             if (element) {
                 element.addEventListener(type, (e) => {
+                    if (type === "input" || type === "change")
+                        e.value = element.value;
                     target.call(this, e);
                 });
             }

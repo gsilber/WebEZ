@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.4.6)
+# WebEZ - A simple web framework for Typescript (0.4.7)
 
 ## Getting Started
 
@@ -285,6 +285,13 @@ TS File:
 
 
 ## Event Decorators
+> For event handlers which handle the change or input events, you can have your method parameter be of type ValueEvent and you can get the value of the object from the value property.
+```
+@GenericEvent(input1,"input")
+onInput(e:ValueEvent){
+    console.log(e.value);
+}
+```
 ### @GenericEvent(id,event)
 > Binds to {(evt:?Event)=>void} 
 
@@ -301,9 +308,9 @@ onBtn1Click(evt:Event){
 }
 ```
 ### @Click(id)
-> Binds to {(evt:?Event)=>void} 
+> Binds to {(evt:?MouseEvent)=>void} 
 
-This will connect the html click event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+This will connect the html click event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?MouseEvent)=>void.```
 ```
 HTML File:
 <button id="btn1"></button>
@@ -311,14 +318,14 @@ HTML File:
 ```
 TS FIle:
 @Click("btn1")
-onBtn1Click(evt:Event){
+onBtn1Click(evt:MouseEvent){
     console.log(evt);
 }
 ```
 ### @Blur(id)
-> Binds to {(evt:?Event)=>void} 
+> Binds to {(evt:?FocusEvent)=>void} 
 
-This will connect the html blur event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+This will connect the html blur event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?FocusEvent)=>void.```
 ```
 HTML File:
 <input type="text" id="inp2"/>
@@ -326,14 +333,14 @@ HTML File:
 ```
 TS FIle:
 @Blur("inp2")
-onInputBlur(evt:Event){
+onInputBlur(evt:FocusEvent){
     console.log(evt);
 }
 ```
 ### @Change(id)
-> Binds to {(evt:?Event)=>void} 
+> Binds to {(evt:?ValueEvent)=>void} 
 
-This will connect the html change event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+This will connect the html change event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?ValueEvent)=>void.```
 ```
 HTML File:
 <input type="text" id="inp2"/>
@@ -341,15 +348,15 @@ HTML File:
 ```
 TS FIle:
 @Change("inp2")
-onInputChange(evt:Event){
+onInputChange(evt:ValueEvent){
     console.log(evt);
 }
 ```
 
 ### @Input(id)
-> Binds to {(evt:?Event)=>void} 
+> Binds to {(evt:?ValueEvent)=>void} 
 
-This will connect the html input event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?Event)=>void.```
+This will connect the html input event on an html element with id with a member method of the class.  The method must be of the form ```(evt:?ValueEvent)=>void.```
 ```
 HTML File:
 <input type="text" id="inp2"/>
@@ -357,7 +364,7 @@ HTML File:
 ```
 TS FIle:
 @Blur("inp2")
-onInput(evt:Event){
+onInput(evt:ValueEvent){
     console.log(evt);
 }
 ```
