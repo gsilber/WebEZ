@@ -218,9 +218,10 @@ class EzComponent {
             el.click();
     }
     /**
-     * @description Get the value of an element on this component. : Returns undefined if element is not found or if element does not have a value property (like a div)
+     * @description Get the value of an element on this component.
      * @param {string} elementId The id of the element to get the value of
      * @returns string | undefined
+     * @throws Error when element does not have a value property or does not exist
      * @memberof
      */
     getValue(elementId) {
@@ -234,7 +235,7 @@ class EzComponent {
         else if (element instanceof HTMLOptionElement)
             return element.value;
         else
-            return undefined;
+            throw new Error("Element does not have a value property");
     }
 }
 exports.EzComponent = EzComponent;
@@ -2051,10 +2052,12 @@ let TaskeditorComponent = (() => {
     let _onCancel_decorators;
     return _a = class TaskeditorComponent extends _classSuper {
             onTaskTextChange(evt) {
-                const value = this.getValue("tasktext");
-                if (value)
-                    this.tasktext = value;
-                this.tasktext = evt.target.value;
+                try {
+                    this.tasktext = this.getValue("tasktext");
+                }
+                catch (e) {
+                    console.error(e);
+                }
                 this.saveDisabled = this.tasktext === "";
             }
             /**

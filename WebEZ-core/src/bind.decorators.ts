@@ -130,16 +130,14 @@ function getPropertyDescriptor<This extends EzComponent>(
  * public backgroundColor: string = "red";
  */
 export function BindStyle<
+    This extends EzComponent,
     K extends keyof CSSStyleDeclaration,
     Value extends CSSStyleDeclaration[K],
 >(
     id: string,
     style: K,
-    transform?: (value: Value) => CSSStyleDeclaration[K],
-): <This extends EzComponent>(
-    target: undefined,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform?: (this: This, value: Value) => CSSStyleDeclaration[K],
+): (target: undefined, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 /**
  * @description Decorator to bind a specific style non-string property to an element
@@ -154,26 +152,32 @@ export function BindStyle<
  * @BindStyle("myDiv", "backgroundColor",(value: boolean) => value ? "red" : "blue")
  * public backgroundColor: boolean=true;
  */
-export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
+export function BindStyle<
+    This extends EzComponent,
+    K extends keyof CSSStyleDeclaration,
+    Value,
+>(
     id: string,
     style: K,
-    transform: (value: Value) => CSSStyleDeclaration[K],
-): <This extends EzComponent>(
-    target: undefined,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform: (this: This, value: Value) => CSSStyleDeclaration[K],
+): (target: undefined, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
-export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
+export function BindStyle<
+    This extends EzComponent,
+    K extends keyof CSSStyleDeclaration,
+    Value,
+>(
     id: string,
     style: K,
-    transform: (value: Value) => CSSStyleDeclaration[K] = (value: Value) =>
-        value as CSSStyleDeclaration[K],
-): <This extends EzComponent>(
+    transform: (this: This, value: Value) => CSSStyleDeclaration[K] = (
+        value: Value,
+    ) => value as CSSStyleDeclaration[K],
+): (
     target: undefined,
     context: ClassFieldDecoratorContext<This, Value>,
 ) => any {
-    return function <This extends EzComponent>(
+    return function (
         target: undefined,
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
@@ -186,14 +190,18 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value: Value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = transform(value) as CSSStyleDeclaration[K];
+            element.style[style] = transform.call(
+                this,
+                value,
+            ) as CSSStyleDeclaration[K];
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        element.style[style] = transform(
+                        element.style[style] = transform.call(
+                            this,
                             value,
                         ) as CSSStyleDeclaration[K];
                     },
@@ -204,7 +212,8 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        element.style[style] = transform(
+                        element.style[style] = transform.call(
+                            this,
                             value,
                         ) as CSSStyleDeclaration[K];
                     },
@@ -226,13 +235,10 @@ export function BindStyle<K extends keyof CSSStyleDeclaration, Value>(
  * @BindCSSClass("myDiv")
  * public cssClass: string = "myCSSClass";
  */
-export function BindCSSClass<Value extends string>(
+export function BindCSSClass<This extends EzComponent, Value extends string>(
     id: string,
-    transform?: (value: Value) => string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform?: (this: This, value: Value) => string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 /**
  * @description Decorator to bind the className property to an element.
@@ -245,23 +251,18 @@ export function BindCSSClass<Value extends string>(
  * @BindCSSClass("myDiv")
  * public cssClass: string = "myCSSClass";
  */
-export function BindCSSClass<Value>(
+export function BindCSSClass<This extends EzComponent, Value>(
     id: string,
-    transform: (value: Value) => string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform: (this: This, value: Value) => string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
-export function BindCSSClass<Value>(
+export function BindCSSClass<This extends EzComponent, Value>(
     id: string,
-    transform: (value: Value) => string = (value: Value) => value as string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any {
-    return function <This extends EzComponent>(
+    transform: (this: This, value: Value) => string = (value: Value) =>
+        value as string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
+    return function (
         target: undefined,
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
@@ -275,7 +276,8 @@ export function BindCSSClass<Value>(
 
             const value: Value = context.access.get(this);
             if (value) {
-                let valArray = transform(value)
+                let valArray = transform
+                    .call(this, value)
                     .split(" ")
                     .filter((v) => v.length > 0);
                 if (valArray.length > 0) element.className = valArray.join(" ");
@@ -289,7 +291,8 @@ export function BindCSSClass<Value>(
                         let origValue = context.access.get(this);
                         let currentList;
                         if (origValue) {
-                            currentList = transform(origValue)
+                            currentList = transform
+                                .call(this, origValue)
                                 .split(" ")
                                 .filter((v) => v.length > 0);
                             if (currentList.length > 0)
@@ -299,7 +302,8 @@ export function BindCSSClass<Value>(
                                             element.className.replace(v, "")),
                                 );
                         }
-                        let newClasses = transform(value)
+                        let newClasses = transform
+                            .call(this, value)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (newClasses.length > 0)
@@ -318,7 +322,8 @@ export function BindCSSClass<Value>(
                         let origValue = context.access.get(this);
                         let currentList;
                         if (origValue) {
-                            currentList = transform(origValue)
+                            currentList = transform
+                                .call(this, origValue)
                                 .split(" ")
                                 .filter((v) => v.length > 0);
                             if (currentList.length > 0)
@@ -329,7 +334,8 @@ export function BindCSSClass<Value>(
                                 );
                         }
 
-                        let newClasses = transform(value)
+                        let newClasses = transform
+                            .call(this, value)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (newClasses.length > 0)
@@ -368,13 +374,10 @@ export function BindCSSClass<Value>(
  * public hello: string = "Hello World";
  *
  */
-export function BindValue<Value extends string>(
+export function BindValue<This extends EzComponent, Value extends string>(
     id: string,
-    transform?: (value: Value) => string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform?: (this: This, value: Value) => string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 /**
  * @description Decorator to bind the innerHtml property to an element.
@@ -391,23 +394,18 @@ export function BindValue<Value extends string>(
  * @BindValue("myInput", (value: string) => value.toUpperCase())
  * public hello: string = "Hello World";
  */
-export function BindValue<Value>(
+export function BindValue<This extends EzComponent, Value>(
     id: string,
-    transform: (value: Value) => string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform: (this: This, value: Value) => string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
-export function BindValue<Value>(
+export function BindValue<This extends EzComponent, Value>(
     id: string,
-    transform: (value: Value) => string = (value: Value) => value as string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any {
-    return function <This extends EzComponent>(
+    transform: (this: This, value: Value) => string = (value: Value) =>
+        value as string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
+    return function (
         target: undefined,
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
@@ -420,15 +418,27 @@ export function BindValue<Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             if (element instanceof HTMLInputElement)
-                (element as HTMLInputElement).value = transform(value);
+                (element as HTMLInputElement).value = transform.call(
+                    this,
+                    value,
+                );
             else if (element instanceof HTMLTextAreaElement)
-                (element as HTMLTextAreaElement).value = transform(value);
+                (element as HTMLTextAreaElement).value = transform.call(
+                    this,
+                    value,
+                );
             else if (element instanceof HTMLSelectElement)
-                (element as HTMLSelectElement).value = transform(value);
+                (element as HTMLSelectElement).value = transform.call(
+                    this,
+                    value,
+                );
             else if (element instanceof HTMLOptionElement) {
-                (element as HTMLOptionElement).value = transform(value);
-                element.text = transform(value);
-            } else element.innerHTML = transform(value);
+                (element as HTMLOptionElement).value = transform.call(
+                    this,
+                    value,
+                );
+                element.text = transform.call(this, value);
+            } else element.innerHTML = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
@@ -437,18 +447,18 @@ export function BindValue<Value>(
                     (value: Value): void => {
                         if (element instanceof HTMLInputElement)
                             (element as HTMLInputElement).value =
-                                transform(value);
+                                transform.call(this, value);
                         else if (element instanceof HTMLTextAreaElement)
                             (element as HTMLTextAreaElement).value =
-                                transform(value);
+                                transform.call(this, value);
                         else if (element instanceof HTMLSelectElement)
                             (element as HTMLSelectElement).value =
-                                transform(value);
+                                transform.call(this, value);
                         else if (element instanceof HTMLOptionElement) {
                             (element as HTMLOptionElement).value =
-                                transform(value);
-                            element.text = transform(value);
-                        } else element.innerHTML = transform(value);
+                                transform.call(this, value);
+                            element.text = transform.call(this, value);
+                        } else element.innerHTML = transform.call(this, value);
                     },
                 );
             } else {
@@ -459,18 +469,18 @@ export function BindValue<Value>(
                     (value: Value): void => {
                         if (element instanceof HTMLInputElement)
                             (element as HTMLInputElement).value =
-                                transform(value);
+                                transform.call(this, value);
                         else if (element instanceof HTMLTextAreaElement)
                             (element as HTMLTextAreaElement).value =
-                                transform(value);
+                                transform.call(this, value);
                         else if (element instanceof HTMLSelectElement)
                             (element as HTMLSelectElement).value =
-                                transform(value);
+                                transform.call(this, value);
                         else if (element instanceof HTMLOptionElement) {
                             (element as HTMLOptionElement).value =
-                                transform(value);
-                            element.text = transform(value);
-                        } else element.innerHTML = transform(value);
+                                transform.call(this, value);
+                            element.text = transform.call(this, value);
+                        } else element.innerHTML = transform.call(this, value);
                     },
                 );
             }
@@ -494,14 +504,15 @@ export function BindValue<Value>(
  * public src: string = "test.png";
  */
 
-export function BindAttribute<K extends string, Value extends string>(
+export function BindAttribute<
+    This extends EzComponent,
+    K extends string,
+    Value extends string,
+>(
     id: string,
     attribute: K,
-    transform?: (value: Value) => string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform?: (this: This, value: Value) => string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 /**
  * @description Decorator to bind any attribute of an element to a property
@@ -515,25 +526,28 @@ export function BindAttribute<K extends string, Value extends string>(
  * @BindAttribute("myImg", "disabled", (val: boolean) => val ? "disabled" : "")
  * disabled:boolean=false;
  */
-export function BindAttribute<K extends string, Value>(
+export function BindAttribute<
+    This extends EzComponent,
+    K extends string,
+    Value,
+>(
     id: string,
     attribute: K,
-    transform: (value: Value) => string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any;
+    transform: (this: This, value: Value) => string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
-export function BindAttribute<K extends string, Value>(
+export function BindAttribute<
+    This extends EzComponent,
+    K extends string,
+    Value,
+>(
     id: string,
     attribute: K,
-    transform: (value: Value) => string = (value: Value) => value as string,
-): <This extends EzComponent>(
-    target: any,
-    context: ClassFieldDecoratorContext<This, Value>,
-) => any {
-    return function <This extends EzComponent>(
+    transform: (this: This, value: Value) => string = (value: Value) =>
+        value as string,
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
+    return function (
         target: undefined,
         context: ClassFieldDecoratorContext<This, Value>,
     ) {
@@ -548,8 +562,11 @@ export function BindAttribute<K extends string, Value>(
             const value = context.access.get(this);
             let setfn: (value: Value) => void;
             setfn = (value: Value) => {
-                if (transform(value) !== "")
-                    element.setAttribute(attribute, transform(value));
+                if (transform.call(this, value) !== "")
+                    element.setAttribute(
+                        attribute,
+                        transform.call(this, value),
+                    );
                 else element.removeAttribute(attribute);
             };
             setfn(value);
