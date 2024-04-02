@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.4.5)
+# WebEZ - A simple web framework for Typescript (0.4.6)
 
 ## Getting Started
 
@@ -378,6 +378,11 @@ If our propety is a number, then we can still bind it like this
 @BindStyle('mover','top',(v:number)=>v.toString()+"px") value:number=100;
 ```
 Note that the method we pass in converts our property type (number) to a string.
+
+We can also access the properties of the class in our wrapper if we need to:
+```
+@BindStyle('test','top',(this: MyComponent,v:boolean)=>v?this.value1:this.value2);
+```
 
 There are also some simple wrappers available to help you as documented above.  In the case of our last example, we could use a wrapper like this:
 ```
