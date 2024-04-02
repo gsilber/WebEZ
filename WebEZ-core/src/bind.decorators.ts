@@ -2,7 +2,6 @@
  * 6. Timer decorator and docs
  */
 import { EzComponent } from "./EzComponent";
-
 /**
  * @description Pipe function to be passed tot he type decorator
  * @export

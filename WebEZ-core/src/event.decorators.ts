@@ -19,22 +19,45 @@ export declare type TimerCancelFunction = () => void;
  *    console.log("Button was clicked");
  * }
  */
+
+export interface ValueEvent extends Event {
+    value: string;
+}
+
+export interface ExtendedEventMap extends HTMLElementEventMap {
+    input: ValueEvent;
+    change: ValueEvent;
+}
+
+declare global {
+    interface HTMLElement {
+        addEventListener<K extends keyof ExtendedEventMap>(
+            type: K,
+            listener: (this: HTMLElement, ev: ExtendedEventMap[K]) => any,
+            options?: boolean | AddEventListenerOptions,
+        ): void;
+    }
+}
 export function GenericEvent<K extends keyof HTMLElementEventMap>(
     htmlElementID: string,
     type: K,
 ) {
     return function <This extends EzComponent>(
-        target: (this: This, event: HTMLElementEventMap[K]) => void,
+        target: (this: This, event: ExtendedEventMap[K]) => void,
         context: ClassMethodDecoratorContext<
             This,
-            (this: This, event: HTMLElementEventMap[K]) => void
+            (this: This, event: ExtendedEventMap[K]) => void
         >,
     ): void {
         context.addInitializer(function (this: This) {
             let element: HTMLElement | null =
                 this["shadow"].getElementById(htmlElementID);
             if (element) {
-                element.addEventListener(type, (e: HTMLElementEventMap[K]) => {
+                element.addEventListener(type, (e: ExtendedEventMap[K]) => {
+                    if (type === "input" || type === "change")
+                        (e as ValueEvent).value = (
+                            element as HTMLInputElement
+                        ).value;
                     target.call(this, e);
                 });
             }
