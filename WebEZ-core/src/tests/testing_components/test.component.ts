@@ -5,6 +5,7 @@ import {
     BindCSSClassToBoolean,
     BindDisabledToBoolean,
     BindStyle,
+    BindStyleToNumber,
     BindStyleToNumberAppendPx,
     BindValue,
     BindVisibleToBoolean,
@@ -85,6 +86,12 @@ const html = `<div id="child1"></div>
 <div id="attribDiv2"></div>
 <div id="covDiv1"></div>
 <input type="text" id="covInp1"></input>
+<input type="text" id="bindNumber1"></input>
+<textarea id="ta1">Hootie</textarea>
+<select id="sel1">
+    <option id="opt1" value="1">1</option>
+    <option id="opt2" value="2">1</option>
+</select>
 `;
 const css = "";
 
@@ -132,6 +139,8 @@ export class TestComponent extends EzComponent {
     testbind4Change(event: Event) {
         this.testbind4 = (event.target as HTMLInputElement).value;
     }
+    @BindStyleToNumber("bindNumber1", "width")
+    testbind8: number = 5;
 
     @BindCSSClass("bindDiv6")
     testbind5: string = "hello";

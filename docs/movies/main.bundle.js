@@ -457,7 +457,7 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BindStyleToNumberAppendPx = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.BindStyleToNumberAppendPx = exports.BindStyleToNumber = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
@@ -778,6 +778,10 @@ function BindVisibleToBoolean(id) {
     return BindStyle(id, "display", (value) => value ? "block" : "none");
 }
 exports.BindVisibleToBoolean = BindVisibleToBoolean;
+function BindStyleToNumber(id, style, append = "") {
+    return BindStyle(id, style, (value) => `${value}${append}`);
+}
+exports.BindStyleToNumber = BindStyleToNumber;
 /**
  * @description Decorator to bind a specific style to a number, and append a 'px' to the value
  * @param id the element to bind the property to
@@ -791,7 +795,7 @@ exports.BindVisibleToBoolean = BindVisibleToBoolean;
  * public width: number = 100;
  */
 function BindStyleToNumberAppendPx(id, style) {
-    return BindStyle(id, style, (value) => `${value}px`);
+    return BindStyleToNumber(id, style, "px");
 }
 exports.BindStyleToNumberAppendPx = BindStyleToNumberAppendPx;
 

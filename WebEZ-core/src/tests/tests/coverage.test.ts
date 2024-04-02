@@ -77,5 +77,14 @@ describe("Exceptions and  (out of band testing)", () => {
             input.value = "test";
             expect(toplevel.getValue("covInp1")).toBe("test");
         });
+        test("getValue: textarea", () => {
+            expect(toplevel.getValue("ta1")).toBe("Hootie");
+        });
+        test("getValue: select", () => {
+            expect(toplevel.getValue("sel1")).toBe("1");
+        });
+        test("getValue: option", () => {
+            expect(toplevel.getValue("opt1")).toBe("1");
+        });
     });
 });

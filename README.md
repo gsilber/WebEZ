@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.4.7)
+# WebEZ - A simple web framework for Typescript (0.4.8)
 
 ## Getting Started
 
@@ -254,7 +254,7 @@ TS File:
 @BindDisabledToBoolean('div1') disabled:boolean=false;
 
 ```
-### BindVisibleToBoolean
+### BindVisibleToBoolean(id)
 >Binds to a boolean
 
 Shows or hides an element based on the value of the boolean.
@@ -267,12 +267,25 @@ TS File:
 @BindVisibleToBoolean('div1') visible:boolean=true;
 
 ```
-
-
-### BindStyleToNumberAppendPx
+### BindStyleToNumber(id,style,?append)
 >Binds to a number
 
-Binds a numeric property to the element with id and appends "px" to the end of the string.
+Binds a numeric property to the element style with id and optionally appends a string to the end
+```
+HTML File:
+<div id="div1></div>
+<div id="div2></div>
+```
+```
+TS File:
+@BindStyleToNumber("div1","width")
+@BindStyleToNumber("div2","width","%")
+```
+
+### BindStyleToNumberAppendPx(id,style)
+>Binds to a number
+
+Binds a numeric property to the element style with id and appends "px" to the end of the string.
 ```
 HTML File:
 <div id="div1"></div>

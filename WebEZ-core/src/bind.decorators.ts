@@ -638,6 +638,17 @@ export function BindVisibleToBoolean<
     );
 }
 
+export function BindStyleToNumber<
+    K extends keyof CSSStyleDeclaration,
+    This extends EzComponent,
+    Value extends number,
+>(id: string, style: K, append: string = "") {
+    return BindStyle(
+        id,
+        style,
+        (value: Value) => `${value}${append}` as CSSStyleDeclaration[K],
+    );
+}
 /**
  * @description Decorator to bind a specific style to a number, and append a 'px' to the value
  * @param id the element to bind the property to
@@ -656,9 +667,5 @@ export function BindStyleToNumberAppendPx<
     This extends EzComponent,
     Value extends number,
 >(id: string, style: K) {
-    return BindStyle(
-        id,
-        style,
-        (value: Value) => `${value}px` as CSSStyleDeclaration[K],
-    );
+    return BindStyleToNumber(id, style, "px");
 }
