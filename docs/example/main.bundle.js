@@ -558,15 +558,15 @@ function BindStyle(id, style, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = transform(value);
+            element.style[style] = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
-                    element.style[style] = transform(value);
+                    element.style[style] = transform.call(this, value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
-                    element.style[style] = transform(value);
+                    element.style[style] = transform.call(this, value);
                 });
             }
         });
@@ -585,7 +585,8 @@ function BindCSSClass(id, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             if (value) {
-                let valArray = transform(value)
+                let valArray = transform
+                    .call(this, value)
                     .split(" ")
                     .filter((v) => v.length > 0);
                 if (valArray.length > 0)
@@ -596,14 +597,16 @@ function BindCSSClass(id, transform = (value) => value) {
                     let origValue = context.access.get(this);
                     let currentList;
                     if (origValue) {
-                        currentList = transform(origValue)
+                        currentList = transform
+                            .call(this, origValue)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (currentList.length > 0)
                             currentList.forEach((v) => (element.className =
                                 element.className.replace(v, "")));
                     }
-                    let newClasses = transform(value)
+                    let newClasses = transform
+                        .call(this, value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -615,14 +618,16 @@ function BindCSSClass(id, transform = (value) => value) {
                     let origValue = context.access.get(this);
                     let currentList;
                     if (origValue) {
-                        currentList = transform(origValue)
+                        currentList = transform
+                            .call(this, origValue)
                             .split(" ")
                             .filter((v) => v.length > 0);
                         if (currentList.length > 0)
                             currentList.forEach((v) => (element.className =
                                 element.className.replace(v, "")));
                     }
-                    let newClasses = transform(value)
+                    let newClasses = transform
+                        .call(this, value)
                         .split(" ")
                         .filter((v) => v.length > 0);
                     if (newClasses.length > 0)
@@ -645,55 +650,55 @@ function BindValue(id, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             if (element instanceof HTMLInputElement)
-                element.value = transform(value);
+                element.value = transform.call(this, value);
             else if (element instanceof HTMLTextAreaElement)
-                element.value = transform(value);
+                element.value = transform.call(this, value);
             else if (element instanceof HTMLSelectElement)
-                element.value = transform(value);
+                element.value = transform.call(this, value);
             else if (element instanceof HTMLOptionElement) {
-                element.value = transform(value);
-                element.text = transform(value);
+                element.value = transform.call(this, value);
+                element.text = transform.call(this, value);
             }
             else
-                element.innerHTML = transform(value);
+                element.innerHTML = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
                     if (element instanceof HTMLInputElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLTextAreaElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLSelectElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLOptionElement) {
                         element.value =
-                            transform(value);
-                        element.text = transform(value);
+                            transform.call(this, value);
+                        element.text = transform.call(this, value);
                     }
                     else
-                        element.innerHTML = transform(value);
+                        element.innerHTML = transform.call(this, value);
                 });
             }
             else {
                 hookProperty(this, context.name, value, (value) => {
                     if (element instanceof HTMLInputElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLTextAreaElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLSelectElement)
                         element.value =
-                            transform(value);
+                            transform.call(this, value);
                     else if (element instanceof HTMLOptionElement) {
                         element.value =
-                            transform(value);
-                        element.text = transform(value);
+                            transform.call(this, value);
+                        element.text = transform.call(this, value);
                     }
                     else
-                        element.innerHTML = transform(value);
+                        element.innerHTML = transform.call(this, value);
                 });
             }
         });
@@ -713,8 +718,8 @@ function BindAttribute(id, attribute, transform = (value) => value) {
             const value = context.access.get(this);
             let setfn;
             setfn = (value) => {
-                if (transform(value) !== "")
-                    element.setAttribute(attribute, transform(value));
+                if (transform.call(this, value) !== "")
+                    element.setAttribute(attribute, transform.call(this, value));
                 else
                     element.removeAttribute(attribute);
             };
