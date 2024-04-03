@@ -558,7 +558,8 @@ function BindStyle(id, style, transform = (value) => value) {
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = transform.call(this, value);
+            if (value !== undefined)
+                element.style[style] = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
                     element.style[style] = transform.call(this, value);
@@ -584,7 +585,7 @@ function BindCSSClass(id, transform = (value) => value) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            if (value) {
+            if (value !== undefined) {
                 let valArray = transform
                     .call(this, value)
                     .split(" ")
@@ -649,18 +650,20 @@ function BindValue(id, transform = (value) => value) {
             const publicKey = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            if (element instanceof HTMLInputElement)
-                element.value = transform.call(this, value);
-            else if (element instanceof HTMLTextAreaElement)
-                element.value = transform.call(this, value);
-            else if (element instanceof HTMLSelectElement)
-                element.value = transform.call(this, value);
-            else if (element instanceof HTMLOptionElement) {
-                element.value = transform.call(this, value);
-                element.text = transform.call(this, value);
+            if (value !== undefined) {
+                if (element instanceof HTMLInputElement)
+                    element.value = transform.call(this, value);
+                else if (element instanceof HTMLTextAreaElement)
+                    element.value = transform.call(this, value);
+                else if (element instanceof HTMLSelectElement)
+                    element.value = transform.call(this, value);
+                else if (element instanceof HTMLOptionElement) {
+                    element.value = transform.call(this, value);
+                    element.text = transform.call(this, value);
+                }
+                else
+                    element.innerHTML = transform.call(this, value);
             }
-            else
-                element.innerHTML = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, (value) => {
                     if (element instanceof HTMLInputElement)
@@ -723,7 +726,8 @@ function BindAttribute(id, attribute, transform = (value) => value) {
                 else
                     element.removeAttribute(attribute);
             };
-            setfn(value);
+            if (value !== undefined)
+                setfn(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, setfn);
             }

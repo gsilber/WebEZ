@@ -33,6 +33,7 @@ export class TaskeditorComponent extends EzComponent {
     @BindValue("tasktext") private tasktext: string = "";
 
     @BindDisabledToBoolean("save") private saveDisabled: boolean = true;
+
     @Input("tasktext")
     private onTaskTextChange(evt: ValueEvent) {
         try {

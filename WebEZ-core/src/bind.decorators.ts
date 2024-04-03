@@ -189,10 +189,8 @@ export function BindStyle<
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value: Value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = transform.call(
-                this,
-                value,
-            ) as CSSStyleDeclaration[K];
+            if (value !== undefined)
+                element.style[style] = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
@@ -274,7 +272,7 @@ export function BindCSSClass<This extends EzComponent, Value>(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 
             const value: Value = context.access.get(this);
-            if (value) {
+            if (value !== undefined) {
                 let valArray = transform
                     .call(this, value)
                     .split(" ")
@@ -416,28 +414,30 @@ export function BindValue<This extends EzComponent, Value>(
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            if (element instanceof HTMLInputElement)
-                (element as HTMLInputElement).value = transform.call(
-                    this,
-                    value,
-                );
-            else if (element instanceof HTMLTextAreaElement)
-                (element as HTMLTextAreaElement).value = transform.call(
-                    this,
-                    value,
-                );
-            else if (element instanceof HTMLSelectElement)
-                (element as HTMLSelectElement).value = transform.call(
-                    this,
-                    value,
-                );
-            else if (element instanceof HTMLOptionElement) {
-                (element as HTMLOptionElement).value = transform.call(
-                    this,
-                    value,
-                );
-                element.text = transform.call(this, value);
-            } else element.innerHTML = transform.call(this, value);
+            if (value !== undefined) {
+                if (element instanceof HTMLInputElement)
+                    (element as HTMLInputElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                else if (element instanceof HTMLTextAreaElement)
+                    (element as HTMLTextAreaElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                else if (element instanceof HTMLSelectElement)
+                    (element as HTMLSelectElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                else if (element instanceof HTMLOptionElement) {
+                    (element as HTMLOptionElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                    element.text = transform.call(this, value);
+                } else element.innerHTML = transform.call(this, value);
+            }
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
@@ -568,7 +568,7 @@ export function BindAttribute<
                     );
                 else element.removeAttribute(attribute);
             };
-            setfn(value);
+            if (value !== undefined) setfn(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, setfn);
             } else {

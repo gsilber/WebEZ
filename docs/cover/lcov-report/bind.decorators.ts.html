@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.36% </span>
+                <span class="strong">99.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>156/157</span>
+                <span class='fraction'>159/160</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.46% </span>
+                <span class="strong">98.52% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/65</span>
+                <span class='fraction'>67/68</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.33% </span>
+                <span class="strong">99.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>150/151</span>
+                <span class='fraction'>152/153</span>
             </div>
         
             
@@ -926,9 +926,7 @@
 <span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">108x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1011,11 +1009,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">234x</span>
 <span class="cline-any cline-yes">234x</span>
-<span class="cline-any cline-yes">162x</span>
+<span class="cline-any cline-yes">234x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">162x</span>
-<span class="cline-any cline-yes">162x</span>
+<span class="cline-any cline-yes">234x</span>
+<span class="cline-any cline-yes">234x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">234x</span>
 <span class="cline-any cline-yes">72x</span>
@@ -1153,6 +1151,7 @@
 <span class="cline-any cline-yes">396x</span>
 <span class="cline-any cline-yes">396x</span>
 <span class="cline-any cline-yes">396x</span>
+<span class="cline-any cline-yes">396x</span>
 <span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1174,6 +1173,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-yes">234x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">396x</span>
 <span class="cline-any cline-yes">162x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1331,7 +1331,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-yes">144x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1596,10 +1596,8 @@ export function BindStyle&lt;
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value: Value = context.access.get(this);
             //replace the style tag with the new value
-            element.style[style] = transform.call(
-                this,
-                value,
-            ) as CSSStyleDeclaration[K];
+            if (value !== undefined)
+                element.style[style] = transform.call(this, value);
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
@@ -1681,7 +1679,7 @@ export function BindCSSClass&lt;This extends EzComponent, Value&gt;(
             const origDescriptor = getPropertyDescriptor(this, publicKey);
 &nbsp;
             const value: Value = context.access.get(this);
-            if (value) {
+            if (value !== undefined) {
                 let valArray = transform
                     .call(this, value)
                     .split(" ")
@@ -1823,28 +1821,30 @@ export function BindValue&lt;This extends EzComponent, Value&gt;(
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            if (element instanceof HTMLInputElement)
-                (element as HTMLInputElement).value = transform.call(
-                    this,
-                    value,
-                );
-            else if (element instanceof HTMLTextAreaElement)
-                (element as HTMLTextAreaElement).value = transform.call(
-                    this,
-                    value,
-                );
-            else if (element instanceof HTMLSelectElement)
-                (element as HTMLSelectElement).value = transform.call(
-                    this,
-                    value,
-                );
-            else if (element instanceof HTMLOptionElement) {
-                (element as HTMLOptionElement).value = transform.call(
-                    this,
-                    value,
-                );
-                element.text = transform.call(this, value);
-            } else element.innerHTML = transform.call(this, value);
+            if (value !== undefined) {
+                if (element instanceof HTMLInputElement)
+                    (element as HTMLInputElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                else if (element instanceof HTMLTextAreaElement)
+                    (element as HTMLTextAreaElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                else if (element instanceof HTMLSelectElement)
+                    (element as HTMLSelectElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                else if (element instanceof HTMLOptionElement) {
+                    (element as HTMLOptionElement).value = transform.call(
+                        this,
+                        value,
+                    );
+                    element.text = transform.call(this, value);
+                } else element.innerHTML = transform.call(this, value);
+            }
             if (origDescriptor.set) {
                 hookPropertySetter(
                     this,
@@ -1975,7 +1975,7 @@ export function BindAttribute&lt;
                     );
                 else element.removeAttribute(attribute);
             };
-            setfn(value);
+            if (value !== undefined) setfn(value);
             if (origDescriptor.set) {
                 hookPropertySetter(this, context.name, origDescriptor, setfn);
             } else {
@@ -2083,7 +2083,7 @@ export function BindStyleToNumberAppendPx&lt;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-03T12:50:02.445Z
+                at 2024-04-03T21:32:56.690Z
             </div>
         <script src="prettify.js"></script>
         <script>
