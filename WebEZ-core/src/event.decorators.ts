@@ -129,8 +129,8 @@ export function Blur(htmlElementID: string) {
  * @export
  * @example
  * @Change("myInput")
- * myInputChange(e: ValueEvent) {
- *   console.log(e.value);
+ * myInputChange(e: ChangeEvent) {
+ *   console.log("Input changed");
  */
 export function Change(htmlElementID: string) {
     return GenericEvent(htmlElementID, "change");
@@ -143,8 +143,8 @@ export function Change(htmlElementID: string) {
  * @export
  * @example
  * @Input("myInput")
- * myInputChange(e: ValueEvent) {
- *  console.log(e.value);
+ * myInputChange(e: InputEvent) {
+ *  console.log("Input changed");
  * }
  */
 export function Input(htmlElementID: string) {
