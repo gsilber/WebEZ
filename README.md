@@ -7,10 +7,12 @@ WebEZ is a simple to use framework for developing web applications in typescript
 To get started, install the webez command line interface.
 
 ```
-npm install -g webez-cli
+npm install -g @gsilber/webez-cli
 ```
 
 Once installed, you can use the `webez` command to create a new web application and to add components to an existing one.
+>Note: You may need to run this command with sudo on Unix/Linux/Mac:
+```sudo npm install -g @gsilber/webez-cli```
 
 ## Creating a new website
 
