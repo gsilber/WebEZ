@@ -72,6 +72,9 @@ Where command is one of:
 
 Additionally, you can look in the generated package.json for more options.
 
+## Deploying your site
+WebEZ sites are automatically deployed to github pages when the main branch is successfully pushed.  You do have to enable this in github for your repository.  Go to github.com and to your repository, then click on settings->pages. Pull down the source drop down and select Github Actions.  The next time you push the main branch, you will automatically publish to github pages (note: the web address will appear at the top of the pages settings once you select the source).
+
 ## Designing components
 
 When you first create a site, it contains a single component called MainComponent in the files `main.component.[ts | html | css | test.ts]`. Additionally added components can be found in their respective sub-folders once created. Building components can be accomplished by following these steps.
