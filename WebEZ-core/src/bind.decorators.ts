@@ -638,6 +638,24 @@ export function BindVisibleToBoolean<
     );
 }
 
+/**
+ * @description Decorator to bind the value of an element to a number
+ * @param id the element to bind the property to
+ * @param append an optional string to append to the number before setting the value
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindValueToNumber("myDiv1")
+ * public value: number = 100;
+ */
+export function BindValueToNumber<
+    This extends EzComponent,
+    Value extends number,
+>(id: string, append: string = "") {
+    return BindValue(id, (value: Value) => `${value}${append}` as string);
+}
+
 export function BindStyleToNumber<
     K extends keyof CSSStyleDeclaration,
     This extends EzComponent,

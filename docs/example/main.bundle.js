@@ -457,7 +457,7 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BindStyleToNumberAppendPx = exports.BindStyleToNumber = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.BindStyleToNumberAppendPx = exports.BindStyleToNumber = exports.BindValueToNumber = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
@@ -782,6 +782,21 @@ function BindVisibleToBoolean(id) {
     return BindStyle(id, "display", (value) => value ? "block" : "none");
 }
 exports.BindVisibleToBoolean = BindVisibleToBoolean;
+/**
+ * @description Decorator to bind the value of an element to a number
+ * @param id the element to bind the property to
+ * @param append an optional string to append to the number before setting the value
+ * @returns DecoratorCallback
+ * @export
+ * @example
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindValueToNumber("myDiv1")
+ * public value: number = 100;
+ */
+function BindValueToNumber(id, append = "") {
+    return BindValue(id, (value) => `${value}${append}`);
+}
+exports.BindValueToNumber = BindValueToNumber;
 function BindStyleToNumber(id, style, append = "") {
     return BindStyle(id, style, (value) => `${value}${append}`);
 }

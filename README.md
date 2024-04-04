@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.4.10)
+# WebEZ - A simple web framework for Typescript (0.4.11)
 
 ## Getting Started
 
@@ -286,6 +286,23 @@ TS File:
 @BindVisibleToBoolean('div1') visible:boolean=true;
 
 ```
+### BindValueToNumber(id)
+>Binds to a number
+
+Binds a numeric property to the elements with id's value and optionally appends a string to the end
+
+```
+HTML File:
+<div id="div1></div>
+<div id="div2></div>
+```
+```
+TS File:
+@BindValueToNumber("div1")
+@BindValueToNumber("div2"," seconds")
+private seconds:number=0;
+```
+
 ### BindStyleToNumber(id,style,?append)
 >Binds to a number
 
@@ -299,6 +316,7 @@ HTML File:
 TS File:
 @BindStyleToNumber("div1","width")
 @BindStyleToNumber("div2","width","%")
+private width:number=100;
 ```
 
 ### BindStyleToNumberAppendPx(id,style)
