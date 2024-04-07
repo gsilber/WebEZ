@@ -1,5 +1,11 @@
 import { EventSubject } from "./eventsubject";
 declare const window: Window;
+/**
+ * @description An enum for the HTTP methods
+ * @export
+ * @group AJAX Support
+ * @enum {string}
+ */
 export enum HttpMethod {
     GET = "GET",
     POST = "POST",
@@ -12,6 +18,7 @@ export enum HttpMethod {
  * @description An interface for the size of the window
  * @export
  * @interface SizeInfo
+ * @group Utility Types
  * @example const sizeInfo: SizeInfo = {
  *  windowWidth: window.innerWidth,
  *  windowHeight: window.innerHeight
@@ -25,6 +32,7 @@ export interface SizeInfo {
 /**
  * @description A base class for creating web components
  * @export
+ * @group Abstract Superclasses
  * @abstract
  * @class EzComponent
  * @example class MyComponent extends EzComponent {

@@ -1,17 +1,10 @@
-/** TODO
- * 6. Timer decorator and docs
- */
 import { EzComponent } from "./EzComponent";
-/**
- * @description Pipe function to be passed tot he type decorator
- * @export
- */
-export declare type PipeFunction = (value: string) => string;
 
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
  * @returns the public key
+ * @ignore
  */
 function getPublicKey<This extends EzComponent>(
     name: string | symbol,
@@ -23,6 +16,7 @@ function getPublicKey<This extends EzComponent>(
  * @description Gets the private key of the field name
  * @param name the name of the field
  * @returns the private key
+ * @ignore
  */
 function getPrivateKey<This extends EzComponent>(
     name: string | symbol,
@@ -37,6 +31,7 @@ function getPrivateKey<This extends EzComponent>(
  * @param value the initial value of the property
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
  * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
+ * @ignore
  */
 function hookProperty<This extends EzComponent, T>(
     target: This,
@@ -74,6 +69,7 @@ function hookProperty<This extends EzComponent, T>(
  * @param origDescriptor the original property descriptor
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
  * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
+ * @ignore
  */
 function hookPropertySetter<This extends EzComponent, T>(
     target: This,
@@ -102,6 +98,7 @@ function hookPropertySetter<This extends EzComponent, T>(
  * @param key the property to get the descriptor for
  * @returns PropertyDescriptor
  * @throws Error if the property descriptor is not found
+ * @ignore
  */
 function getPropertyDescriptor<This extends EzComponent>(
     target: This,
@@ -121,6 +118,7 @@ function getPropertyDescriptor<This extends EzComponent>(
  * @param style the style to bind (i.e. background-color, left, top, etc.)
  * @param transform an optional function to transform the value before it is set on the element
  * @returns DecoratorCallback
+ * @group Bind Decorators
  * @overload
  * @export
  * @example
@@ -141,9 +139,10 @@ export function BindStyle<
 /**
  * @description Decorator to bind a specific style non-string property to an element
  * @param id the element to bind the property to
- * @param a value that the transformer will turn into a string that will be set as the style
+ * @param style the style to bind (i.e. background-color, left, top, etc.)
  * @param transform a function to transform the value to a valid style name before it is set on the element
  * @returns DecoratorCallback
+ * @group Bind Decorators
  * @overload
  * @export
  * @example
@@ -162,6 +161,7 @@ export function BindStyle<
 ): (target: undefined, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
+/**@ignore */
 export function BindStyle<
     This extends EzComponent,
     K extends keyof CSSStyleDeclaration,
@@ -226,6 +226,7 @@ export function BindStyle<
  * @param transform an optional function to transform the value to a string before it is set on the element
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @overload
  * @example
  * //This will set the CSS class of the div with id myDiv to the value in cssClass
@@ -243,6 +244,7 @@ export function BindCSSClass<This extends EzComponent, Value extends string>(
  * @param transform a function to transform the value to a string before it is set on the element
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will set the CSS class of the div with id myDiv to the value in cssClass
  * @BindCSSClass("myDiv")
@@ -254,6 +256,7 @@ export function BindCSSClass<This extends EzComponent, Value>(
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 // Actual implementation, should not be in documentation as the overloads capture the two cases
+/**@ignore */
 export function BindCSSClass<This extends EzComponent, Value>(
     id: string,
     transform: (this: This, value: Value) => string = (value: Value) =>
@@ -353,6 +356,7 @@ export function BindCSSClass<This extends EzComponent, Value>(
  * @param transform an optional function to transform the value before it is set on the element
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will display Hello World in the div with id myDiv
  * @BindValue("myDiv")
@@ -382,6 +386,7 @@ export function BindValue<This extends EzComponent, Value extends string>(
  * @param transform a function to transform the value before it is set on the element
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will display Hello World in the div with id myDiv
  * @BindValue("myDiv", (value: boolean) => value ? "Hello" : "Goodbye")
@@ -494,6 +499,7 @@ export function BindValue<This extends EzComponent, Value>(
  * @param transform an optional function to transform the value before it is set on the element
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will set the src attribute of the img with id myImg to the value of the src property
  * @BindAttribute("myImg", "src")
@@ -520,6 +526,7 @@ export function BindAttribute<
  * @param transform a function to transform the value to a string before it is set on the element
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will set the src attribute of the img with id myImg to the value of the src property
  * @BindAttribute("myImg", "disabled", (val: boolean) => val ? "disabled" : "")
@@ -585,6 +592,7 @@ export function BindAttribute<
  * @param cssClassName the class name to add
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
  * @BindCSSClassToBoolean("myDiv", "myCSSClass")
@@ -603,6 +611,7 @@ export function BindCSSClassToBoolean<
  * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will disable the button with id myButton if the disabled property is true
  * @BindDisabledToBoolean("myButton")
@@ -623,6 +632,7 @@ export function BindDisabledToBoolean<
  * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will check the checkbox with id myCheckbox if the checked property is true
  * @BindCheckedToBoolean("myCheckbox")
@@ -644,6 +654,7 @@ export function BindVisibleToBoolean<
  * @param append an optional string to append to the number before setting the value
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will check the checkbox with id myCheckbox if the checked property is true
  * @BindValueToNumber("myDiv1")
@@ -656,6 +667,20 @@ export function BindValueToNumber<
     return BindValue(id, (value: Value) => `${value}${append}` as string);
 }
 
+/**
+* @description Decorator to bind a specific style to a number, and optionally append a string to the value
+* @param id the element to bind the property to
+* @param style the style to bind (i.e. background-color, left, top, etc.)
+* @Param optional string to append to the number before setting the value
+* @returns DecoratorCallback
+* @overload
+* @export
+* @group Bind Decorators
+* @example
+* //This will set the width of the div to the number in width
+* @BindStyleToNumber("myDiv", "width","%")
+* public width: number = 100;
+*/
 export function BindStyleToNumber<
     K extends keyof CSSStyleDeclaration,
     This extends EzComponent,
@@ -670,10 +695,11 @@ export function BindStyleToNumber<
 /**
  * @description Decorator to bind a specific style to a number, and append a 'px' to the value
  * @param id the element to bind the property to
- * @param a value that the transformer will turn into a string that will be set as the style
+ * @param style the style to bind (i.e. background-color, left, top, etc.)
  * @returns DecoratorCallback
  * @overload
  * @export
+ * @group Bind Decorators
  * @example
  * //This will set the width of the div to the number in width
  * @BindStyleToNumberAppendPx("myDiv", "width")

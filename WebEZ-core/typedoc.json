@@ -9,4 +9,24 @@
         "@alpha": false,
         "@beta": false
     },
+    "groupOrder": [
+        "Bind Decorators",
+        "Event Decorators",
+        "Abstract Superclasses",
+        "Classes",
+        "References",
+        "Modules",
+        "Namespaces",
+        "Enumerations",
+        "Enumeration Members",
+        "Interfaces",
+        "Type Aliases",
+        "Constructors",
+        "Properties",
+        "Variables",
+        "Functions",
+        "Accessors",
+        "Methods",
+        "*"
+    ]   
 }
