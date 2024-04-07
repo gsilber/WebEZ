@@ -187,6 +187,7 @@ export class MainComponent{
     }
 }
 ```
+>Note: For every sub-component there are two steps.  You must create an instance of the component with ```new``` then attach it to your component with ```addComponent```.  Unless you do both, your component will not show up on your website.
 ## Bind Decorators
 ### @BindValue(id)
 > Binds to string, or must have a transform that returns a string 
