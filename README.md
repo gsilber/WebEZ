@@ -171,7 +171,7 @@ export class MainComponent extends EzComponent {
 ## Adding sub-components
 You add subcomponents to a component (like MainComponent) by calling the AddComponent method and passing it an instance of the child component.  You can optionally specify the id of the html element into which you want to place the child component.
 ### AddComponent(component,?htmlid)
-Installs a component as a child of the current component.  In the following example, MainComponent is the top level component created automatically by the framework.  ChildComponent is another webez generated component you would like to add.  If htmlid is not provided, the child component is added to the bottom of the parent html document.
+Installs a component as a child of the current component.  In the following example, MainComponent is the top level component created automatically by the framework.  ChildComponent is another webez generated component you would like to add.  If htmlid is not provided, the child component is added to the bottom of the parent html document. You should try to attach it to an element.
 ```
 HTML File (main.component.html):
 <div id="childhere"></div>
