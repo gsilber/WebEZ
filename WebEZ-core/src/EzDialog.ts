@@ -73,6 +73,7 @@ const popupTemplate = `
  * @description A dialog component that can be used to create a popup dialog
  * @export
  * @class EzDialog
+ * @group Abstract Superclasses
  * @extends {EzComponent}
  * @example const dialog = new EzDialog("<h1>Hello World</h1>", "h1{color:red;}");
  */

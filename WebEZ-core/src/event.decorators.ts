@@ -8,27 +8,27 @@ declare const window: Window;
 export declare type TimerCancelFunction = () => void;
 
 /**
- * @description Decorator to bind a generic event to an element
- * @param htmlElementID the element to bind the event to
- * @param type the event to bind
- * @returns DecoratorCallback
+ * @description Returned by input and change events.  Has a value property.
  * @export
- * @example
- * @GenericEvent("myButton", "click")
- * myButtonClick(e: MouseEvent) {
- *    console.log("Button was clicked");
+ * @interface ValueEvent
+ * @extends {Event}
+ * @group Event Types
+ * @example @Change("myInput")
+ * myInputChange(e: ValueEvent) {
+ *  console.log("Input changed to " + e.value);
  * }
  */
-
 export interface ValueEvent extends Event {
     value: string;
 }
 
+/** @ignore */
 export interface ExtendedEventMap extends HTMLElementEventMap {
     input: ValueEvent;
     change: ValueEvent;
 }
 
+/** @ignore */
 declare global {
     interface HTMLElement {
         addEventListener<K extends keyof ExtendedEventMap>(
@@ -38,6 +38,20 @@ declare global {
         ): void;
     }
 }
+
+/**
+ * @description Decorator to bind a generic event to an element
+ * @param htmlElementID the element to bind the event to
+ * @param type the event to bind
+ * @returns DecoratorCallback
+ * @export
+ * @group Event Decorators
+ * @example
+ * @GenericEvent("myButton", "click")
+ * myButtonClick(e: MouseEvent) {
+ *    console.log("Button was clicked");
+ * }
+ */
 export function GenericEvent<K extends keyof HTMLElementEventMap>(
     htmlElementID: string,
     type: K,
@@ -70,6 +84,7 @@ export function GenericEvent<K extends keyof HTMLElementEventMap>(
  * @param type the event to bind
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @WindowEvent("resize")
  * onResize(e: WindowEvent) {
@@ -97,6 +112,7 @@ export function WindowEvent<K extends keyof WindowEventMap>(type: K) {
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Click("myButton")
  * myButtonClick(e: MouseEvent) {
@@ -112,6 +128,7 @@ export function Click(htmlElementID: string) {
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Blur("myInput")
  * myInputBlur(e: FocusEvent) {
@@ -127,6 +144,7 @@ export function Blur(htmlElementID: string) {
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Change("myInput")
  * myInputChange(e: ChangeEvent) {
@@ -141,6 +159,7 @@ export function Change(htmlElementID: string) {
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Input("myInput")
  * myInputChange(e: InputEvent) {
@@ -157,6 +176,7 @@ export function Input(htmlElementID: string) {
  * @returns DecoratorCallback
  * @note This executes repeatedly.  The decorated function is passed a cancel function that can be called to stop the timer.
  * @export
+ * @group Event Decorators
  * @example
  * let counter=0;
  * @Timer(1000)

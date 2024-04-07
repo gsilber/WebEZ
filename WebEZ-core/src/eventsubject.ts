@@ -1,7 +1,23 @@
+
+/**
+ * CallbackDescription
+ * @description The type of the subscribe callback
+ * @export
+ * @interface CallbackDescription
+ * @group Type Aliases
+*/
 interface CallbackDescription {
     id: number;
     fn: (value: any) => void;
 }
+
+/**
+ * EventSubject
+ * @description A class for creating event subjects
+ * @export
+ * @class EventSubject
+ * @group Async Event Sources
+ */
 export class EventSubject<T = void> {
     private refCount: number = 0;
     private callbacks: CallbackDescription[] = [];
@@ -81,7 +97,6 @@ export class EventSubject<T = void> {
      * Convert the event subject to a promise
      * @description Convert the event subject to a promise.
      * This is useful for the async/await style async pattern.
-     * @param none
      * @returns Promise<T>
      * @example
      * async myFunction() {
