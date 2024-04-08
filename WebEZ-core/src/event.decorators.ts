@@ -119,7 +119,10 @@ export function WindowEvent<K extends keyof WindowEventMap>(type: K) {
  *   console.log("Button was clicked");
  * }
  */
-export function Click(htmlElementID: string) {
+export function Click<
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+This extends EzComponent,
+>(htmlElementID: string) {
     return GenericEvent(htmlElementID, "click");
 }
 
@@ -135,7 +138,10 @@ export function Click(htmlElementID: string) {
  *  console.log("Input lost focus");
  * }
  */
-export function Blur(htmlElementID: string) {
+export function Blur<
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+This extends EzComponent,
+>(htmlElementID: string) {
     return GenericEvent(htmlElementID, "blur");
 }
 
@@ -150,7 +156,10 @@ export function Blur(htmlElementID: string) {
  * myInputChange(e: ChangeEvent) {
  *   console.log("Input changed");
  */
-export function Change(htmlElementID: string) {
+export function Change<
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+This extends EzComponent,
+>(htmlElementID: string) {
     return GenericEvent(htmlElementID, "change");
 }
 
@@ -166,7 +175,10 @@ export function Change(htmlElementID: string) {
  *  console.log("Input changed");
  * }
  */
-export function Input(htmlElementID: string) {
+export function Input<
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+This extends EzComponent,
+>(htmlElementID: string) {
     return GenericEvent(htmlElementID, "input");
 }
 
@@ -184,7 +196,10 @@ export function Input(htmlElementID: string) {
  *   console.log("Timer method called once per second");
  *   if (counter++ > 5) cancel();
  */
-export function Timer(intervalMS: number) {
+export function Timer<
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+This extends EzComponent,
+>(intervalMS: number) {
     return function <This extends EzComponent, Value extends () => void>(
         target: (this: This, cancelFn: TimerCancelFunction) => void,
         context: ClassMethodDecoratorContext<
