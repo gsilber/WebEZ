@@ -277,21 +277,40 @@ describe("WebEZ-Bind", () => {
             toplevel.testInput3 = "testing";
             expect(el4.value).toBe("testing");
         });
-        test("Test Specialty boolean Binders", () => {
-            let el1 = toplevel["shadow"].getElementById(
-                "bindBtn22",
-            ) as HTMLButtonElement;
-            let el2 = toplevel["shadow"].getElementById(
-                "bindDiv23",
-            ) as HTMLElement;
-            expect(toplevel.testDisabled1).toBe(true);
-            expect(el1.disabled).toBeTruthy();
-            toplevel.testDisabled1 = false;
-            expect(el1.disabled).toBeFalsy();
-            expect(toplevel.testVisible1).toBe(false);
-            expect(el2.style.display).toBe("none");
-            toplevel.testVisible1 = true;
-            expect(el2.style.display).toBe("block");
+        describe("Test Specialty boolean Binders", () => {
+            test("BindDisabledToBoolean", () => {
+                let el1 = toplevel["shadow"].getElementById(
+                    "bindBtn22",
+                ) as HTMLButtonElement;
+                expect(toplevel.testDisabled1).toBe(true);
+                expect(el1.disabled).toBeTruthy();
+                toplevel.testDisabled1 = false;
+                expect(el1.disabled).toBeFalsy();
+                toplevel.testDisabled1 = true;
+                expect(el1.disabled).toBeTruthy();
+            });
+            test("BindVisibleToBoolean", () => {
+                let el2 = toplevel["shadow"].getElementById(
+                    "bindDiv23",
+                ) as HTMLElement;
+                expect(toplevel.testVisible1).toBe(false);
+                expect(el2.style.display).toBe("none");
+                toplevel.testVisible1 = true;
+                expect(el2.style.display).toBe("block");
+                toplevel.testVisible1 = false;
+                expect(el2.style.display).toBe("none");
+            });
+            test("BindCheckedToBoolean", () => {
+                let el3 = toplevel["shadow"].getElementById(
+                    "bindCheck24",
+                ) as HTMLInputElement;
+                expect(toplevel.testChecked1).toBe(true);
+                expect(el3.checked).toBeTruthy();
+                toplevel.testChecked1 = false;
+                expect(el3.checked).toBeFalsy();
+                toplevel.testChecked1 = true;
+                expect(el3.checked).toBeTruthy();
+            });
         });
     });
 

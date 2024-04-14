@@ -634,9 +634,9 @@ export function BindDisabledToBoolean<
  * @export
  * @group Bind Decorators
  * @example
- * //This will check the checkbox with id myCheckbox if the checked property is true
- * @BindCheckedToBoolean("myCheckbox")
- * public checked: boolean = true;
+ * //This will hide the div with id myDiv1 if the visible property is false
+ * @BindVisibleToBoolean("myDiv1")
+ * public visible: boolean = true;
  */
 export function BindVisibleToBoolean<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -649,6 +649,27 @@ export function BindVisibleToBoolean<
 }
 
 /**
+ * @description Decorator to bind the checked/unchecked value of a checkbox input to a boolean
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindCheckedToBoolean("myCheckbox")
+ * public checked: boolean = true;
+ */
+export function BindCheckedToBoolean<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    This extends EzComponent,
+    Value extends boolean,
+>(id: string) {
+    return BindAttribute(id, "checked", (value: Value) =>
+        value ? "checked" : "",
+    );
+}
+
+/**
  * @description Decorator to bind the value of an element to a number
  * @param id the element to bind the property to
  * @param append an optional string to append to the number before setting the value
@@ -656,7 +677,7 @@ export function BindVisibleToBoolean<
  * @export
  * @group Bind Decorators
  * @example
- * //This will check the checkbox with id myCheckbox if the checked property is true
+ * //This will bind the text (value) of the div with id myDiv1 to the number in value
  * @BindValueToNumber("myDiv1")
  * public value: number = 100;
  */
