@@ -682,6 +682,7 @@ export function BindCheckedToBoolean<
  * public value: number = 100;
  */
 export function BindValueToNumber<
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     This extends EzComponent,
     Value extends number,
 >(id: string, append: string = "") {
@@ -689,21 +690,22 @@ export function BindValueToNumber<
 }
 
 /**
-* @description Decorator to bind a specific style to a number, and optionally append a string to the value
-* @param id the element to bind the property to
-* @param style the style to bind (i.e. background-color, left, top, etc.)
-* @Param optional string to append to the number before setting the value
-* @returns DecoratorCallback
-* @overload
-* @export
-* @group Bind Decorators
-* @example
-* //This will set the width of the div to the number in width
-* @BindStyleToNumber("myDiv", "width","%")
-* public width: number = 100;
-*/
+ * @description Decorator to bind a specific style to a number, and optionally append a string to the value
+ * @param id the element to bind the property to
+ * @param style the style to bind (i.e. background-color, left, top, etc.)
+ * @Param optional string to append to the number before setting the value
+ * @returns DecoratorCallback
+ * @overload
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will set the width of the div to the number in width
+ * @BindStyleToNumber("myDiv", "width","%")
+ * public width: number = 100;
+ */
 export function BindStyleToNumber<
     K extends keyof CSSStyleDeclaration,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     This extends EzComponent,
     Value extends number,
 >(id: string, style: K, append: string = "") {
@@ -730,7 +732,110 @@ export function BindStyleToNumberAppendPx<
     K extends keyof CSSStyleDeclaration,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     This extends EzComponent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Value extends number,
 >(id: string, style: K) {
     return BindStyleToNumber(id, style, "px");
+}
+
+/**
+ * @ignore
+ */
+function recreateBoundList(arr: string[], element: HTMLElement) {
+    //hide current element
+    element.style.display = "none";
+    //remove all siblings but not element
+    while (element.nextSibling) {
+        element.nextSibling.remove();
+    }
+    //attach a clone of the element for each element in the list and set its value or innerhtml property to the value to the elmements parent
+    arr.forEach((v) => {
+        let clone = element.cloneNode(true) as HTMLElement;
+        clone.style.display = "initial";
+        if (clone instanceof HTMLInputElement) clone.value = v;
+        else if (clone instanceof HTMLOptionElement) {
+            clone.value = v;
+            clone.text = v;
+        } else clone.innerHTML = v;
+        element.parentElement?.appendChild(clone);
+    });
+}
+/**
+ * @ignore
+ */
+function boundProxyFactory(array: string[], element: HTMLElement) {
+    return new Proxy(array, {
+        set(target: string[], prop: any, value: string) {
+            if (prop !== "length") {
+                target[prop] = value;
+                recreateBoundList(target, element);
+            }
+            return true;
+        },
+        get(target: string[], prop: any) {
+            let ops = [
+                "fill",
+                "copyWithin",
+                "pop",
+                "push",
+                "reverse",
+                "shift",
+                "slice",
+                "sort",
+                "splice",
+                "unshift",
+            ];
+            if (ops.indexOf(prop) !== -1) {
+                const origMethod: any = target[prop];
+
+                return function (...args: any[]) {
+                    origMethod.apply(target, args);
+                    recreateBoundList(target, element);
+                };
+            }
+            return target[prop];
+        },
+    });
+}
+
+/**
+ * @description Decorator to bind a list of strings to a list of elements
+ * @param id the element to bind the property to
+ * @param transform an optional function to transform the value before it is set on the element
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will create a list of divs with the values in the list that are
+ * //siblings to myDiv.  myDiv itself will be hidden
+ * @BindList("myDiv")
+ * public list: string[] = ["one", "two", "three"];
+ *
+ */
+export function BindList<This extends EzComponent, Value extends string[]>(
+    id: string,
+    transform: (this: This, value: Value) => string[] = (value: Value) =>
+        value as string[],
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
+    return function (
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const value = transform.call(this, context.access.get(this));
+            recreateBoundList(value, element);
+            const privateKey: keyof This = getPrivateKey(context.name);
+            hookProperty(this, context.name, value as Value, (value: Value) => {
+                recreateBoundList(value, element);
+                (this[privateKey] as string[]) = boundProxyFactory(
+                    value,
+                    element,
+                );
+            });
+        });
+    };
 }
