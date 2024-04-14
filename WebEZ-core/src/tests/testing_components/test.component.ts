@@ -4,6 +4,7 @@ import {
     BindCSSClass,
     BindCSSClassToBoolean,
     BindDisabledToBoolean,
+    BindCheckedToBoolean,
     BindStyle,
     BindStyleToNumber,
     BindStyleToNumberAppendPx,
@@ -92,6 +93,7 @@ const html = `<div id="child1"></div>
     <option id="opt1" value="1">1</option>
     <option id="opt2" value="2">1</option>
 </select>
+<input type="checkbox" id="bindCheck24" />
 `;
 const css = "";
 
@@ -232,6 +234,9 @@ export class TestComponent extends EzComponent {
 
     @BindVisibleToBoolean("bindDiv23")
     testVisible1: boolean = false;
+
+    @BindCheckedToBoolean("bindCheck24")
+    testChecked1: boolean = true;
 
     constructor() {
         super(html, css);
