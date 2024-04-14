@@ -776,7 +776,6 @@ function boundProxyFactory(array: string[], element: HTMLElement) {
             let ops = [
                 "fill",
                 "copyWithin",
-                "pop",
                 "push",
                 "reverse",
                 "shift",
