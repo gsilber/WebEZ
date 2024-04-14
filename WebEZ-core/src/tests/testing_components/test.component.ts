@@ -19,6 +19,7 @@ import {
     Input,
     Timer,
     WindowEvent,
+    ValueEvent,
 } from "../../event.decorators";
 import { TestChild1Component } from "./test-child1.component";
 import { TestChild2Component } from "./test-child2.component";
@@ -107,6 +108,7 @@ export class TestComponent extends EzComponent {
     testVal2: boolean = false;
     testVal3: number = 0;
     testVal4: string = "";
+    testVal5: string = "";
 
     @BindStyle("styleDiv1", "color")
     testStyle1: string = "red";
@@ -287,5 +289,10 @@ export class TestComponent extends EzComponent {
     @WindowEvent("resize")
     windowResize(event: UIEvent) {
         event.preventDefault();
+    }
+
+    @Change("bindCheck24")
+    evtCheck24Change(event: ValueEvent) {
+        this.testVal5 = event.value;
     }
 }

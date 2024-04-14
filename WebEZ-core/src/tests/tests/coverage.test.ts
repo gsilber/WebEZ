@@ -39,6 +39,18 @@ describe("Exceptions and  (out of band testing)", () => {
             expect(toplevel.evtTest).toBeTruthy();
         });
     });
+    describe("Checkbox Event Tests", () => {
+        test("Checkbox Change Event", () => {
+            let toplevel: any = undefined;
+            toplevel = bootstrap<TestComponent>(TestComponent);
+            expect(toplevel).toBeInstanceOf(TestComponent);
+            expect(toplevel.testVal5).toEqual("");
+            toplevel.click("bindCheck24");
+            expect(toplevel.testVal5).toEqual("on");
+            toplevel.click("bindCheck24");
+            expect(toplevel.testVal5).toEqual("");
+        });
+    });
     describe("Resize Event Tests", () => {
         test("onResizeEvent", () => {
             let toplevel: any = undefined;
