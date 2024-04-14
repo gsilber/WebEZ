@@ -69,9 +69,17 @@ export function GenericEvent<K extends keyof HTMLElementEventMap>(
             if (element) {
                 element.addEventListener(type, (e: ExtendedEventMap[K]) => {
                     if (type === "input" || type === "change")
-                        (e as ValueEvent).value = (
-                            element as HTMLInputElement
-                        ).value;
+                        if((element as HTMLInputElement).type === "checkbox"){                            
+                            (e as ValueEvent).value = (
+                                element as HTMLInputElement
+                            ).checked ? "on" : "";
+                        }
+                        else    {
+
+                            (e as ValueEvent).value = (
+                                element as HTMLInputElement
+                            ).value;
+                        }
                     target.call(this, e);
                 });
             }
@@ -146,7 +154,7 @@ This extends EzComponent,
 }
 
 /**
- * @description Decorator to bind a change event to an element
+ * @description Decorator to bind a change event to an element.  For checkboxes, this will return "on" when checked or "" when unchecked.
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export

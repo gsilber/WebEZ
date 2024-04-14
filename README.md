@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.4.14)
+# WebEZ - A simple web framework for Typescript (0.4.15)
 
 ## Getting Started
 
@@ -192,7 +192,7 @@ export class MainComponent{
 ### @BindValue(id)
 > Binds to string, or must have a transform that returns a string 
 
-Connects the value property of an html element with id.  Optionally takes a transform method.
+Connects the value property of an html element with id.  Optionally takes a transform method.  If the element is a checkbox, returns either ```"on"``` or ```""``` depending on if it is checked or unchecked.
 ```
 HTML FILE:
 <input type='text' id='inp1'/>
@@ -251,7 +251,18 @@ disableBtn:boolean=false;
 @BindAttribute("img1","src")
 imgSrc:string="http://my.imagesrc.com/img1";
 ```
+### @BindCheckedToBoolean(id)
+> Binds to boolean
 
+Connects a checkboxes checked attribute to a boolean value
+```
+HTML File:
+<input id="inp1" type="checkbox">
+```
+```
+@BindCheckedToBoolean("inp1")
+checked:boolean=false;
+```
 ### @BindCSSClassToBoolean(id,className)
 > Binds to a boolean
 

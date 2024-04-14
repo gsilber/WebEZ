@@ -12,6 +12,12 @@
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EzComponent = exports.HttpMethod = void 0;
 const eventsubject_1 = __webpack_require__(/*! ./eventsubject */ "./node_modules/@gsilber/webez/eventsubject.js");
+/**
+ * @description An enum for the HTTP methods
+ * @export
+ * @group AJAX Support
+ * @enum {string}
+ */
 var HttpMethod;
 (function (HttpMethod) {
     HttpMethod["GET"] = "GET";
@@ -24,6 +30,7 @@ var HttpMethod;
 /**
  * @description A base class for creating web components
  * @export
+ * @group Abstract Superclasses
  * @abstract
  * @class EzComponent
  * @example class MyComponent extends EzComponent {
@@ -326,6 +333,7 @@ const popupTemplate = `
  * @description A dialog component that can be used to create a popup dialog
  * @export
  * @class EzDialog
+ * @group Abstract Superclasses
  * @extends {EzComponent}
  * @example const dialog = new EzDialog("<h1>Hello World</h1>", "h1{color:red;}");
  */
@@ -457,11 +465,12 @@ EzDialog.popupButtons = [];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BindStyleToNumberAppendPx = exports.BindStyleToNumber = exports.BindValueToNumber = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
+exports.BindStyleToNumberAppendPx = exports.BindStyleToNumber = exports.BindValueToNumber = exports.BindCheckedToBoolean = exports.BindVisibleToBoolean = exports.BindDisabledToBoolean = exports.BindCSSClassToBoolean = exports.BindAttribute = exports.BindValue = exports.BindCSSClass = exports.BindStyle = void 0;
 /**
  * @description Gets the public key of the field name
  * @param name the name of the field
  * @returns the public key
+ * @ignore
  */
 function getPublicKey(name) {
     return String(name);
@@ -470,6 +479,7 @@ function getPublicKey(name) {
  * @description Gets the private key of the field name
  * @param name the name of the field
  * @returns the private key
+ * @ignore
  */
 function getPrivateKey(name) {
     return `__${String(name)}`;
@@ -481,6 +491,7 @@ function getPrivateKey(name) {
  * @param value the initial value of the property
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
  * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
+ * @ignore
  */
 function hookProperty(target, name, value, setter, callSetterFirst = false) {
     const publicKey = getPublicKey(name);
@@ -513,6 +524,7 @@ function hookProperty(target, name, value, setter, callSetterFirst = false) {
  * @param origDescriptor the original property descriptor
  * @param setter the new setter to replace the original setter with, this does not need to update the hidden private property.
  * @param callSetterFirst if true, the setter is called before the original setter, otherwise it is called after.
+ * @ignore
  */
 function hookPropertySetter(target, name, origDescriptor, setter, callSetterFirst = false) {
     const publicKey = getPublicKey(name);
@@ -537,6 +549,7 @@ function hookPropertySetter(target, name, origDescriptor, setter, callSetterFirs
  * @param key the property to get the descriptor for
  * @returns PropertyDescriptor
  * @throws Error if the property descriptor is not found
+ * @ignore
  */
 function getPropertyDescriptor(target, key) {
     let origDescriptor = Object.getOwnPropertyDescriptor(target, key);
@@ -547,6 +560,7 @@ function getPropertyDescriptor(target, key) {
     return origDescriptor;
 }
 // Actual implementation, should not be in documentation as the overloads capture the two cases
+/**@ignore */
 function BindStyle(id, style, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
@@ -575,6 +589,7 @@ function BindStyle(id, style, transform = (value) => value) {
 }
 exports.BindStyle = BindStyle;
 // Actual implementation, should not be in documentation as the overloads capture the two cases
+/**@ignore */
 function BindCSSClass(id, transform = (value) => value) {
     return function (target, context) {
         context.addInitializer(function () {
@@ -745,6 +760,7 @@ exports.BindAttribute = BindAttribute;
  * @param cssClassName the class name to add
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will add the css class myCSSClass to the div with id myDiv if the enabled property is true
  * @BindCSSClassToBoolean("myDiv", "myCSSClass")
@@ -759,6 +775,7 @@ exports.BindCSSClassToBoolean = BindCSSClassToBoolean;
  * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
  * //This will disable the button with id myButton if the disabled property is true
  * @BindDisabledToBoolean("myButton")
@@ -773,23 +790,40 @@ exports.BindDisabledToBoolean = BindDisabledToBoolean;
  * @param id the element to bind the property to
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
- * //This will check the checkbox with id myCheckbox if the checked property is true
- * @BindCheckedToBoolean("myCheckbox")
- * public checked: boolean = true;
+ * //This will hide the div with id myDiv1 if the visible property is false
+ * @BindVisibleToBoolean("myDiv1")
+ * public visible: boolean = true;
  */
 function BindVisibleToBoolean(id) {
     return BindStyle(id, "display", (value) => value ? "block" : "none");
 }
 exports.BindVisibleToBoolean = BindVisibleToBoolean;
 /**
+ * @description Decorator to bind the checked/unchecked value of a checkbox input to a boolean
+ * @param id the element to bind the property to
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will check the checkbox with id myCheckbox if the checked property is true
+ * @BindCheckedToBoolean("myCheckbox")
+ * public checked: boolean = true;
+ */
+function BindCheckedToBoolean(id) {
+    return BindAttribute(id, "checked", (value) => value ? "checked" : "");
+}
+exports.BindCheckedToBoolean = BindCheckedToBoolean;
+/**
  * @description Decorator to bind the value of an element to a number
  * @param id the element to bind the property to
  * @param append an optional string to append to the number before setting the value
  * @returns DecoratorCallback
  * @export
+ * @group Bind Decorators
  * @example
- * //This will check the checkbox with id myCheckbox if the checked property is true
+ * //This will bind the text (value) of the div with id myDiv1 to the number in value
  * @BindValueToNumber("myDiv1")
  * public value: number = 100;
  */
@@ -797,6 +831,20 @@ function BindValueToNumber(id, append = "") {
     return BindValue(id, (value) => `${value}${append}`);
 }
 exports.BindValueToNumber = BindValueToNumber;
+/**
+* @description Decorator to bind a specific style to a number, and optionally append a string to the value
+* @param id the element to bind the property to
+* @param style the style to bind (i.e. background-color, left, top, etc.)
+* @Param optional string to append to the number before setting the value
+* @returns DecoratorCallback
+* @overload
+* @export
+* @group Bind Decorators
+* @example
+* //This will set the width of the div to the number in width
+* @BindStyleToNumber("myDiv", "width","%")
+* public width: number = 100;
+*/
 function BindStyleToNumber(id, style, append = "") {
     return BindStyle(id, style, (value) => `${value}${append}`);
 }
@@ -804,10 +852,11 @@ exports.BindStyleToNumber = BindStyleToNumber;
 /**
  * @description Decorator to bind a specific style to a number, and append a 'px' to the value
  * @param id the element to bind the property to
- * @param a value that the transformer will turn into a string that will be set as the style
+ * @param style the style to bind (i.e. background-color, left, top, etc.)
  * @returns DecoratorCallback
  * @overload
  * @export
+ * @group Bind Decorators
  * @example
  * //This will set the width of the div to the number in width
  * @BindStyleToNumberAppendPx("myDiv", "width")
@@ -859,6 +908,19 @@ exports.bootstrap = bootstrap;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Timer = exports.Input = exports.Change = exports.Blur = exports.Click = exports.WindowEvent = exports.GenericEvent = void 0;
+/**
+ * @description Decorator to bind a generic event to an element
+ * @param htmlElementID the element to bind the event to
+ * @param type the event to bind
+ * @returns DecoratorCallback
+ * @export
+ * @group Event Decorators
+ * @example
+ * @GenericEvent("myButton", "click")
+ * myButtonClick(e: MouseEvent) {
+ *    console.log("Button was clicked");
+ * }
+ */
 function GenericEvent(htmlElementID, type) {
     return function (target, context) {
         context.addInitializer(function () {
@@ -866,7 +928,12 @@ function GenericEvent(htmlElementID, type) {
             if (element) {
                 element.addEventListener(type, (e) => {
                     if (type === "input" || type === "change")
-                        e.value = element.value;
+                        if (element.type === "checkbox") {
+                            e.value = element.checked ? "on" : "";
+                        }
+                        else {
+                            e.value = element.value;
+                        }
                     target.call(this, e);
                 });
             }
@@ -879,6 +946,7 @@ exports.GenericEvent = GenericEvent;
  * @param type the event to bind
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @WindowEvent("resize")
  * onResize(e: WindowEvent) {
@@ -900,6 +968,7 @@ exports.WindowEvent = WindowEvent;
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Click("myButton")
  * myButtonClick(e: MouseEvent) {
@@ -915,6 +984,7 @@ exports.Click = Click;
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Blur("myInput")
  * myInputBlur(e: FocusEvent) {
@@ -930,6 +1000,7 @@ exports.Blur = Blur;
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Change("myInput")
  * myInputChange(e: ChangeEvent) {
@@ -944,6 +1015,7 @@ exports.Change = Change;
  * @param htmlElementID the element to bind the event to
  * @returns DecoratorCallback
  * @export
+ * @group Event Decorators
  * @example
  * @Input("myInput")
  * myInputChange(e: InputEvent) {
@@ -960,6 +1032,7 @@ exports.Input = Input;
  * @returns DecoratorCallback
  * @note This executes repeatedly.  The decorated function is passed a cancel function that can be called to stop the timer.
  * @export
+ * @group Event Decorators
  * @example
  * let counter=0;
  * @Timer(1000)
@@ -993,6 +1066,13 @@ exports.Timer = Timer;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EventSubject = void 0;
+/**
+ * EventSubject
+ * @description A class for creating event subjects
+ * @export
+ * @class EventSubject
+ * @group Async Event Sources
+ */
 class EventSubject {
     constructor() {
         this.refCount = 0;
@@ -1072,7 +1152,6 @@ class EventSubject {
      * Convert the event subject to a promise
      * @description Convert the event subject to a promise.
      * This is useful for the async/await style async pattern.
-     * @param none
      * @returns Promise<T>
      * @example
      * async myFunction() {

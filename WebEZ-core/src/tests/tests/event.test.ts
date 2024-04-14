@@ -61,6 +61,24 @@ describe("WebEZ-Event", () => {
             expect(toplevel.testVal4).toBe("test3");
         });
     });
+    describe("Checkbox Event Tests", () => {
+        test("Checkbox Change Event", () => {
+            let toplevel: any = undefined;
+            toplevel = bootstrap<TestComponent>(TestComponent);
+            const el = toplevel["shadow"].getElementById(
+                "bindCheck24",
+            ) as HTMLInputElement;
+            expect(toplevel).toBeInstanceOf(TestComponent);
+            expect(toplevel.testVal5).toEqual("");
+            el.checked = true;
+            el.dispatchEvent(new Event("change"));
+            expect(toplevel.testVal5).toEqual("on");
+            el.checked = false;
+            el.dispatchEvent(new Event("change"));
+            expect(toplevel.testVal5).toEqual("");
+
+        });
+    });
     describe("Events:Grandchild", () => {
         beforeAll(() => {
             const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;

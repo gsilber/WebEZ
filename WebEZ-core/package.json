@@ -1,12 +1,12 @@
 {
     "name": "@gsilber/webez",
-    "version": "0.4.14",
+    "version": "0.4.15",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
         "deploy-cover": "npm run coverage && mkdir -p ../docs/cover && cp -r ./coverage/* ../docs/cover",
         "build": "rm -rf ./dist && tsc && rm -rf ./dist/tests && cp ./package.json dist",
-        "test": "npm run clean && jest --silent",
+        "test": "npm run clean gd && jest --silent",
         "watch": "npm run clean && jest --watchAll=true",
         "coverage": "npm run clean && jest --coverage --watchAll=false --coverageDirectory='./coverage'",
         "test:json": "npm run clean && jest --json --watchAll=false --outputFile jest-output.json --coverage",

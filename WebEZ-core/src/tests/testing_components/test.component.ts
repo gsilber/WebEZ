@@ -19,6 +19,7 @@ import {
     Input,
     Timer,
     WindowEvent,
+    ValueEvent,
 } from "../../event.decorators";
 import { TestChild1Component } from "./test-child1.component";
 import { TestChild2Component } from "./test-child2.component";
@@ -237,6 +238,8 @@ export class TestComponent extends EzComponent {
 
     @BindCheckedToBoolean("bindCheck24")
     testChecked1: boolean = true;
+    
+    testVal5: string = "";
 
     constructor() {
         super(html, css);
@@ -287,5 +290,9 @@ export class TestComponent extends EzComponent {
     @WindowEvent("resize")
     windowResize(event: UIEvent) {
         event.preventDefault();
+    }
+    @Change("bindCheck24")
+    evtCheck24Change(event: ValueEvent) {
+        this.testVal5 = event.value;
     }
 }
