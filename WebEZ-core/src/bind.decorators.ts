@@ -113,6 +113,73 @@ function getPropertyDescriptor<This extends EzComponent>(
 }
 
 /**
+ * @description Recreates the set of elements bound to the array by duplicating the element parameter for each element in the array
+ * @param arr the array of values to bind to the elements
+ * @param element the element to duplicate for each element in the array
+ * @returns void
+ * @ignore
+ */
+function recreateBoundList(arr: string[], element: HTMLElement) {
+    //hide current element
+    element.style.display = "none";
+    //remove all siblings but not element
+    while (element.nextSibling) {
+        element.nextSibling.remove();
+    }
+    //attach a clone of the element for each element in the list and set its value or innerhtml property to the value to the elmements parent
+    arr.forEach((v) => {
+        let clone = element.cloneNode(true) as HTMLElement;
+        clone.style.display = "initial";
+        if (clone instanceof HTMLInputElement) clone.value = v;
+        else if (clone instanceof HTMLOptionElement) {
+            clone.value = v;
+            clone.text = v;
+        } else clone.innerHTML = v;
+        element.parentElement?.appendChild(clone);
+    });
+}
+/**
+ * @description Creates a proxy object that will update the bound list when the array is modified
+ * @param array the array to proxy
+ * @param element the element to bind the array to
+ * @returns Proxy
+ * @ignore
+ */
+function boundProxyFactory(array: string[], element: HTMLElement) {
+    return new Proxy(array, {
+        set(target: string[], prop: any, value: string) {
+            if (prop !== "length") {
+                target[prop] = value;
+                recreateBoundList(target, element);
+            }
+            return true;
+        },
+        get(target: string[], prop: any) {
+            let ops = [
+                "fill",
+                "copyWithin",
+                "push",
+                "reverse",
+                "shift",
+                "slice",
+                "sort",
+                "splice",
+                "unshift",
+            ];
+            if (ops.indexOf(prop) !== -1) {
+                const origMethod: any = target[prop];
+
+                return function (...args: any[]) {
+                    origMethod.apply(target, args);
+                    recreateBoundList(target, element);
+                };
+            }
+            return target[prop];
+        },
+    });
+}
+
+/**
  * @description Decorator to bind a specific style string property to an element
  * @param id the element to bind the property to
  * @param style the style to bind (i.e. background-color, left, top, etc.)
@@ -585,6 +652,79 @@ export function BindAttribute<
     };
 }
 
+/**
+ * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
+ * @param id the element to bind the property to
+ * @param transform a function to transform the value to a string[] before it is set on the element
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will create a list of divs with the values in the list that are
+ * //siblings to myDiv.  myDiv itself will be hidden
+ * @BindList("myDiv")
+ * public list: number[] = ["one", "two", "three"];
+ */
+
+export function BindList<This extends EzComponent, Value extends string[]>(
+    id: string,
+    transform?: (this: This, value: Value) => string[],
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
+
+/**
+ * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
+ * @param id the element to bind the property to
+ * @param transform a function to transform the value to a string[] before it is set on the element
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will create a list of divs with the values in the list that are
+ * //siblings to myDiv.  myDiv itself will be hidden
+ * @BindList("myDiv", (value: number[]) => value.map((v)=>v.toString()))
+ * public list: number[] = [1,2,3];
+ */
+export function BindList<This extends EzComponent, Value extends []>(
+    id: string,
+    transform: (this: This, value: Value) => string[],
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
+
+//implementation
+export function BindList<This extends EzComponent, Value extends string[]>(
+    id: string,
+    transform: (this: This, value: Value) => string[] = (value: Value) =>
+        value as string[],
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
+    return function (
+        target: undefined,
+        context: ClassFieldDecoratorContext<This, Value>,
+    ) {
+        context.addInitializer(function (this: This) {
+            const element = this["shadow"].getElementById(id);
+            if (!element) {
+                throw new Error(`can not find HTML element with id: ${id}`);
+            }
+            const value = context.access.get(this);
+            const privateKey: keyof This = getPrivateKey(context.name);
+            const publicKey: keyof This = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const setfn = (value: Value) => {
+                recreateBoundList(transform.call(this, value), element);
+                (this[privateKey] as string[]) = boundProxyFactory(
+                    value,
+                    element,
+                );
+            };
+            setfn(value as Value);
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, setfn);
+            } else {
+                hookProperty(this, context.name, value as Value, setfn);
+            }
+        });
+    };
+}
+
 // Wrapper methods for specific operations
 /**
  * @description Decorator to bind the cssClassName property if the boolean property is true
@@ -736,150 +876,4 @@ export function BindStyleToNumberAppendPx<
     Value extends number,
 >(id: string, style: K) {
     return BindStyleToNumber(id, style, "px");
-}
-
-/**
- * @ignore
- */
-function recreateBoundList(arr: string[], element: HTMLElement) {
-    //hide current element
-    element.style.display = "none";
-    //remove all siblings but not element
-    while (element.nextSibling) {
-        element.nextSibling.remove();
-    }
-    //attach a clone of the element for each element in the list and set its value or innerhtml property to the value to the elmements parent
-    arr.forEach((v) => {
-        let clone = element.cloneNode(true) as HTMLElement;
-        clone.style.display = "initial";
-        if (clone instanceof HTMLInputElement) clone.value = v;
-        else if (clone instanceof HTMLOptionElement) {
-            clone.value = v;
-            clone.text = v;
-        } else clone.innerHTML = v;
-        element.parentElement?.appendChild(clone);
-    });
-}
-/**
- * @ignore
- */
-function boundProxyFactory(array: string[], element: HTMLElement) {
-    return new Proxy(array, {
-        set(target: string[], prop: any, value: string) {
-            if (prop !== "length") {
-                target[prop] = value;
-                recreateBoundList(target, element);
-            }
-            return true;
-        },
-        get(target: string[], prop: any) {
-            let ops = [
-                "fill",
-                "copyWithin",
-                "push",
-                "reverse",
-                "shift",
-                "slice",
-                "sort",
-                "splice",
-                "unshift",
-            ];
-            if (ops.indexOf(prop) !== -1) {
-                const origMethod: any = target[prop];
-
-                return function (...args: any[]) {
-                    origMethod.apply(target, args);
-                    recreateBoundList(target, element);
-                };
-            }
-            return target[prop];
-        },
-    });
-}
-
-/**
- * @description Decorator to bind a list of strings to a list of elements
- * @param id the element to bind the property to
- * @param transform an optional function to transform the value before it is set on the element
- * @returns DecoratorCallback
- * @export
- * @group Bind Decorators
- * @example
- * //This will create a list of divs with the values in the list that are
- * //siblings to myDiv.  myDiv itself will be hidden
- * @BindList("myDiv")
- * public list: string[] = ["one", "two", "three"];
- *
- */
-/**
- * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
- * @param id the element to bind the property to
- * @param transform a function to transform the value to a string[] before it is set on the element
- * @returns DecoratorCallback
- * @export
- * @group Bind Decorators
- * @example
- * //This will create a list of divs with the values in the list that are
- * //siblings to myDiv.  myDiv itself will be hidden
- * @BindList("myDiv")
- * public list: number[] = ["one", "two", "three"];
- */
-
-export function BindList<This extends EzComponent, Value extends string[]>(
-    id: string,
-    transform?: (this: This, value: Value) => string[],
-): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
-
-/**
- * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
- * @param id the element to bind the property to
- * @param transform a function to transform the value to a string[] before it is set on the element
- * @returns DecoratorCallback
- * @export
- * @group Bind Decorators
- * @example
- * //This will create a list of divs with the values in the list that are
- * //siblings to myDiv.  myDiv itself will be hidden
- * @BindList("myDiv", (value: number[]) => value.map((v)=>v.toString()))
- * public list: number[] = [1,2,3];
- */
-export function BindList<This extends EzComponent, Value extends []>(
-    id: string,
-    transform: (this: This, value: Value) => string[],
-): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
-
-//implementation
-export function BindList<This extends EzComponent, Value extends string[]>(
-    id: string,
-    transform: (this: This, value: Value) => string[] = (value: Value) =>
-        value as string[],
-): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
-    return function (
-        target: undefined,
-        context: ClassFieldDecoratorContext<This, Value>,
-    ) {
-        context.addInitializer(function (this: This) {
-            const element = this["shadow"].getElementById(id);
-            if (!element) {
-                throw new Error(`can not find HTML element with id: ${id}`);
-            }
-            const value = context.access.get(this);
-            const privateKey: keyof This = getPrivateKey(context.name);
-            const publicKey: keyof This = getPublicKey(context.name);
-            const origDescriptor = getPropertyDescriptor(this, publicKey);
-            const setfn = (value: Value) => {
-                recreateBoundList(transform.call(this, value), element);
-                (this[privateKey] as string[]) = boundProxyFactory(
-                    value,
-                    element,
-                );
-            };
-            setfn(value as Value);
-            if (origDescriptor.set) {
-                hookPropertySetter(this, context.name, origDescriptor, setfn);
-            } else {
-                hookProperty(this, context.name, value as Value, setfn);
-            }
-        });
-    };
 }

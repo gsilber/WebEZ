@@ -251,6 +251,25 @@ disableBtn:boolean=false;
 @BindAttribute("img1","src")
 imgSrc:string="http://my.imagesrc.com/img1";
 ```
+### @BindList(id)
+> Binds to a string array or must have a transform that resolves to a string array.
+
+Connects an element to an array by duplicating the element for each item in the array and setting the appropriate properties using the values in the array.
+```
+HTML File
+<select id="selector">
+    <option id="option">
+</select>
+<ul>
+    <li id="item">
+</ul>
+```
+```
+@BindList("option")
+arr:string[]=["option 1","option 2", "option 3"];
+@BindList("item",(value:number[])=>value.map(v=>v.toString()))
+arr2:number[]=[1,2,3];
+```
 ### @BindCheckedToBoolean(id)
 > Binds to boolean
 
