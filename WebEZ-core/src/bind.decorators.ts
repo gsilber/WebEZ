@@ -811,6 +811,44 @@ function boundProxyFactory(array: string[], element: HTMLElement) {
  * public list: string[] = ["one", "two", "three"];
  *
  */
+/**
+ * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
+ * @param id the element to bind the property to
+ * @param transform a function to transform the value to a string[] before it is set on the element
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will create a list of divs with the values in the list that are
+ * //siblings to myDiv.  myDiv itself will be hidden
+ * @BindList("myDiv")
+ * public list: number[] = ["one", "two", "three"];
+ */
+
+export function BindList<This extends EzComponent, Value extends string[]>(
+    id: string,
+    transform?: (this: This, value: Value) => string[],
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
+
+/**
+ * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
+ * @param id the element to bind the property to
+ * @param transform a function to transform the value to a string[] before it is set on the element
+ * @returns DecoratorCallback
+ * @export
+ * @group Bind Decorators
+ * @example
+ * //This will create a list of divs with the values in the list that are
+ * //siblings to myDiv.  myDiv itself will be hidden
+ * @BindList("myDiv", (value: number[]) => value.map((v)=>v.toString()))
+ * public list: number[] = [1,2,3];
+ */
+export function BindList<This extends EzComponent, Value extends []>(
+    id: string,
+    transform: (this: This, value: Value) => string[],
+): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
+
+//implementation
 export function BindList<This extends EzComponent, Value extends string[]>(
     id: string,
     transform: (this: This, value: Value) => string[] = (value: Value) =>
@@ -825,16 +863,23 @@ export function BindList<This extends EzComponent, Value extends string[]>(
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
-            const value = transform.call(this, context.access.get(this));
-            recreateBoundList(value, element);
+            const value = context.access.get(this);
             const privateKey: keyof This = getPrivateKey(context.name);
-            hookProperty(this, context.name, value as Value, (value: Value) => {
-                recreateBoundList(value, element);
+            const publicKey: keyof This = getPublicKey(context.name);
+            const origDescriptor = getPropertyDescriptor(this, publicKey);
+            const setfn = (value: Value) => {
+                recreateBoundList(transform.call(this, value), element);
                 (this[privateKey] as string[]) = boundProxyFactory(
                     value,
                     element,
                 );
-            });
+            };
+            setfn(value as Value);
+            if (origDescriptor.set) {
+                hookPropertySetter(this, context.name, origDescriptor, setfn);
+            } else {
+                hookProperty(this, context.name, value as Value, setfn);
+            }
         });
     };
 }
