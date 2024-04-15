@@ -122,7 +122,6 @@ function getPropertyDescriptor<This extends EzComponent>(
 function recreateBoundList(arr: string[], element: HTMLElement) {
     //hide current element
     element.style.display = "none";
-    //remove all siblings but not element
     const sibs: HTMLElement[] = [];
     let n = element.parentElement?.firstChild;
     for (; n; n = n.nextSibling) {
@@ -137,13 +136,14 @@ function recreateBoundList(arr: string[], element: HTMLElement) {
         //add the extra siblings
         for (let i = sibs.length; i < arr.length; i++) {
             let clone = element.cloneNode(true) as HTMLElement;
-            clone.style.display = "initial";
+            sibs.push(clone);
             element.parentElement?.appendChild(clone);
         }
     }
     //replace the value of the siblings with the value in the array
     arr.forEach((v, i) => {
-        sibs[i].style.display = "initial";
+        sibs[i].style.display = element.getAttribute("original-display") || "";
+
         if (sibs[i] instanceof HTMLInputElement)
             (sibs[i] as HTMLInputElement).value = v;
         else if (sibs[i] instanceof HTMLOptionElement) {
@@ -734,6 +734,7 @@ export function BindList<This extends EzComponent, Value extends string[]>(
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
+            element.setAttribute("original-display", element.style.display);
             const value = context.access.get(this);
             const privateKey: keyof This = getPrivateKey(context.name);
             const publicKey: keyof This = getPublicKey(context.name);
