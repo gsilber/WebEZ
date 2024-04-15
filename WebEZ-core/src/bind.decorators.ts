@@ -123,20 +123,50 @@ function recreateBoundList(arr: string[], element: HTMLElement) {
     //hide current element
     element.style.display = "none";
     //remove all siblings but not element
-    while (element.nextSibling) {
-        element.nextSibling.remove();
+    const sibs: HTMLElement[] = [];
+    let n = element.parentElement?.firstChild;
+    for (; n; n = n.nextSibling) {
+        if (n.nodeType === 1 && n !== element) sibs.push(n as HTMLElement);
     }
-    //attach a clone of the element for each element in the list and set its value or innerhtml property to the value to the elmements parent
-    arr.forEach((v) => {
-        let clone = element.cloneNode(true) as HTMLElement;
-        clone.style.display = "initial";
-        if (clone instanceof HTMLInputElement) clone.value = v;
-        else if (clone instanceof HTMLOptionElement) {
-            clone.value = v;
-            clone.text = v;
-        } else clone.innerHTML = v;
-        element.parentElement?.appendChild(clone);
+    if (sibs.length > arr.length) {
+        //remove extra siblings
+        sibs.slice(arr.length).forEach((v) => {
+            v.remove();
+        });
+    } else if (sibs.length < arr.length) {
+        //add the extra siblings
+        for (let i = sibs.length; i < arr.length; i++) {
+            let clone = element.cloneNode(true) as HTMLElement;
+            clone.style.display = "initial";
+            element.parentElement?.appendChild(clone);
+        }
+    }
+    //replace the value of the siblings with the value in the array
+    arr.forEach((v, i) => {
+        sibs[i].style.display = "initial";
+        if (sibs[i] instanceof HTMLInputElement)
+            (sibs[i] as HTMLInputElement).value = v;
+        else if (sibs[i] instanceof HTMLOptionElement) {
+            (sibs[i] as HTMLOptionElement).value = v;
+            (sibs[i] as HTMLOptionElement).text = v;
+        } else sibs[i].innerHTML = v;
     });
+
+    /*replaced to not recreate the dom each time the array changed.  Delete once working*/
+    // while (element.nextSibling) {
+    //     element.nextSibling.remove();
+    // }
+    // //attach a clone of the element for each element in the list and set its value or innerhtml property to the value to the elmements parent
+    // arr.forEach((v) => {
+    //     let clone = element.cloneNode(true) as HTMLElement;
+    //     clone.style.display = "initial";
+    //     if (clone instanceof HTMLInputElement) clone.value = v;
+    //     else if (clone instanceof HTMLOptionElement) {
+    //         clone.value = v;
+    //         clone.text = v;
+    //     } else clone.innerHTML = v;
+    //     element.parentElement?.appendChild(clone);
+    // });
 }
 /**
  * @description Creates a proxy object that will update the bound list when the array is modified
