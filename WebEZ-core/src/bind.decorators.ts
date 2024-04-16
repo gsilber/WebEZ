@@ -733,7 +733,7 @@ export function BindList<This extends EzComponent, Value extends string[]>(
  * @BindList("myDiv", (value: number[]) => value.map((v)=>v.toString()))
  * public list: number[] = [1,2,3];
  */
-export function BindList<This extends EzComponent, Value extends []>(
+export function BindList<This extends EzComponent, Value extends any[]>(
     id: string,
     transform: (this: This, value: Value) => string[],
     replaceInnerHtml?: boolean,
