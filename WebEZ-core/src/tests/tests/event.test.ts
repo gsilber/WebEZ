@@ -8,6 +8,7 @@ import {
 } from "@jest/globals";
 import { bootstrap } from "../../bootstrap";
 import { TestComponent } from "../testing_components/test.component";
+import { TestComponent2 } from "../testing_components/test.component2";
 
 declare const window: Window;
 
@@ -76,7 +77,6 @@ describe("WebEZ-Event", () => {
             el.checked = false;
             el.dispatchEvent(new Event("change"));
             expect(toplevel.testVal5).toEqual("");
-
         });
     });
     describe("Events:Grandchild", () => {
@@ -92,6 +92,29 @@ describe("WebEZ-Event", () => {
                 .getElementById("evtButton1")
                 .click();
             expect(toplevel.child1.baby1.testVal).toBe(true);
+        });
+    });
+    describe("Events: Lists", () => {
+        beforeAll(() => {
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent2>(TestComponent2, html);
+        });
+        test("change event on simple list", () => {
+            let parent = toplevel["shadow"].getElementById("radio1")
+                .parentElement as HTMLElement;
+            (parent.children[2] as HTMLInputElement).click();
+            parent.children[2].dispatchEvent(new Event("change"));
+            expect(toplevel.testVal1).toBe("world");
+        });
+        test("change event on deeply embedded element in list", () => {
+            let parent = toplevel["shadow"].getElementById("div2")
+                .parentElement as HTMLElement;
+            let el = parent.children[2].getElementsByTagName(
+                "input",
+            )[0] as HTMLInputElement;
+            el.click();
+            el.dispatchEvent(new Event("change"));
+            expect(toplevel.testval2).toBe("am");
         });
     });
     describe("Timer Test", () => {

@@ -7,6 +7,7 @@ import {
     BadStyleComponent,
     BadValueComponent,
 } from "../testing_components/exceptions/bad.components";
+import { TestComponent2 } from "../testing_components/test.component2";
 
 describe("WebEZ-Bind", () => {
     let toplevel: any = undefined;
@@ -314,26 +315,50 @@ describe("WebEZ-Bind", () => {
         });
     });
 
-    describe("Bind:Grandhild", () => {
-        test("Bind to child", () => {
-            expect(true).toBe(true);
+    describe("Bind:Lists", () => {
+        beforeAll(() => {
+            const html: string = `<div>Testing Environment</div><div id='main-target'></div>`;
+            toplevel = bootstrap<TestComponent2>(TestComponent2, html);
         });
-    });
-    describe("Pipes", () => {
-        test("All pipes at once", () => {
-            let el1 = toplevel["shadow"].getElementById(
-                "bindDiv9",
-            ) as HTMLElement;
-            let el2 = toplevel["shadow"].getElementById(
-                "bindDiv10",
-            ) as HTMLElement;
-            expect(toplevel.testbind7).toBe("hello");
-            expect(el1.innerHTML).toEqual("$$$hello World!!!");
-            expect(el2.innerHTML).toEqual("$$$hello World!!!");
-            toplevel.testbind7 = "testing";
-            expect(toplevel.testbind7).toBe("testing");
-            expect(el1.innerHTML).toEqual("$$$testing World!!!");
-            expect(el2.innerHTML).toEqual("$$$testing World!!!");
+        test("Simple list bind stacked", () => {
+            let parent = toplevel["shadow"].getElementById("list1")
+                .parentElement as HTMLElement;
+            expect(parent.children.length).toBe(3);
+            parent = toplevel["shadow"].getElementById("list1")
+                .parentElement as HTMLElement;
+            expect(parent.children.length).toBe(3);
+            for (let i = 1; i < parent.children.length; i++) {
+                expect(parent.children[i].innerHTML).toBe(
+                    `${toplevel.testList1[i - 1]}`,
+                );
+            }
+            toplevel.testList1.push("new");
+            expect(parent.children.length).toBe(4);
+            expect(parent.children[3].innerHTML).toBe("new");
+            toplevel.testList1.pop();
+            expect(parent.children.length).toBe(3);
+            toplevel.testList1[0] = "something";
+            expect(parent.children[1].innerHTML).toBe("something");
+        });
+        test("checkbox list bind to number with transform", () => {
+            let parent = toplevel["shadow"].getElementById("checkbox1")
+                .parentElement as HTMLElement;
+            expect(parent.children.length).toBe(4);
+        });
+        test("radio list bind", () => {
+            let parent = toplevel["shadow"].getElementById("radio1")
+                .parentElement as HTMLElement;
+            expect(parent.children.length).toBe(3);
+        });
+        test("deep bind list", () => {
+            let parent = toplevel["shadow"].getElementById("div2")
+                .parentElement as HTMLElement;
+            expect(parent.children.length).toBe(5);
+            toplevel.testList4.push("new");
+            expect(parent.children.length).toBe(6);
+            toplevel.testList4.pop();
+            expect(parent.children.length).toBe(5);
+            toplevel.testList4[0] = "something";
         });
     });
 });

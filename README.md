@@ -272,7 +272,7 @@ HTML File
 arr:string[]=["option 1","option 2", "option 3"];
 @BindList("item",(value:number[])=>value.map(v=>v.toString()))
 arr2:number[]=[1,2,3];
-@BindList("list", undefined, false, "item")
+@BindList("list", undefined, false, ["item"])
 list: string[] = ["item1", "item2", "item3"];
 )
 ```

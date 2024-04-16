@@ -1,5 +1,4 @@
 import { EzComponent } from "./EzComponent";
-import { ValueEvent } from "./event.decorators";
 import { EventSubject } from "./eventsubject";
 
 /**
@@ -130,6 +129,24 @@ function elementHasValue(element: HTMLElement): boolean {
     );
 }
 
+function walkDOM(
+    element: HTMLElement,
+    clone: HTMLElement,
+    func: (node: HTMLElement, clone: HTMLElement) => void,
+) {
+    func(element, clone); // Process the current node
+
+    // Recurse into child nodes
+    element = element.firstChild as HTMLElement;
+    clone = clone.firstChild as HTMLElement;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    while (element) {
+        walkDOM(element, clone, func);
+        element = element.nextSibling as HTMLElement;
+        clone = clone.nextSibling as HTMLElement;
+    }
+}
+
 /**
  * @description Clones the event listeners from the element to the clone
  * @param element the element to clone the event listeners from
@@ -139,13 +156,17 @@ function elementHasValue(element: HTMLElement): boolean {
 function cloneEventListeners(element: HTMLElement, clone: HTMLElement) {
     const listeners: string[] = ["change", "input", "blur", "click"];
     listeners.forEach((listener) => {
-        clone.addEventListener(listener, (e: Event) => {
-            element.dispatchEvent(new Event(listener));
-            if (elementHasValue(element)) {
-                (element as HTMLInputElement).value = (
-                    e.target as HTMLInputElement
-                ).value;
-            }
+        walkDOM(element, clone, (el, cl) => {
+            cl.addEventListener(listener, (e: Event) => {
+                if (elementHasValue(el)) {
+                    (el as HTMLInputElement).value = (
+                        e.target as HTMLInputElement
+                    ).value;
+                }
+                if (element instanceof HTMLOptionElement)
+                    element.text = (e.target as HTMLOptionElement).text;
+                el.dispatchEvent(new Event(listener));
+            });
         });
     });
 }
@@ -154,7 +175,7 @@ function cloneEventListeners(element: HTMLElement, clone: HTMLElement) {
  * @param arr the array of values to bind to the elements
  * @param element the element to duplicate for each element in the array
  * @param overwrite if true, the innerHTML of the element will be replaced with the value in the array, otherwise the value will be set as the value of the element
- * @param listItemId the id of the element to set the value of in the list item
+ * @param listItemId an array of ids of the elements to set the value of in the list item
  * @returns void
  * @ignore
  */
@@ -162,7 +183,7 @@ function recreateBoundList(
     arr: string[],
     element: HTMLElement,
     overwrite: boolean,
-    listItemId: string,
+    listItemId: string[],
 ) {
     //hide current element
     element.style.display = "none";
@@ -180,30 +201,30 @@ function recreateBoundList(
         //add the extra siblings
         for (let i = sibs.length; i < arr.length; i++) {
             let clone = element.cloneNode(true) as HTMLElement;
-            cloneEventListeners(element, clone);
-
-            if (listItemId !== "") {
-                const el = clone.querySelector(`#${listItemId}`);
+            for (let id of listItemId) {
+                const el = clone.querySelector(`#${id}`);
                 if (el && elementHasValue(el as HTMLElement)) {
                     (el as HTMLInputElement).value = arr[i];
                 } else if (el) {
                     el.innerHTML = arr[i];
                 }
             }
-
+            cloneEventListeners(element, clone);
             sibs.push(clone);
             element.parentElement?.appendChild(clone);
         }
     }
+
     //replace the value of the siblings with the value in the array
     arr.forEach((v, i) => {
         sibs[i].style.display = element.getAttribute("original-display") || "";
-        if (sibs[i] instanceof HTMLInputElement)
-            (sibs[i] as HTMLInputElement).value = v;
-        else if (sibs[i] instanceof HTMLOptionElement) {
+
+        if (sibs[i] instanceof HTMLOptionElement) {
             (sibs[i] as HTMLOptionElement).value = v;
             (sibs[i] as HTMLOptionElement).text = v;
-        } else if (overwrite) sibs[i].innerHTML = v;
+        } else if (elementHasValue(sibs[i] as HTMLElement))
+            (sibs[i] as HTMLInputElement).value = v;
+        else if (overwrite) sibs[i].innerHTML = v;
     });
 }
 
@@ -559,29 +580,19 @@ export function BindValue<This extends EzComponent, Value>(
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const value = context.access.get(this);
-            if (value !== undefined) {
-                if (element instanceof HTMLInputElement)
+            if (element instanceof HTMLOptionElement) {
+                (element as HTMLOptionElement).value = transform.call(
+                    this,
+                    value,
+                );
+                element.text = transform.call(this, value);
+            } else if (value !== undefined) {
+                if (elementHasValue(element))
                     (element as HTMLInputElement).value = transform.call(
                         this,
                         value,
                     );
-                else if (element instanceof HTMLTextAreaElement)
-                    (element as HTMLTextAreaElement).value = transform.call(
-                        this,
-                        value,
-                    );
-                else if (element instanceof HTMLSelectElement)
-                    (element as HTMLSelectElement).value = transform.call(
-                        this,
-                        value,
-                    );
-                else if (element instanceof HTMLOptionElement) {
-                    (element as HTMLOptionElement).value = transform.call(
-                        this,
-                        value,
-                    );
-                    element.text = transform.call(this, value);
-                } else element.innerHTML = transform.call(this, value);
+                else element.innerHTML = transform.call(this, value);
             }
             if (origDescriptor.set) {
                 hookPropertySetter(
@@ -589,20 +600,14 @@ export function BindValue<This extends EzComponent, Value>(
                     context.name,
                     origDescriptor,
                     (value: Value): void => {
-                        if (element instanceof HTMLInputElement)
-                            (element as HTMLInputElement).value =
-                                transform.call(this, value);
-                        else if (element instanceof HTMLTextAreaElement)
-                            (element as HTMLTextAreaElement).value =
-                                transform.call(this, value);
-                        else if (element instanceof HTMLSelectElement)
-                            (element as HTMLSelectElement).value =
-                                transform.call(this, value);
-                        else if (element instanceof HTMLOptionElement) {
+                        if (element instanceof HTMLOptionElement) {
                             (element as HTMLOptionElement).value =
                                 transform.call(this, value);
                             element.text = transform.call(this, value);
-                        } else element.innerHTML = transform.call(this, value);
+                        } else if (elementHasValue(element))
+                            (element as HTMLInputElement).value =
+                                transform.call(this, value);
+                        else element.innerHTML = transform.call(this, value);
                     },
                 );
             } else {
@@ -611,20 +616,14 @@ export function BindValue<This extends EzComponent, Value>(
                     context.name,
                     value,
                     (value: Value): void => {
-                        if (element instanceof HTMLInputElement)
-                            (element as HTMLInputElement).value =
-                                transform.call(this, value);
-                        else if (element instanceof HTMLTextAreaElement)
-                            (element as HTMLTextAreaElement).value =
-                                transform.call(this, value);
-                        else if (element instanceof HTMLSelectElement)
-                            (element as HTMLSelectElement).value =
-                                transform.call(this, value);
-                        else if (element instanceof HTMLOptionElement) {
+                        if (element instanceof HTMLOptionElement) {
                             (element as HTMLOptionElement).value =
                                 transform.call(this, value);
                             element.text = transform.call(this, value);
-                        } else element.innerHTML = transform.call(this, value);
+                        } else if (elementHasValue(element))
+                            (element as HTMLOptionElement).value =
+                                transform.call(this, value);
+                        else element.innerHTML = transform.call(this, value);
                     },
                 );
             }
@@ -745,7 +744,7 @@ export function BindList<This extends EzComponent, Value extends string[]>(
     id: string,
     transform?: (this: This, value: Value) => string[],
     replaceInnerHtml?: boolean,
-    listItemId?: string,
+    listItemId?: string[],
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 /**
@@ -767,7 +766,7 @@ export function BindList<This extends EzComponent, Value extends any[]>(
     id: string,
     transform: (this: This, value: Value) => string[],
     replaceInnerHtml?: boolean,
-    listItemId?: string,
+    listItemId?: string[],
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 //implementation
@@ -776,7 +775,7 @@ export function BindList<This extends EzComponent, Value extends string[]>(
     transform: (this: This, value: Value) => string[] = (value: Value) =>
         value as string[],
     replaceInnerHtml: boolean = true,
-    listItemId: string = "",
+    listItemId: string[] = [],
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
     return function (
         target: undefined,
