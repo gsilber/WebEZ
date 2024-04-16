@@ -1,4 +1,5 @@
 import { EzComponent } from "./EzComponent";
+import { ValueEvent } from "./event.decorators";
 import { EventSubject } from "./eventsubject";
 
 /**
@@ -114,6 +115,41 @@ function getPropertyDescriptor<This extends EzComponent>(
 }
 
 /**
+ * @description Returns true if the element has a value attribute
+ * @param element the element to check
+ * @returns boolean
+ * @ignore
+ */
+function elementHasValue(element: HTMLElement): boolean {
+    return (
+        element instanceof HTMLInputElement ||
+        element instanceof HTMLTextAreaElement ||
+        element instanceof HTMLSelectElement ||
+        element instanceof HTMLOptionElement ||
+        element instanceof HTMLButtonElement
+    );
+}
+
+/**
+ * @description Clones the event listeners from the element to the clone
+ * @param element the element to clone the event listeners from
+ * @param clone the element to clone the event listeners to
+ * @ignore
+ */
+function cloneEventListeners(element: HTMLElement, clone: HTMLElement) {
+    const listeners: string[] = ["change", "input", "blur", "click"];
+    listeners.forEach((listener) => {
+        clone.addEventListener(listener, (e: Event) => {
+            element.dispatchEvent(new Event(listener));
+            if (elementHasValue(element)) {
+                (element as HTMLInputElement).value = (
+                    e.target as HTMLInputElement
+                ).value;
+            }
+        });
+    });
+}
+/**
  * @description Recreates the set of elements bound to the array by duplicating the element parameter for each element in the array
  * @param arr the array of values to bind to the elements
  * @param element the element to duplicate for each element in the array
@@ -144,17 +180,12 @@ function recreateBoundList(
         //add the extra siblings
         for (let i = sibs.length; i < arr.length; i++) {
             let clone = element.cloneNode(true) as HTMLElement;
+            cloneEventListeners(element, clone);
+
             if (listItemId !== "") {
                 const el = clone.querySelector(`#${listItemId}`);
-                if (
-                    el &&
-                    (el instanceof HTMLInputElement ||
-                        el instanceof HTMLSelectElement ||
-                        el instanceof HTMLOptionElement ||
-                        el instanceof HTMLTextAreaElement ||
-                        el instanceof HTMLButtonElement)
-                ) {
-                    el.value = arr[i];
+                if (el && elementHasValue(el as HTMLElement)) {
+                    (el as HTMLInputElement).value = arr[i];
                 } else if (el) {
                     el.innerHTML = arr[i];
                 }
@@ -756,8 +787,6 @@ export function BindList<This extends EzComponent, Value extends string[]>(
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
-            console.log(element.parentElement?.children);
-
             if (
                 element.parentElement &&
                 element.parentElement.children.length !== 1
