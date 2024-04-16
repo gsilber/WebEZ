@@ -251,10 +251,10 @@ disableBtn:boolean=false;
 @BindAttribute("img1","src")
 imgSrc:string="http://my.imagesrc.com/img1";
 ```
-### @BindList(id)
+### @BindList(id,?trans,?replaceInnerHtml,?itemId)
 > Binds to a string array or must have a transform that resolves to a string array.
 
-Connects an element to an array by duplicating the element for each item in the array and setting the appropriate properties using the values in the array.
+Connects an element to an array by duplicating the element for each item in the array and setting the appropriate properties using the values in the array.  If replaceInnerHtml is provided and false, the innerHtml property of the duplicated item will not be modified.  If the itemId is an id of an element inside the duplicated item, then the value of that item will replace the item's innerHtml
 ```
 HTML File
 <select id="selector">
@@ -263,12 +263,18 @@ HTML File
 <ul>
     <li id="item">
 </ul>
+<div>
+    <div id="list"><input type="checkbox" /> <span id="item"></span></div>
+</div>
 ```
 ```
 @BindList("option")
 arr:string[]=["option 1","option 2", "option 3"];
 @BindList("item",(value:number[])=>value.map(v=>v.toString()))
 arr2:number[]=[1,2,3];
+@BindList("list", undefined, false, "item")
+list: string[] = ["item1", "item2", "item3"];
+)
 ```
 ### @BindCheckedToBoolean(id)
 > Binds to boolean
