@@ -167,7 +167,6 @@ function recreateBoundList(
     //replace the value of the siblings with the value in the array
     arr.forEach((v, i) => {
         sibs[i].style.display = element.getAttribute("original-display") || "";
-
         if (sibs[i] instanceof HTMLInputElement)
             (sibs[i] as HTMLInputElement).value = v;
         else if (sibs[i] instanceof HTMLOptionElement) {
@@ -757,6 +756,15 @@ export function BindList<This extends EzComponent, Value extends string[]>(
             if (!element) {
                 throw new Error(`can not find HTML element with id: ${id}`);
             }
+            console.log(element.parentElement?.children);
+
+            if (
+                element.parentElement &&
+                element.parentElement.children.length !== 1
+            )
+                throw new Error(
+                    "lists must be bound to elements that are only children of their parent",
+                );
             element.setAttribute("original-display", element.style.display);
             const value = context.access.get(this);
             const privateKey: keyof This = getPrivateKey(context.name);
