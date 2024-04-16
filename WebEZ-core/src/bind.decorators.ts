@@ -1,4 +1,5 @@
 import { EzComponent } from "./EzComponent";
+import { EventSubject } from "./eventsubject";
 
 /**
  * @description Gets the public key of the field name
@@ -116,10 +117,17 @@ function getPropertyDescriptor<This extends EzComponent>(
  * @description Recreates the set of elements bound to the array by duplicating the element parameter for each element in the array
  * @param arr the array of values to bind to the elements
  * @param element the element to duplicate for each element in the array
+ * @param overwrite if true, the innerHTML of the element will be replaced with the value in the array, otherwise the value will be set as the value of the element
+ * @param listItemId the id of the element to set the value of in the list item
  * @returns void
  * @ignore
  */
-function recreateBoundList(arr: string[], element: HTMLElement) {
+function recreateBoundList(
+    arr: string[],
+    element: HTMLElement,
+    overwrite: boolean,
+    listItemId: string,
+) {
     //hide current element
     element.style.display = "none";
     const sibs: HTMLElement[] = [];
@@ -136,6 +144,22 @@ function recreateBoundList(arr: string[], element: HTMLElement) {
         //add the extra siblings
         for (let i = sibs.length; i < arr.length; i++) {
             let clone = element.cloneNode(true) as HTMLElement;
+            if (listItemId !== "") {
+                const el = clone.querySelector(`#${listItemId}`);
+                if (
+                    el &&
+                    (el instanceof HTMLInputElement ||
+                        el instanceof HTMLSelectElement ||
+                        el instanceof HTMLOptionElement ||
+                        el instanceof HTMLTextAreaElement ||
+                        el instanceof HTMLButtonElement)
+                ) {
+                    el.value = arr[i];
+                } else if (el) {
+                    el.innerHTML = arr[i];
+                }
+            }
+
             sibs.push(clone);
             element.parentElement?.appendChild(clone);
         }
@@ -149,25 +173,11 @@ function recreateBoundList(arr: string[], element: HTMLElement) {
         else if (sibs[i] instanceof HTMLOptionElement) {
             (sibs[i] as HTMLOptionElement).value = v;
             (sibs[i] as HTMLOptionElement).text = v;
-        } else sibs[i].innerHTML = v;
+        } else if (overwrite) sibs[i].innerHTML = v;
     });
-
-    /*replaced to not recreate the dom each time the array changed.  Delete once working*/
-    // while (element.nextSibling) {
-    //     element.nextSibling.remove();
-    // }
-    // //attach a clone of the element for each element in the list and set its value or innerhtml property to the value to the elmements parent
-    // arr.forEach((v) => {
-    //     let clone = element.cloneNode(true) as HTMLElement;
-    //     clone.style.display = "initial";
-    //     if (clone instanceof HTMLInputElement) clone.value = v;
-    //     else if (clone instanceof HTMLOptionElement) {
-    //         clone.value = v;
-    //         clone.text = v;
-    //     } else clone.innerHTML = v;
-    //     element.parentElement?.appendChild(clone);
-    // });
 }
+
+const boundProxyRebuild: EventSubject = new EventSubject();
 /**
  * @description Creates a proxy object that will update the bound list when the array is modified
  * @param array the array to proxy
@@ -175,12 +185,13 @@ function recreateBoundList(arr: string[], element: HTMLElement) {
  * @returns Proxy
  * @ignore
  */
-function boundProxyFactory(array: string[], element: HTMLElement) {
+function boundProxyFactory(array: string[]) {
     return new Proxy(array, {
         set(target: string[], prop: any, value: string) {
             if (prop !== "length") {
                 target[prop] = value;
-                recreateBoundList(target, element);
+                boundProxyRebuild.next();
+                //recreateBoundList(target, element);
             }
             return true;
         },
@@ -189,6 +200,7 @@ function boundProxyFactory(array: string[], element: HTMLElement) {
                 "fill",
                 "copyWithin",
                 "push",
+                "pop",
                 "reverse",
                 "shift",
                 "slice",
@@ -201,7 +213,8 @@ function boundProxyFactory(array: string[], element: HTMLElement) {
 
                 return function (...args: any[]) {
                     origMethod.apply(target, args);
-                    recreateBoundList(target, element);
+                    boundProxyRebuild.next();
+                    //recreateBoundList(target, element);
                 };
             }
             return target[prop];
@@ -686,6 +699,8 @@ export function BindAttribute<
  * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
  * @param id the element to bind the property to
  * @param transform a function to transform the value to a string[] before it is set on the element
+ * @param replaceInnerHtml if true, the innerHTML of the element will be replaced with the value in the list, otherwise the value will be set as the value of the element
+ * @param listItemId the id of the element to set the value of in the list item
  * @returns DecoratorCallback
  * @export
  * @group Bind Decorators
@@ -699,12 +714,16 @@ export function BindAttribute<
 export function BindList<This extends EzComponent, Value extends string[]>(
     id: string,
     transform?: (this: This, value: Value) => string[],
+    replaceInnerHtml?: boolean,
+    listItemId?: string,
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 /**
  * @description Decorator to bind a list to an element.  The element will be cloned for each element in the list and the value of the element will be set to the value in the list
  * @param id the element to bind the property to
  * @param transform a function to transform the value to a string[] before it is set on the element
+ * @param replaceInnerHtml if true, the innerHTML of the element will be replaced with the value in the list, otherwise the value will be set as the value of the element
+ * @param listItemId the id of the element to set the value of in the list item
  * @returns DecoratorCallback
  * @export
  * @group Bind Decorators
@@ -717,6 +736,8 @@ export function BindList<This extends EzComponent, Value extends string[]>(
 export function BindList<This extends EzComponent, Value extends []>(
     id: string,
     transform: (this: This, value: Value) => string[],
+    replaceInnerHtml?: boolean,
+    listItemId?: string,
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any;
 
 //implementation
@@ -724,6 +745,8 @@ export function BindList<This extends EzComponent, Value extends string[]>(
     id: string,
     transform: (this: This, value: Value) => string[] = (value: Value) =>
         value as string[],
+    replaceInnerHtml: boolean = true,
+    listItemId: string = "",
 ): (target: any, context: ClassFieldDecoratorContext<This, Value>) => any {
     return function (
         target: undefined,
@@ -740,15 +763,41 @@ export function BindList<This extends EzComponent, Value extends string[]>(
             const publicKey: keyof This = getPublicKey(context.name);
             const origDescriptor = getPropertyDescriptor(this, publicKey);
             const setfn = (value: Value) => {
-                recreateBoundList(transform.call(this, value), element);
-                (this[privateKey] as string[]) = boundProxyFactory(
-                    value,
+                recreateBoundList(
+                    transform.call(this, value),
                     element,
+                    replaceInnerHtml,
+                    listItemId,
                 );
+                boundProxyRebuild.subscribe(() => {
+                    recreateBoundList(
+                        transform.call(this, value),
+                        element,
+                        replaceInnerHtml,
+                        listItemId,
+                    );
+                });
+                (this[privateKey] as string[]) = boundProxyFactory(value);
             };
             setfn(value as Value);
             if (origDescriptor.set) {
-                hookPropertySetter(this, context.name, origDescriptor, setfn);
+                hookPropertySetter(
+                    this,
+                    context.name,
+                    origDescriptor,
+                    (value: Value) => {
+                        boundProxyRebuild.subscribe(() => {
+                            recreateBoundList(
+                                transform.call(this, value),
+                                element,
+                                replaceInnerHtml,
+                                listItemId,
+                            );
+                        });
+                        boundProxyFactory(value);
+                        //recreateBoundList(transform.call(this, value));
+                    },
+                );
             } else {
                 hookProperty(this, context.name, value as Value, setfn);
             }
