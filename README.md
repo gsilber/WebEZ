@@ -623,6 +623,10 @@ TS File:
         this.addRouter(this.routes, "router");
     }
 ```
+You can change pages in code by calling the route method and passing it the path to route to.
+```
+    this.router?.route("/about");
+```
 ## Utility Classes
 ### EventSubject
 The ```EventSubject``` class can be used to handle asynchronous code. You can either ```subscribe``` to it or convert it to a promise with the ```toPromise``` method.  Many functions in ```WebEZ``` return an ```EventSubject``` that you can subscribe to.
