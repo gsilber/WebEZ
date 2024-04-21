@@ -18,7 +18,11 @@ export class EzRouter {
             if (this.currentComponent)
                 this.container["removeComponent"](this.currentComponent);
             this.currentComponent = route.component;
-            this.container.addComponent(route.component, this.id);
+            if (this.id === "root") {
+                this.container.addComponent(route.component);
+            } else {
+                this.container.addComponent(route.component, this.id);
+            }
         }
     }
 }
