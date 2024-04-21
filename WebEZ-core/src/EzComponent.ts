@@ -47,7 +47,7 @@ export abstract class EzComponent {
     /**
      * @hidden
      */
-    private router: EzRouter | null = null;
+    protected router: EzRouter | null = null;
     private shadow: ShadowRoot;
     private template: HTMLTemplateElement;
     private styles: HTMLStyleElement;
@@ -155,16 +155,14 @@ export abstract class EzComponent {
     /**
      * @description Add a router to the component
      * @param router The router to add
-     * @returns void
+     * @param id The id of the element to append the router to (optional)
+     * @returns the router
      * @memberof EzComponent
      * @example component.addRouter(router);
      */
-    public addRouter(
-        routes: Route[],
-        id: string = "root",
-        front: boolean = false,
-    ) {
+    public addRouter(routes: Route[], id: string = "root"): void {
         this.router = new EzRouter(this, routes, id);
+        this.router.route(window.location.pathname);
     }
     /**
      * @description Remove a component from the dom

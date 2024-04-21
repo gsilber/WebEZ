@@ -10,9 +10,7 @@ export class EzRouter {
         private container: EzComponent,
         private routes: Route[],
         private id: string,
-    ) {
-        this.route("/");
-    }
+    ) {}
 
     route(path: string) {
         const route = this.routes.find((r) => r.path === path);
