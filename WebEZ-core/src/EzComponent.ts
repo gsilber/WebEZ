@@ -1,3 +1,4 @@
+import { EzRouter, Route } from "./EzRouter";
 import { EventSubject } from "./eventsubject";
 declare const window: Window;
 /**
@@ -46,6 +47,7 @@ export abstract class EzComponent {
     /**
      * @hidden
      */
+    private router: EzRouter | null = null;
     private shadow: ShadowRoot;
     private template: HTMLTemplateElement;
     private styles: HTMLStyleElement;
@@ -150,6 +152,20 @@ export abstract class EzComponent {
         }
     }
 
+    /**
+     * @description Add a router to the component
+     * @param router The router to add
+     * @returns void
+     * @memberof EzComponent
+     * @example component.addRouter(router);
+     */
+    public addRouter(
+        routes: Route[],
+        id: string = "root",
+        front: boolean = false,
+    ) {
+        this.router = new EzRouter(this, routes, id);
+    }
     /**
      * @description Remove a component from the dom
      * @param component
