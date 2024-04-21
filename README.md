@@ -1,4 +1,4 @@
-# WebEZ - A simple web framework for Typescript (0.5.0)
+# WebEZ - A simple web framework for Typescript (0.5.1)
 
 ## Getting Started
 
@@ -601,6 +601,28 @@ A confirmation box can be shown by using:
         });
 ```
 We are specifying the title, the buttons to display, and a class for the buttons to style them.  It will return a subscription that will evaluate to the button name passed into the method.
+### EzRouter
+The ```EzRouter``` class handles routing.  You create one by calling EzComponent's addRouter method with an array of routes and a target
+```
+HTML File:
+<div class="main">
+    <div class="header"></div>
+    <div id="router" class="content"></div>
+</div>
+```
+```
+TS File:
+     private routes = [
+        { path: "/", component: new Page1Component() },
+        { path: "/home", component: new Page1Component() },
+        { path: "/about", component: new Page2Component() },
+        { path: "/contact", component: new Page3Component() },
+    ];
+    constructor() {
+        super(html, css);
+        this.addRouter(this.routes, "router");
+    }
+```
 ## Utility Classes
 ### EventSubject
 The ```EventSubject``` class can be used to handle asynchronous code. You can either ```subscribe``` to it or convert it to a promise with the ```toPromise``` method.  Many functions in ```WebEZ``` return an ```EventSubject``` that you can subscribe to.
