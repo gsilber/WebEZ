@@ -1,5 +1,15 @@
 import { EzComponent } from "./EzComponent";
 
+declare const window: Window;
+
+/**
+ * @description: A route
+ * @export
+ * @interface Route
+ * @group Routing
+ * path - the path of the route
+ * component - the component to render (instance of EzComponent)
+ */
 export interface Route {
     path: string;
     component: EzComponent;
@@ -23,6 +33,7 @@ export class EzRouter {
             } else {
                 this.container.addComponent(route.component, this.id);
             }
+            window.history.pushState({}, "", path);
         }
     }
 }

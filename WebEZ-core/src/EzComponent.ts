@@ -161,6 +161,10 @@ export abstract class EzComponent {
      * @example component.addRouter(router);
      */
     public addRouter(routes: Route[], id: string = "root"): void {
+        if (this.router)
+            throw new Error(
+                "A router has already been added to this component",
+            );
         this.router = new EzRouter(this, routes, id);
         this.router.route(window.location.pathname);
     }
