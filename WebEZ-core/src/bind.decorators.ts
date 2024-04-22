@@ -163,6 +163,10 @@ function cloneEventListeners(element: HTMLElement, clone: HTMLElement) {
                         e.target as HTMLInputElement
                     ).value;
                 }
+                if (element instanceof HTMLButtonElement)
+                    element.innerHTML = (
+                        e.target as HTMLButtonElement
+                    ).innerHTML;
                 if (element instanceof HTMLOptionElement)
                     element.text = (e.target as HTMLOptionElement).text;
                 el.dispatchEvent(new Event(listener));
@@ -222,6 +226,9 @@ function recreateBoundList(
         if (sibs[i] instanceof HTMLOptionElement) {
             (sibs[i] as HTMLOptionElement).value = v;
             (sibs[i] as HTMLOptionElement).text = v;
+        } else if (element instanceof HTMLButtonElement) {
+            (sibs[i] as HTMLButtonElement).innerHTML = v;
+            (sibs[i] as HTMLButtonElement).value = v;
         } else if (elementHasValue(sibs[i] as HTMLElement))
             (sibs[i] as HTMLInputElement).value = v;
         else if (overwrite) sibs[i].innerHTML = v;
@@ -586,6 +593,12 @@ export function BindValue<This extends EzComponent, Value>(
                     value,
                 );
                 element.text = transform.call(this, value);
+            } else if (element instanceof HTMLButtonElement) {
+                (element as HTMLButtonElement).innerHTML = transform.call(
+                    this,
+                    value,
+                );
+                element.value = transform.call(this, value);
             } else if (value !== undefined) {
                 if (elementHasValue(element))
                     (element as HTMLInputElement).value = transform.call(
@@ -604,6 +617,10 @@ export function BindValue<This extends EzComponent, Value>(
                             (element as HTMLOptionElement).value =
                                 transform.call(this, value);
                             element.text = transform.call(this, value);
+                        } else if (element instanceof HTMLButtonElement) {
+                            (element as HTMLButtonElement).innerHTML =
+                                transform.call(this, value);
+                            element.value = transform.call(this, value);
                         } else if (elementHasValue(element))
                             (element as HTMLInputElement).value =
                                 transform.call(this, value);
@@ -620,8 +637,12 @@ export function BindValue<This extends EzComponent, Value>(
                             (element as HTMLOptionElement).value =
                                 transform.call(this, value);
                             element.text = transform.call(this, value);
+                        } else if (element instanceof HTMLButtonElement) {
+                            (element as HTMLButtonElement).innerHTML =
+                                transform.call(this, value);
+                            element.value = transform.call(this, value);
                         } else if (elementHasValue(element))
-                            (element as HTMLOptionElement).value =
+                            (element as HTMLInputElement).value =
                                 transform.call(this, value);
                         else element.innerHTML = transform.call(this, value);
                     },
