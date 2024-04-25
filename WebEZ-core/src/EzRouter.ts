@@ -14,7 +14,10 @@ export interface Route {
     path: string;
     component: EzComponent;
 }
+declare const URLHREF: string;
+
 export class EzRouter {
+    private baseRoute: string = URLHREF || "/";
     private currentComponent: EzComponent | null = null;
     constructor(
         private container: EzComponent,
@@ -33,7 +36,7 @@ export class EzRouter {
             } else {
                 this.container.addComponent(route.component, this.id);
             }
-            window.history.pushState({}, "", path);
+            window.history.pushState({}, "", this.baseRoute + path);
         }
     }
 }
