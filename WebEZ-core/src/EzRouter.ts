@@ -34,9 +34,9 @@ export class EzRouter {
     route(path: string) {
         let route = this.routes.find((r) => r.path === path);
         if (!route) {
-            route = this.routes[0];
-        }
-        this.selectedPage = this.routes.indexOf(route);
+            route = { path: "", component: this.routes[0].component } as Route;
+            this.selectedPage = 0;
+        } else this.selectedPage = this.routes.indexOf(route);
 
         if (this.currentComponent)
             this.container["removeComponent"](this.currentComponent);
