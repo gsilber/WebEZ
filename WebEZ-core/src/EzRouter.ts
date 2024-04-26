@@ -17,7 +17,7 @@ export interface Route {
 declare const URLHREF: string;
 
 export class EzRouter {
-    private baseRoute: string = URLHREF || "/";
+    private baseRoute: string = URLHREF || "";
     private currentComponent: EzComponent | null = null;
     constructor(
         private container: EzComponent,

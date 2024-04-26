@@ -5,7 +5,9 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const css = require("css-loader");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-module.exports = {
+module.exports = (env) => {
+    return {
+
     mode: "development",
     devServer: {
         historyApiFallback: true,
@@ -64,6 +66,11 @@ module.exports = {
             template: path.resolve(__dirname, "./src/index.html"), // template file
             filename: "index.html", // output file
         }),
+        ,
+            new webpack.DefinePlugin({
+                URLHREF: JSON.stringify(env.href ? env.href : ""),
+            }),
     ],
     devtool: "source-map",
 };
+}
