@@ -23,7 +23,9 @@ export class EzRouter {
         private container: EzComponent,
         private routes: Route[],
         private id: string,
-    ) {}
+    ) {
+        
+    }
 
     route(path: string) {
         const route = this.routes.find((r) => r.path === path);
@@ -36,7 +38,7 @@ export class EzRouter {
             } else {
                 this.container.addComponent(route.component, this.id);
             }
-            window.history.pushState({}, "", this.baseRoute + path);
+                window.history.pushState({}, "", this.baseRoute + path);
         }
     }
 }

@@ -1,6 +1,6 @@
 {
     "name": "@gsilber/webez",
-    "version": "0.5.9",
+    "version": "0.5.14",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
