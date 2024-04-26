@@ -32,20 +32,19 @@ export class EzRouter {
         return this.selectedPage;
     }
     route(path: string) {
-        let route = this.routes.find((r) => r.path === path);
-        if (!route) {
-            route = { path: "/", component: this.routes[0].component } as Route;
-            this.selectedPage = 0;
-        } else this.selectedPage = this.routes.indexOf(route);
+        const route = this.routes.find((r) => r.path === path);
+        if (route) {
+            this.selectedPage = this.routes.indexOf(route);
 
-        if (this.currentComponent)
-            this.container["removeComponent"](this.currentComponent);
-        this.currentComponent = route.component;
-        if (this.id === "root") {
-            this.container.addComponent(route.component);
-        } else {
-            this.container.addComponent(route.component, this.id);
+            if (this.currentComponent)
+                this.container["removeComponent"](this.currentComponent);
+            this.currentComponent = route.component;
+            if (this.id === "root") {
+                this.container.addComponent(route.component);
+            } else {
+                this.container.addComponent(route.component, this.id);
+            }
+            window.history.pushState({}, "", this.baseRoute + path);
         }
-        window.history.pushState({}, "", this.baseRoute + path);
     }
 }
