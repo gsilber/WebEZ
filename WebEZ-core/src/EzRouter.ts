@@ -19,17 +19,23 @@ declare const URLHREF: string;
 export class EzRouter {
     private baseRoute: string = URLHREF || "";
     private currentComponent: EzComponent | null = null;
+    private selectedPage: number = 0;
     constructor(
         private container: EzComponent,
         private routes: Route[],
         private id: string,
     ) {
-        
+        this.route(window.location.pathname.replace(this.baseRoute, ""));
     }
 
+    selectedRoute(): number {
+        return this.selectedPage;
+    }
     route(path: string) {
         const route = this.routes.find((r) => r.path === path);
         if (route) {
+            this.selectedPage = this.routes.indexOf(route);
+
             if (this.currentComponent)
                 this.container["removeComponent"](this.currentComponent);
             this.currentComponent = route.component;
@@ -38,7 +44,7 @@ export class EzRouter {
             } else {
                 this.container.addComponent(route.component, this.id);
             }
-                window.history.pushState({}, "", this.baseRoute + path);
+            window.history.pushState({}, "", this.baseRoute + path);
         }
     }
 }
