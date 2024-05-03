@@ -312,6 +312,25 @@ describe("WebEZ-Bind", () => {
                 toplevel.testChecked1 = true;
                 expect(el3.checked).toBeTruthy();
             });
+            test("BindCheckedToBoolean clicking", () => {
+                let el4 = toplevel["shadow"].getElementById(
+                    "bindCheck25",
+                ) as HTMLInputElement;
+                expect(toplevel.testChecked2).toBe(true);
+                expect(el4.checked).toBeTruthy();
+                // Simulate click to change checked status
+                el4.click();
+                expect(el4.checked).toBeFalsy();
+                expect(toplevel.testChecked2).toBe(false);
+                el4.click();
+                expect(el4.checked).toBeTruthy();
+                expect(toplevel.testChecked2).toBe(true);
+                // Should still be able to control the value
+                toplevel.testChecked2 = false;
+                expect(el4.checked).toBeFalsy();
+                toplevel.testChecked2 = true;
+                expect(el4.checked).toBeTruthy();
+            });
         });
     });
 

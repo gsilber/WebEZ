@@ -95,6 +95,7 @@ const html = `<div id="child1"></div>
     <option id="opt2" value="2">1</option>
 </select>
 <input type="checkbox" id="bindCheck24" />
+<input type="checkbox" id="bindCheck25" />
 `;
 const css = "";
 
@@ -238,8 +239,10 @@ export class TestComponent extends EzComponent {
 
     @BindCheckedToBoolean("bindCheck24")
     testChecked1: boolean = true;
-    
+
     testVal5: string = "";
+    @BindCheckedToBoolean("bindCheck25")
+    testChecked2: boolean = true;
 
     constructor() {
         super(html, css);
@@ -294,5 +297,9 @@ export class TestComponent extends EzComponent {
     @Change("bindCheck24")
     evtCheck24Change(event: ValueEvent) {
         this.testVal5 = event.value;
+    }
+    @Change("bindCheck25")
+    evtCheck25Change(event: ValueEvent) {
+        this.testChecked2 = event.value === "on";
     }
 }
