@@ -728,12 +728,20 @@ export function BindAttribute<
             const value = context.access.get(this);
             let setfn: (value: Value) => void;
             setfn = (value: Value) => {
-                if (transform.call(this, value) !== "")
-                    element.setAttribute(
-                        attribute,
-                        transform.call(this, value),
-                    );
-                else element.removeAttribute(attribute);
+                let val = transform.call(this, value);
+                if (val !== "") {
+                    if (attribute === "checked") {
+                        (element as HTMLInputElement).checked = true;
+                    } else {
+                        element.setAttribute(attribute, val);
+                    }
+                } else {
+                    if (attribute === "checked") {
+                        (element as HTMLInputElement).checked = false;
+                    } else {
+                        element.removeAttribute(attribute);
+                    }
+                }
             };
             if (value !== undefined) setfn(value);
             if (origDescriptor.set) {
