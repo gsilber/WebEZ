@@ -599,6 +599,8 @@ export function BindValue<This extends EzComponent, Value>(
                     value,
                 );
                 element.value = transform.call(this, value);
+            } else if (element instanceof HTMLInputElement && element.getAttribute("type") === "checkbox") {
+                (element as HTMLInputElement).checked = transform.call(this, value) === "on";
             } else if (value !== undefined) {
                 if (elementHasValue(element))
                     (element as HTMLInputElement).value = transform.call(
@@ -621,6 +623,8 @@ export function BindValue<This extends EzComponent, Value>(
                             (element as HTMLButtonElement).innerHTML =
                                 transform.call(this, value);
                             element.value = transform.call(this, value);
+                        } else if (element instanceof HTMLInputElement && element.getAttribute("type") === "checkbox") {
+                            (element as HTMLInputElement).checked = transform.call(this, value) === "on";
                         } else if (elementHasValue(element))
                             (element as HTMLInputElement).value =
                                 transform.call(this, value);
@@ -641,6 +645,8 @@ export function BindValue<This extends EzComponent, Value>(
                             (element as HTMLButtonElement).innerHTML =
                                 transform.call(this, value);
                             element.value = transform.call(this, value);
+                        } else if (element instanceof HTMLInputElement && element.getAttribute("type") === "checkbox") {
+                            (element as HTMLInputElement).checked = transform.call(this, value) === "on";
                         } else if (elementHasValue(element))
                             (element as HTMLInputElement).value =
                                 transform.call(this, value);
@@ -949,8 +955,8 @@ export function BindCheckedToBoolean<
     This extends EzComponent,
     Value extends boolean,
 >(id: string) {
-    return BindAttribute(id, "checked", (value: Value) =>
-        value ? "checked" : "",
+    return BindValue(id, (value: Value) =>
+        value ? "on" : "",
     );
 }
 

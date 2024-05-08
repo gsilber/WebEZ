@@ -244,6 +244,9 @@ export class TestComponent extends EzComponent {
     @BindCheckedToBoolean("bindCheck25")
     testChecked2: boolean = true;
 
+    @BindCheckedToBoolean("bindCheck25")
+    testChecked2: boolean = true;
+
     constructor() {
         super(html, css);
         this.addComponent(this.child1, "child1");
