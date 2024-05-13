@@ -442,6 +442,8 @@ TS FIle:
 @Change("inp2")
 onInputChange(evt:ValueEvent){
     console.log(evt);
+    // To get the actual value:
+    console.log(evt.value);
 }
 ```
 
@@ -455,9 +457,11 @@ HTML File:
 ```
 ```
 TS FIle:
-@Blur("inp2")
+@Input("inp2")
 onInput(evt:ValueEvent){
     console.log(evt);
+    // To get the actual value:
+    console.log(evt.value);
 }
 ```
 ### Bind Transforms
