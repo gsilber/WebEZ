@@ -1,3 +1,4 @@
+## NOTE: This library has been depricated and moved to its new home at [https://github.com/boots-edu/Webz](https://github.com/boots-edu/Webz).  This library will have no further development and will be archived in the near future.
 # WebEZ - A simple web framework for Typescript (0.5.23)
 
 ## Getting Started
